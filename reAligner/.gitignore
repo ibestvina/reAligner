@@ -28,9 +28,9 @@
 *.app
 
 # VisualStudio files
-*.sdf
-*.suo
-*.sln
-*.opensdf
-reAligner/Debug/*
+*.vcxproj.filters
+*.vcxproj
 
+# bin files
+Debug/*
+bin/*
