@@ -6,31 +6,30 @@ class AlignedFragment :
 	public Fragment
 {
 private:
-	//offset in matrix
-	int offset;
 	int start;
 	int end;
-	int layoutOffset;
+	int offset;
 public:
 	AlignedFragment(int id, int length, std::string sequence,
-		int offset, int start, int end, int layoutOffset);
-	AlignedFragment(Fragment &fragment, int start, int end, int layoutOffset);
+					int start, int end, int offset);
+	AlignedFragment(Fragment &fragment, int start, int end, int offset);
 	~AlignedFragment();
 
 	/************************************************************************/
 	/*					GETTERS                                             */
 	/************************************************************************/
-	inline int getOffset(){
-		return offset;
-	}
+
 	inline int getStart(){
 		return start;
-	}
+	};
 	inline int getEnd(){
 		return end;
-	}
-	inline int getLayoutOffset(){
-		return layoutOffset;
-	}
+	};
+	inline int getOffset(){
+		return offset;
+	};
+	inline void setOffset(int offset){
+		this->offset = offset;
+	};
 };
 
