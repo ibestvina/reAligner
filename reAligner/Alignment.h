@@ -6,15 +6,19 @@
 
 class Alignment
 {
-	std::list<AlignedFragment> &AlignedFragments;
+	std::list<AlignedFragment>	&Fragments;
 public:
-	Alignment(std::list<AlignedFragment> &AlignedFragments);
+	Alignment(std::list<AlignedFragment>  &Fragments);
+	
 	~Alignment();
+	
+	std::list<FragmentAlignment> &getAllFragments();
 
-	std::list<AlignedFragment> &getAllFragments();
-	AlignedFragment &FragmentAt(int index);
-	AlignedFragment &DetachFragmentAt(int index);
-	void AddFragment(AlignedFragment fragment);
+	FragmentAlignment &FragmentAt(int index);
+	
+	FragmentAlignment &DetachFragmentAt(int index);
+	
+	void AddFragment(FragmentAlignment fragment);
 
 
 };

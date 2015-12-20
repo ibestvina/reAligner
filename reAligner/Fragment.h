@@ -31,6 +31,10 @@ public:
 	/************************************************************************/
 	/*					METHODS                                             */
 	/************************************************************************/
-	virtual void insertDashAt(int index);
+	void insertDashAt(int index)
+	{
+		sequence.insert(index, "-");
+		length++;
+	}
 };
 

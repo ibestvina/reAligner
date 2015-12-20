@@ -1,35 +1,52 @@
 #pragma once
 
 #include "Fragment.h"
+#include "FragmentAlignment.h"
 
-class AlignedFragment :
-	public Fragment
+class AlignedFragment
 {
 private:
-	int start;
-	int end;
-	int offset;
+	Fragment			&fragment;
+	FragmentAlignment	&fragmentAlignment;
 public:
-	AlignedFragment(int id, int length, std::string sequence,
-					int start, int end, int offset);
-	AlignedFragment(Fragment &fragment, int start, int end, int offset);
-	~AlignedFragment();
 
-	/************************************************************************/
-	/*					GETTERS                                             */
-	/************************************************************************/
+	AlignedFragment(Fragment &fragment, FragmentAlignment &fragmentAlignment) 
+		:fragment(fragment), fragmentAlignment(fragmentAlignment)
+	{
+	}
 
+	~AlignedFragment()
+	{
+	}
+
+	inline int getId(){
+		return fragment.getId();
+	}
+	inline int getLength(){
+		return fragment.getLength();
+	}
 	inline int getStart(){
-		return start;
+		return fragmentAlignment.getStart();
 	};
 	inline int getEnd(){
-		return end;
+		return fragmentAlignment.getEnd();
 	};
 	inline int getOffset(){
-		return offset;
+		return fragmentAlignment.getOffset();
 	};
 	inline void setOffset(int offset){
-		this->offset = offset;
+		fragmentAlignment.setOffset(offset);
 	};
+
+	inline std::string getSequence(){
+		return fragment.getSequence();
+	}
+	
+	void insertDashAt(int index)
+	{
+		fragmentAlignment.setEnd(fragmentAlignment.getEnd() + 1)
+					     .setLength(fragmentAlignment.getLength() + 1);
+		fragment.insertDashAt(index);
+	}
 };
 
