@@ -36,4 +36,5 @@ reAligner/Debug/*
 
 #packages
 packages/*
+*.config
 ipch/*
