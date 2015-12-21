@@ -8,9 +8,10 @@
 class FragmentReader :
 	public FileReader
 {
+	std::istream &inStream;
 public:
 	
-	FragmentReader(std::string inFileName)
+	FragmentReader(std::istream &inputStream) :inStream(inputStream)
 	{
 
 	}
@@ -18,8 +19,8 @@ public:
 	{
 
 	}
-	std::list<Fragment> &GetAllFragments(){
-		return *new std::list<Fragment>();
+	std::list<Fragment*> &GetAllFragments(){
+		return *new std::list<Fragment*>();
 	}
 };
 

@@ -1,4 +1,4 @@
-#pragma oce
+#pragma once
 
 #include <string>
 #include <list>

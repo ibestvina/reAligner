@@ -10,11 +10,11 @@ class LayoutReader :
 	public FileReader
 {
 private:
-	std::list<Overlap>	Overlaps;
-	std::ifstream		fileStream;
+	std::list<Overlap*>	*Overlaps;
+	std::istream		&inputStream;
 
 public:
-	LayoutReader(std::string inFileName)
+	LayoutReader(std::istream &inputStream) :inputStream(inputStream)
 	{
 
 	}
@@ -23,15 +23,15 @@ public:
 
 	}
 
-	std::list<FragmentAlignment> &GetAllFragmentLayouts(std::ifstream inFile)
+	std::list<FragmentAlignment*> &GetAllFragmentLayouts(std::istream inputStream)
 	{
-		return *new std::list<FragmentAlignment>();
+		return *new std::list<FragmentAlignment*>();
 	}
 
 private:
-	std::list<FragmentAlignment> &generateFragmentAlignments()
+	std::list<FragmentAlignment*> &generateFragmentAlignments()
 	{
-		return *new std::list<FragmentAlignment>();
+		return *new std::list<FragmentAlignment*>();
 	}
 
 	void readAllOverlaps()

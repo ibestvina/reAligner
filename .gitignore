@@ -34,3 +34,6 @@
 *.opensdf
 reAligner/Debug/*
 
+#packages
+packages/*
+ipch/*

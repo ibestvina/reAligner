@@ -6,13 +6,13 @@
 
 class Alignment
 {
-	std::list<AlignedFragment>	&Fragments;
+	std::list<AlignedFragment*>	&Fragments;
 public:
-	Alignment(std::list<AlignedFragment>  &Fragments);
+	Alignment(std::list<AlignedFragment*>  &Fragments);
 	
 	~Alignment();
 	
-	std::list<FragmentAlignment> &getAllFragments();
+	std::list<FragmentAlignment*> &getAllFragments();
 
 	FragmentAlignment &FragmentAt(int index);
 	
