@@ -10,6 +10,7 @@ public:
 	~ReAligner();
 	static Consensus &getConsensus(Alignment &alignment);
 private:
+
 	static void calculateConsensusScore(Consensus &consensus, Alignment &alignment);
 	static Metasymbol *getConsensusMetasymbol(std::list<char> &column, int height);
 	static double getConsensusScoreWeighted(AlignedFragment &detachedSeq, Consensus &consensus, Alignment &subalignment);

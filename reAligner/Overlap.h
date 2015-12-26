@@ -3,6 +3,7 @@ class Overlap
 {
 	int ID_A;
 	int ID_B;
+	int Shared;
 	int Direction_A;
 	int Start_A;
 	int End_A;
@@ -12,11 +13,23 @@ class Overlap
 	int End_B;
 	int Length_B;
 	float JaccardScore;
+
 public:
-	Overlap(int ID_A, int ID_B, float JaccardScore, int Direction_A, int Start_A,
+	Overlap(int ID_A, int ID_B, float JaccardScore,int Shared, int Direction_A, int Start_A,
 		int End_A, int Length_A, int Direction_B, int Start_B, int End_B, int Length_B)
 	{
-
+		this->ID_A			= ID_A;
+		this->ID_B			= ID_B;
+		this->JaccardScore	= JaccardScore;
+		this->Shared		= Shared;
+		this->Direction_A	= Direction_A;
+		this->Start_A		= Start_A;
+		this->End_A			= End_A;
+		this->Length_A		= Length_A;
+		this->Direction_B	= Start_B;
+		this->Start_B		= Start_B;
+		this->End_B			= End_B;
+		this->Length_B		= Length_B;
 	}
 	~Overlap()
 	{
@@ -55,6 +68,9 @@ public:
 	};
 	float getJaccardScore(){
 		return JaccardScore;
+	};
+	int getShared(){
+		return Shared;
 	};
 
 };

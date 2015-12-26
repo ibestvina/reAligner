@@ -26,7 +26,7 @@ protected:
 			}
 			else{
 				std::cout << toBeFormatted << std::endl;
-				std::cout << "Invalid format for number" << std::endl;
+				std::cout << "Invalid format for number!" << std::endl;
 				exit(-1);
 			}
 		}
