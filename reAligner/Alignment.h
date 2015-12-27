@@ -12,14 +12,15 @@ public:
 	
 	~Alignment();
 	
-	std::list<FragmentAlignment*> &getAllFragments();
+	std::list<AlignedFragment*> &getAllFragments();
 
-	FragmentAlignment &FragmentAt(int index);
+	AlignedFragment &FragmentAt(int index);
 	
-	FragmentAlignment &DetachFragmentAt(int index);
-	
-	void AddFragment(FragmentAlignment fragment);
+	AlignedFragment *PopFirst();
 
+	void AddFragment(AlignedFragment* fragment);
+
+	int getSize();
 
 };
 

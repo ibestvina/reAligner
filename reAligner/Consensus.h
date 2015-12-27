@@ -40,5 +40,13 @@ public:
 		dash->addSymbol('-');
 		this->Metasymbols->push_back(dash);
 	}
+
+	inline double getScore() {
+		return consensusScore;
+	}
+
+	inline void setScore(double score) {
+		consensusScore = score;
+	}
 };
 

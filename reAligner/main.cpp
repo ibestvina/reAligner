@@ -4,7 +4,9 @@
 #include <cppunit/CompilerOutputter.h>
 #include <cppunit/extensions/TestFactoryRegistry.h>
 #include <cppunit/ui/text/TestRunner.h>
+#include <iostream>
 #endif //TESTING
+
 
 int main()
 {
@@ -24,6 +26,8 @@ int main()
 		std::cerr));
 	// Run the tests.
 	bool wasSucessful = runner.run();
+
+	std::cin.get();
 
 	// Return error code 1 if the one of test failed.
 

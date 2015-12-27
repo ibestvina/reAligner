@@ -35,6 +35,6 @@ private:
 	*  @param  epsilonPrecision - predicted error of read layout, in percentage (0.0 to 1.0)
 	*  @param  numOfIterations max number of iterations
 	*/
-	static Consensus reAlign(Alignment &layoutMap, double epsilonPrecision, int numOfIterations);
+	static Consensus reAlign(Alignment &alignment, double epsilonPrecision, int numOfIterations);
 };
 

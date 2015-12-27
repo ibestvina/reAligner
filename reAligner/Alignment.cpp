@@ -10,22 +10,34 @@ Alignment::~Alignment()
 {
 }
 
-std::list<FragmentAlignment*>& Alignment::getAllFragments()
+std::list<AlignedFragment*>& Alignment::getAllFragments()
 {
-	return *new std::list<FragmentAlignment*>();
+	return Fragments;
 }
 
-FragmentAlignment& Alignment::FragmentAt(int index)
+AlignedFragment& Alignment::FragmentAt(int index)
 {
-	return *new FragmentAlignment(0, 0, 0, 0, 0);
+	//TODO if needed (this is mock only)
+	FragmentAlignment &fa = *new FragmentAlignment(0, 0, 0, 0, 0);
+	Fragment &f = *new Fragment(0, 0, "");
+	return *new AlignedFragment(f, fa);
 }
 
-FragmentAlignment& Alignment::DetachFragmentAt(int index)
+AlignedFragment *Alignment::PopFirst()
 {
-	return *new FragmentAlignment(0,0,0,0,0);
+	AlignedFragment *first = Fragments.front();
+	Fragments.pop_front();
+	return first;
 }
 
-void Alignment::AddFragment(FragmentAlignment fragment)
+void Alignment::AddFragment(AlignedFragment* fragment)
 {
-
+	Fragments.push_back(fragment);
 }
+
+int Alignment::getSize()
+{
+	return Fragments.size();
+}
+
+
