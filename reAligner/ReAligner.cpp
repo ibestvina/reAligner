@@ -12,11 +12,27 @@ ReAligner::~ReAligner()
 {
 }
 
-void ReAligner::calculateConsensusScore(Consensus & consensus, Alignment & alignment)
+Consensus &ReAligner::getConsensus(Alignment & alignment)
 {
-	// TODO: consensus.setScore(calculatedScore);
+	// TODO (mock object only)
+	return *new Consensus(0);
 }
 
+void ReAligner::calculateConsensusScore(Consensus & consensus, Alignment & alignment)
+{
+	// TODO: after calculating do: consensus.setScore(calculatedScore);
+}
+
+Metasymbol * ReAligner::getConsensusMetasymbol(std::list<char>& column, int height)
+{
+	return nullptr;
+}
+
+
+double ReAligner::getAlignment(AlignedFragment & sequenceA, Consensus & sequenceB, double eps)
+{
+	return 0.0;
+}
 
 Consensus ReAligner::reAlign(Alignment & alignment, double epsilonPrecision, int numOfIterations)
 {
@@ -59,4 +75,12 @@ Consensus ReAligner::reAlign(Alignment & alignment, double epsilonPrecision, int
 	}
 
 	return bestConsensus;
+}
+
+void ReAligner::dashFunction(Consensus & consensus)
+{
+}
+
+void ReAligner::dashFunction(AlignedFragment & fragment)
+{
 }

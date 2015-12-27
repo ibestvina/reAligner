@@ -9,8 +9,12 @@ private:
 	int				length;
 	std::string		sequence;
 public:
-	Fragment(int id, int length, std::string sequence);
-	~Fragment();
+	Fragment(int id, int length, std::string sequence) : id(id), length(length), sequence(sequence)
+	{
+	}
+	~Fragment() 
+	{
+	}
 	/************************************************************************/
 	/*                    GETTERS                                           */
 	/************************************************************************/
