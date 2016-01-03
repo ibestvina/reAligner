@@ -26,7 +26,7 @@ public:
 		this->Start_A		= Start_A;
 		this->End_A			= End_A;
 		this->Length_A		= Length_A;
-		this->Direction_B	= Start_B;
+		this->Direction_B	= Direction_B;
 		this->Start_B		= Start_B;
 		this->End_B			= End_B;
 		this->Length_B		= Length_B;

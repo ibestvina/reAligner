@@ -14,7 +14,11 @@ public:
 	FragmentAlignment(int id, int length,
 		int start, int end, int offset)
 	{
-
+		this->id		= id;
+		this->length	= length;
+		this->start		= start;
+		this->end		= end;
+		this->offset	= offset;
 	}
 	~FragmentAlignment()
 	{
@@ -49,6 +53,11 @@ public:
 	}
 	FragmentAlignment &setLength(int length){
 		this->length = length;
+		return *this;
+	}
+	FragmentAlignment &setStart(int start)
+	{
+		this->start = start;
 		return *this;
 	}
 };

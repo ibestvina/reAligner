@@ -7,6 +7,7 @@ class TestLayoutReader : public CppUnit::TestFixture
 {
 	CPPUNIT_TEST_SUITE(TestLayoutReader);
 	CPPUNIT_TEST(testConstructor);
+	CPPUNIT_TEST(Count1);
 	CPPUNIT_TEST(GetAllFragmentLayouts1);
 	CPPUNIT_TEST(GetAllFragmentLayouts2);
 	CPPUNIT_TEST(GetAllFragmentLayouts3);
@@ -19,6 +20,7 @@ public:
 	void tearDown();
 
 	void testConstructor();
+	void Count1();
 	void GetAllFragmentLayouts1();
 	void GetAllFragmentLayouts2();
 	void GetAllFragmentLayouts3();
