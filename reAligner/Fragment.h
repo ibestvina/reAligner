@@ -40,5 +40,9 @@ public:
 		sequence.insert(index, "-");
 		length++;
 	}
+
+	void setSequence(std::string seq) {
+		sequence = seq;
+	}
 };
 

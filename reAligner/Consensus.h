@@ -1,11 +1,16 @@
 #pragma once
-#include <string>
+
 #include "Metasymbol.h"
+#include <exception>
+#include <string>
+#include <list>
+
+using namespace std;
 
 class Consensus
 {
 private:
-	std::list<Metasymbol*> *Metasymbols;
+	std::list<Metasymbol*> *metasymbols;
 	double consensusScore;
 	int ID;
 public:
@@ -14,31 +19,43 @@ public:
 	{
 		this->ID		= ID;
 		consensusScore	= 0;
-		Metasymbols		= new std::list<Metasymbol*>();
+		metasymbols		= new std::list<Metasymbol*>();
 	}
 	Consensus()
 	{
 		consensusScore	= 0;
-		Metasymbols		= new std::list<Metasymbol*>();
+		metasymbols		= new std::list<Metasymbol*>();
 	}
 	~Consensus()
 	{
 	}
-	/**
-	* Add dash in the from of the consensus.
-	*/
+	
+	// Get part of consensus
+	std::list<Metasymbol*> getPart(int start, int end) {
+		if (start < 0 || end < 0 || start > metasymbols->size || end > metasymbols->size || start > end) {
+			throw exception("Invalid start/end arguments. (Consensus->getPart)");
+		}
+		std::list<Metasymbol*> part;
+		std::list<Metasymbol*>::iterator iter = std::next(metasymbols->begin(), start);
+		for (int i = start; i < end; i++) {
+			part.push_back(*iter);
+			iter++;
+		}
+		return part;
+	}
+
+	// Add dash in the from of the consensus.
 	void addDashInFront() {
 		Metasymbol *dash = new Metasymbol();
 		dash->addSymbol('-');
-		this->Metasymbols->push_front(dash);
+		this->metasymbols->push_front(dash);
 	}
-	/**
-	* Add dash at the end of the consensus.
-	*/
+
+	// Add dash at the end of the consensus.
 	void addDashToBack() {
 		Metasymbol *dash = new Metasymbol();
 		dash->addSymbol('-');
-		this->Metasymbols->push_back(dash);
+		this->metasymbols->push_back(dash);
 	}
 
 	inline double getScore() {
@@ -47,6 +64,10 @@ public:
 
 	inline void setScore(double score) {
 		consensusScore = score;
+	}
+
+	inline int getLength() {
+		return metasymbols->size();
 	}
 };
 

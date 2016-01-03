@@ -48,5 +48,13 @@ public:
 					     .setLength(fragmentAlignment.getLength() + 1);
 		fragment.insertDashAt(index);
 	}
+
+	char getAt(int index) {
+		return fragment.getSequence()[index];
+	}
+
+	void setSequence(std::string seq) {
+		fragment.setSequence(seq);
+	}
 };
 

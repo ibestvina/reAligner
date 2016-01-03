@@ -28,7 +28,7 @@ private:
 	*  @param seqB  consensus sequence
 	*  @param eps  eps
 	*/
-	static double getAlignment(AlignedFragment &sequenceA, Consensus &sequenceB, double eps);
+	static void getAlignment(AlignedFragment &read, Consensus &cons, double eps);
 	/**
 	*  ReAligner
 	*  @param  layoutMap map of reads
