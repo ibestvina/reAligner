@@ -32,7 +32,7 @@ public:
 	
 	// Get part of consensus
 	std::list<Metasymbol*> getPart(int start, int end) {
-		if (start < 0 || end < 0 || start > metasymbols->size || end > metasymbols->size || start > end) {
+		if (start < 0 || end < 0 || start > metasymbols->size() || end > metasymbols->size() || start > end) {
 			throw exception("Invalid start/end arguments. (Consensus->getPart)");
 		}
 		std::list<Metasymbol*> part;
