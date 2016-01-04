@@ -20,8 +20,8 @@ protected:
 	{
 		std::string &output = *new std::string();
 		for (char &character : toBeFormatted){
-			if (character == '_') continue;
-			else if (character <= '0' && character >= '9'){
+			if (character == '_' || character == '>') continue;
+			else if (character >= '0' && character <= '9'){
 				output.push_back(character);
 			}
 			else{
