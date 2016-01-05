@@ -12,6 +12,11 @@ public:
 	Fragment(int id, int length, std::string sequence) : id(id), length(length), sequence(sequence)
 	{
 	}
+	Fragment(int id) : id(id)
+	{
+		length = 0;
+		sequence = "";
+	}
 	~Fragment() 
 	{
 	}
@@ -43,6 +48,10 @@ public:
 
 	void setSequence(std::string seq) {
 		sequence = seq;
+	}
+
+	void setLength(int l) {
+		length = l;
 	}
 };
 

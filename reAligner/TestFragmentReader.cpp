@@ -17,22 +17,33 @@ TestFragmentReader::tearDown()
 
 
 void
-TestFragmentReader::testConstructor()
-{
-	CPPUNIT_FAIL("not implemented");
-}
+TestFragmentReader::testConstructor(){}
 
 void TestFragmentReader::testGetAllFragments()
 {
-	
 	std::stringstream fragmentFile;
-	fragmentFile << ">1" << std::endl;
-	fragmentFile << "GTGAGTAAATTAAAATTTTATTGACTTAGGTCACTAAATACTTTAACCAATATA" << std::endl;
-	fragmentFile << ">2" << std::endl;
-	fragmentFile << "TTTTCGACCAAAGGTAACGAGGTAACAACCATGC" << std::endl;
-
 	FragmentReader FR(fragmentFile);
-	std::list<Fragment*> fragments = FR.GetAllFragments();
-	CPPUNIT_ASSERT(fragments.size() == 2);
+	
+	std::list<Fragment*> fragments = (new FragmentReader(fragmentFile))->GetAllFragments();
+	CPPUNIT_ASSERT(fragments.size() == 0);
+
+	fragmentFile.clear();
+	fragmentFile << ">1" << std::endl;
+	fragmentFile << "TTTTCGACCAAAGGTAACGAGGTAACAACCATGC" << std::endl;
+	fragmentFile << ">2" << std::endl;
+	fragmentFile << "GTGAGTAAATTAAAATTTTATTGACTTAGGTCACTAAATACTTTAACCAATATA" << std::endl;
+	fragmentFile << "GTGAGTAAATTAAAATTTTATTGACTTAGGTCACTA" << std::endl;
+	fragmentFile << ">3" << std::endl;
+	fragmentFile << "AGA" << std::endl;
+	fragmentFile << "TAA" << std::endl;
+	fragmentFile << "AGATAACACATCA" << std::endl;
+	fragments = (new FragmentReader(fragmentFile))->GetAllFragments();	
+	CPPUNIT_ASSERT(fragments.size() == 3);	
+	CPPUNIT_ASSERT(fragments.front()->getId() == 1);
+	CPPUNIT_ASSERT(fragments.front()->getLength() == 34);
+	CPPUNIT_ASSERT_EQUAL(fragments.front()->getSequence(), std::string("TTTTCGACCAAAGGTAACGAGGTAACAACCATGC"));
+	CPPUNIT_ASSERT(fragments.back()->getId() == 3);
+	CPPUNIT_ASSERT(fragments.back()->getLength() == 19);
+	CPPUNIT_ASSERT_EQUAL(fragments.back()->getSequence(), std::string("AGATAAAGATAACACATCA"));
 
 }
