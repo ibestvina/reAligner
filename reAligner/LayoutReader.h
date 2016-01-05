@@ -100,12 +100,22 @@ private:
 				else if (overlap->getDirection_A() == 0 && overlap->getDirection_B() == 1 &&
 					overlap->getStart_A() <= overlap->getLength_B() - overlap->getEnd_B())
 				{
-					throw new std::exception("not implemented yet");
+					(*FragmentAlignments)[overlap->getID_B()] =
+						new FragmentAlignment(overlap->getID_B(), overlap->getLength_B(), 0, overlap->getLength_B() - 1, 0);
+					(*FragmentAlignments)[overlap->getID_A()] =
+						new FragmentAlignment(overlap->getID_A(), overlap->getLength_A(),
+						overlap->getLength_B() - overlap->getEnd_B() - overlap->getStart_A(),
+						overlap->getLength_A() - 1 + overlap->getLength_B() - overlap->getEnd_B() - overlap->getStart_A(), 0);
 				}
 				else if (overlap->getDirection_A() == 0 && overlap->getDirection_B() == 1 &&
 					overlap->getStart_A() > overlap->getLength_B() - overlap->getEnd_B())
 				{
-					throw new std::exception("not implemented yet");
+					(*FragmentAlignments)[overlap->getID_A()] =
+						new FragmentAlignment(overlap->getID_A(), overlap->getLength_A(), 0, overlap->getLength_A() - 1, 0);
+					(*FragmentAlignments)[overlap->getID_B()] =
+						new FragmentAlignment(overlap->getID_B(), overlap->getLength_B(),
+						overlap->getStart_A() - (overlap->getLength_B() - overlap->getEnd_B()),
+						overlap->getLength_B() - 1 + overlap->getStart_A() - (overlap->getLength_B() - overlap->getEnd_B()), 0);
 				}
 				//else if (overlap->getDirection_A() == 1 && overlap->getDirection_B() == 0 &&
 				//	overlap->getLength_A() - overlap->getEnd_A() < overlap->getStart_B())
@@ -177,7 +187,22 @@ private:
 				}
 				else if (overlap->getDirection_A() == 0 && overlap->getDirection_B() == 1)
 				{
-					throw new std::exception("not implemented yet");
+					if (contains<int>(AlignedIndexes, overlap->getID_A()))
+					{
+						startPos = (*FragmentAlignments)[overlap->getID_A()]->getStart() - 
+														((overlap->getLength_B() - 1 -overlap->getEnd_B()) - overlap->getStart_A());
+						endPos = startPos + overlap->getLength_B() - 1;
+						index = overlap->getID_B();
+						length = overlap->getLength_B();
+					}
+					else
+					{
+						startPos = (*FragmentAlignments)[overlap->getID_B()]->getStart() - 
+														(overlap->getStart_A() - (overlap->getLength_B() - 1 - overlap->getEnd_B()));
+						endPos = startPos + overlap->getLength_A() - 1;
+						index = overlap->getID_A();
+						length = overlap->getLength_A();
+					}
 				}
 				/*else if (overlap->getDirection_A() == 1 && overlap->getDirection_B() == 0)
 				{

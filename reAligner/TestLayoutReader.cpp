@@ -78,4 +78,27 @@ void TestLayoutReader::Count1(){
 	CPPUNIT_ASSERT(!LayoutReader::contains<int>(lst, 5));
 
 }
-void TestLayoutReader::GetAllFragmentLayouts4(){}
+void TestLayoutReader::GetAllFragmentLayouts4(){
+
+	std::stringstream input;
+	input << "1 2 87.83225 206 0 69 1693 1704 1 1208 2831 5871" << std::endl <<
+		"2 3 85.08692 163 0 16 1041 5871 0 67 1088 2935" << std::endl <<
+		"1 4 87.11507 159 0 455 1678 1704 1 0 1225 1862";
+	LayoutReader *LR = new LayoutReader(input);
+
+	//std::list<Overlap*> *O = LR->readAllOverlaps();
+	std::map<int, FragmentAlignment*> alignemnts = LR->GetAllFragmentLayouts();
+	//std::cout << "out" << std::endl;
+	CPPUNIT_ASSERT_EQUAL(alignemnts[1]->getId(), 1);
+	CPPUNIT_ASSERT_EQUAL(alignemnts[2]->getId(), 2);
+	CPPUNIT_ASSERT_EQUAL(alignemnts[3]->getId(), 3);
+	CPPUNIT_ASSERT_EQUAL(alignemnts[4]->getId(), 4);
+	CPPUNIT_ASSERT_EQUAL(alignemnts[1]->getStart(), 3022);
+	CPPUNIT_ASSERT_EQUAL(alignemnts[2]->getStart(), 51);
+	CPPUNIT_ASSERT_EQUAL(alignemnts[3]->getStart(), 0);
+	CPPUNIT_ASSERT_EQUAL(alignemnts[4]->getStart(), 2841);
+	CPPUNIT_ASSERT_EQUAL(alignemnts[1]->getEnd(), 4725);
+	CPPUNIT_ASSERT_EQUAL(alignemnts[2]->getEnd(), 5921);
+	CPPUNIT_ASSERT_EQUAL(alignemnts[3]->getEnd(), 2934);
+	CPPUNIT_ASSERT_EQUAL(alignemnts[4]->getEnd(), 4702);
+}
