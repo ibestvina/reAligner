@@ -12,6 +12,13 @@ public:
 	{
 	}
 
+	Metasymbol(std::string input)
+	{
+		for (int i = 0; i < input.length(); i++) {
+			symbols.push_back(input[i]);
+		}
+	}
+
 	~Metasymbol()
 	{
 	}

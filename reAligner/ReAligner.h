@@ -9,6 +9,16 @@ public:
 	ReAligner();
 	~ReAligner();
 	static Consensus &getConsensus(Alignment &alignment);
+
+	
+	/**
+	*  Alignment function  Needleman Wunsch algorithm
+	*  @param seqA  detached sequence
+	*  @param seqB  consensus sequence
+	*  @param eps  eps
+	*/
+	static void getAlignment(AlignedFragment &read, Consensus &cons, double eps);
+
 private:
 
 	static void calculateConsensusScore(Consensus &consensus, Alignment &alignment);
@@ -22,13 +32,7 @@ private:
 	static int getNumberOfColumns(Alignment &layoutMap);
 	static void dashFunction(Consensus &consensus);
 	static void dashFunction(AlignedFragment &fragment);
-	/**
-	*  Alignment function  Needleman Wunsch algorithm
-	*  @param seqA  detached sequence
-	*  @param seqB  consensus sequence
-	*  @param eps  eps
-	*/
-	static void getAlignment(AlignedFragment &read, Consensus &cons, double eps);
+	
 	/**
 	*  ReAligner
 	*  @param  layoutMap map of reads

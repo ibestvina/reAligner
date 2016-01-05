@@ -4,6 +4,7 @@
 #include <exception>
 #include <string>
 #include <list>
+#include <iostream>
 
 using namespace std;
 
@@ -33,7 +34,8 @@ public:
 	// Get part of consensus
 	std::list<Metasymbol*> getPart(int start, int end) {
 		if (start < 0 || end < 0 || start > metasymbols->size() || end > metasymbols->size() || start > end) {
-			throw exception("Invalid start/end arguments. (Consensus->getPart)");
+			std::cout << "Start: " << start << ", end: " << end << ", size: " << metasymbols->size();
+			throw exception("Invalid start/end arguments. (Consensus::getPart)");
 		}
 		std::list<Metasymbol*> part;
 		std::list<Metasymbol*>::iterator iter = std::next(metasymbols->begin(), start);
@@ -68,6 +70,10 @@ public:
 
 	inline int getLength() {
 		return metasymbols->size();
+	}
+
+	void addMetasymbol(Metasymbol *ms) {
+		metasymbols->push_back(ms);
 	}
 };
 

@@ -55,7 +55,7 @@ void ReAligner::getAlignment(AlignedFragment & read, Consensus & cons, double ep
 	consPartList = cons.getPart(consPartStart, consPartEnd);
 
 	for (int i = 0; i < backDashes; i++)
-		consPartList.push_front(dashSym);
+		consPartList.push_back(dashSym);
 	for (int i = 0; i < frontDashes; i++)
 		consPartList.push_front(dashSym);
 
@@ -118,22 +118,21 @@ void ReAligner::getAlignment(AlignedFragment & read, Consensus & cons, double ep
 	}
 
 	std::string newSequence = "";
-	int i = readLen;
-	int j = endPoisition;
-	while (i > 0) {
-		if (isDiagonal[i][j]) {
-			newSequence = read.getAt(i) + newSequence;
-			i--;
-			j--;
+	int tabi = readLen;
+	int tabj = endPoisition;
+	while (tabi > 0) {
+		if (isDiagonal[tabi][tabj]) {
+			newSequence = read.getAt(tabi-1) + newSequence;
+			tabi--;
+			tabj--;
 		}
 		else {
 			newSequence = "-" + newSequence;
-			j--;
+			tabj--;
 		}
 	}
-	newSequence = read.getAt(0) + newSequence;
 
-	int newOffset = read.getOffset() + j - delta;
+	int newOffset = read.getOffset() + tabj - delta;
 
 	read.setSequence(newSequence);
 	read.setOffset(newOffset);

@@ -71,7 +71,7 @@ private:
 		while (!Overlaps->empty())
 		{
 			//Get any overlap if we have just started
-			Overlap *overlap;
+			Overlap *overlap = 0;
 			if (AlignedIndexes.empty())
 			{
 				overlap = Overlaps->front();
