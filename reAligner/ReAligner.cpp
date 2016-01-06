@@ -3,6 +3,7 @@
 #include <iostream>
 #include <list>
 #include <limits>
+#include <algorithm>
 
 
 ReAligner::ReAligner()
@@ -192,4 +193,31 @@ void ReAligner::dashFunction(Consensus &consensus)
 void ReAligner::dashFunction(AlignedFragment & fragment)
 {
 	fragment.removeDashesFrontAndBack();
+}
+
+std::list<char>& ReAligner::getColumn(Alignment & layoutMap, int index)
+{
+	std::list<char> &column = *new std::list<char>;
+	std::list<AlignedFragment*> &fragments = layoutMap.getAllFragments();
+	for (std::list<AlignedFragment*>::const_iterator iter = fragments.begin(); iter != fragments.end(); ++iter) {
+		int offset = (*iter)->getOffset();
+		int length = (*iter)->getLength();
+		if (offset <= index && offset + length > index) {
+			char sym = (*iter)->getAt(index - offset);
+			column.push_back(sym);
+		}
+	}
+	return column;
+}
+
+int ReAligner::getNumberOfColumns(Alignment & layoutMap)
+{
+	int numOfColumns = 0;
+	std::list<AlignedFragment*> &fragments = layoutMap.getAllFragments();
+	for (std::list<AlignedFragment*>::const_iterator iter = fragments.begin(); iter != fragments.end(); ++iter) {
+		int offset = (*iter)->getOffset();
+		int length = (*iter)->getLength();
+		numOfColumns = std::max(numOfColumns, offset + length);
+	}
+	return numOfColumns;
 }
