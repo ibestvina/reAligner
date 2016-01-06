@@ -22,7 +22,7 @@ public:
 private:
 
 	static void calculateConsensusScore(Consensus &consensus, Alignment &alignment);
-	static Metasymbol *getConsensusMetasymbol(std::list<char> &column, int height);
+	static Metasymbol *getConsensusMetasymbol(std::list<char> &column);
 	static double getConsensusScoreWeighted(AlignedFragment &detachedSeq, Consensus &consensus, Alignment &subalignment);
 	static double getConsensusScoreWithFunction1(AlignedFragment &sequence, Consensus &consensus);
 	static double getConsensusScoreWithFunction2(AlignedFragment &sequence, Alignment &alignmentMap);

@@ -17,8 +17,23 @@ ReAligner::~ReAligner()
 
 Consensus &ReAligner::getConsensus(Alignment & alignment)
 {
-	// TODO (mock object only)
-	return *new Consensus(0);
+	int columnsNum = getNumberOfColumns(alignment);
+	Consensus consensus = *new Consensus(); /// zzz fali ID iz alignmenta (koji ne postoji)
+	double f1Score = 0.0;
+	double f2Score = 0.0;
+	double columnScoreTmp;
+	for (int c = 0; c < columnsNum; ++c) {
+		std::list<char> column = getColumn(alignment, c);
+		Metasymbol* consensusSymbol = getConsensusMetasymbol(column);
+		consensus.addMetasymbol(consensusSymbol);
+		columnScoreTmp = getColumnScore(column, *consensusSymbol);
+		f1Score += columnScoreTmp;
+		if (column.size() > 0) {
+			f2Score += columnScoreTmp / column.size();
+		}
+	}
+	consensus.setScore(0.5 * f1Score + 0.5 + f2Score);
+	return consensus;
 }
 
 void ReAligner::calculateConsensusScore(Consensus & consensus, Alignment & alignment)
@@ -26,7 +41,7 @@ void ReAligner::calculateConsensusScore(Consensus & consensus, Alignment & align
 	// TODO: after calculating do: consensus.setScore(calculatedScore);
 }
 
-Metasymbol * ReAligner::getConsensusMetasymbol(std::list<char>& column, int height)
+Metasymbol * ReAligner::getConsensusMetasymbol(std::list<char>& column)
 {
 	return nullptr;
 }
