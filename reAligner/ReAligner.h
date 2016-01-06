@@ -27,7 +27,7 @@ private:
 	static double getConsensusScoreWithFunction1(AlignedFragment &sequence, Consensus &consensus);
 	static double getConsensusScoreWithFunction2(AlignedFragment &sequence, Alignment &alignmentMap);
 	static std::list<char> &getColumn(Alignment &layoutMap, int index);
-	static double getColumnScore(std::list<char> &column, Metasymbol sym);
+	static double getColumnScore(std::list<char> &column, Metasymbol* sym);
 	static double getColumnScore(std::list<char> &column, char sym);
 	static int getNumberOfColumns(Alignment &layoutMap);
 	static void dashFunction(Consensus &consensus);
