@@ -225,6 +225,17 @@ std::list<char>& ReAligner::getColumn(Alignment & layoutMap, int index)
 	return column;
 }
 
+static double getColumnScore(std::list<char> &column, Metasymbol sym) {
+	double score = 0.0;
+	for (std::list<char>::iterator c = column.begin(); c != column.end(); ++c) {
+		std::list<char> symbols = sym.getSymbols();
+		if (std::find(symbols.begin(), symbols.end(), *c) == symbols.end()) {
+			score += 1;
+		}
+	}
+	return score;
+}
+
 int ReAligner::getNumberOfColumns(Alignment & layoutMap)
 {
 	int numOfColumns = 0;
