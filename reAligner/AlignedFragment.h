@@ -56,5 +56,16 @@ public:
 	void setSequence(std::string seq) {
 		fragment.setSequence(seq);
 	}
+	void  removeDashesFrontAndBack()
+	{
+		std::string newSeq;
+		for (char C : fragment.getSequence())
+			if (C != '-')
+				newSeq.push_back(C);
+
+		fragment.setSequence(newSeq);
+
+
+	}
 };
 

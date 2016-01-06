@@ -31,7 +31,7 @@ public:
 	{
 	}
 	
-	// Get part of consensus
+
 	std::list<Metasymbol*> getPart(int start, int end) {
 		if (start < 0 || end < 0 || start > metasymbols->size() || end > metasymbols->size() || start > end) {
 			std::cout << "Start: " << start << ", end: " << end << ", size: " << metasymbols->size();
@@ -60,20 +60,38 @@ public:
 		this->metasymbols->push_back(dash);
 	}
 
-	inline double getScore() {
+	double getScore() {
 		return consensusScore;
 	}
 
-	inline void setScore(double score) {
+	void setScore(double score) {
 		consensusScore = score;
 	}
-
-	inline int getLength() {
+	Metasymbol *getRow(int row)
+	{
+		int r = 0;
+		for (Metasymbol *var : *metasymbols)
+			if (++r == row)
+				return var;
+		throw exception("Index out of range");
+	}
+	int getLength() {
 		return metasymbols->size();
 	}
 
 	void addMetasymbol(Metasymbol *ms) {
 		metasymbols->push_back(ms);
+	}
+	void removeDashesFrontAndBack()
+	{
+		std::list<Metasymbol*> *newList =new std::list<Metasymbol*>();
+		for (Metasymbol* M : *metasymbols)
+			if (!(M->getSize() == 1 && M->contains('-')))
+				newList->push_back(M);
+		
+		metasymbols = newList;
+		
+
 	}
 };
 

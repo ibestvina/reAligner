@@ -35,6 +35,10 @@ public:
 		symbols.push_back(symbol);
 		return symbols;
 	}
+	int getSize()
+	{
+		return symbols.size();
+	}
 	bool contains(char c) {
 		return std::find(symbols.begin(), symbols.end(), c) != symbols.end();
 	}

@@ -4,6 +4,24 @@
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION(TestGetAlignment);
 
+void TestGetAlignment::removeDashes1(){
+	std::string S("asdadsasdd");
+	Fragment F (1, 10, S);
+	FragmentAlignment FA (1, 10, 0, 9, 0);
+	AlignedFragment AF(F, FA);
+
+	AF.insertDashAt(2);
+	AF.insertDashAt(0);
+	AF.insertDashAt(10);
+
+	AF.removeDashesFrontAndBack();
+	CPPUNIT_ASSERT_EQUAL(AF.getSequence(), S);
+
+}
+void TestGetAlignment::removeDashes2(){
+
+}
+
 void TestGetAlignment::protoTest(std::string readSeq, int readOff, std::string consSeq, double eps, int expectedOff, std::string expectedRead)
 {
 	int readLen = readSeq.length();

@@ -184,10 +184,12 @@ Consensus ReAligner::reAlign(Alignment & alignment, double epsilonPrecision, int
 	return bestConsensus;
 }
 
-void ReAligner::dashFunction(Consensus & consensus)
+void ReAligner::dashFunction(Consensus &consensus)
 {
+	consensus.removeDashesFrontAndBack();
 }
 
 void ReAligner::dashFunction(AlignedFragment & fragment)
 {
+	fragment.removeDashesFrontAndBack();
 }

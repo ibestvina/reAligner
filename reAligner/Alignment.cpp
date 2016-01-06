@@ -17,10 +17,15 @@ std::list<AlignedFragment*>& Alignment::getAllFragments()
 
 AlignedFragment& Alignment::FragmentAt(int index)
 {
+	for (AlignedFragment *A : Fragments)
+		if (A->getId() == index)
+			return *A;
+
+	throw new std::exception("Index out of range");
 	//TODO if needed (this is mock only)
-	FragmentAlignment &fa = *new FragmentAlignment(0, 0, 0, 0, 0);
-	Fragment &f = *new Fragment(0, 0, "");
-	return *new AlignedFragment(f, fa);
+	//FragmentAlignment &fa = *new FragmentAlignment(0, 0, 0, 0, 0);
+	//Fragment &f = *new Fragment(0, 0, "");
+	//return *new AlignedFragment(f, fa);
 }
 
 AlignedFragment *Alignment::PopFirst()
@@ -38,6 +43,6 @@ void Alignment::AddFragment(AlignedFragment* fragment)
 int Alignment::getSize()
 {
 	return Fragments.size();
-}
+}		
 
 

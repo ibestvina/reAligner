@@ -6,6 +6,8 @@
 class TestGetAlignment : public CppUnit::TestFixture
 {
 	CPPUNIT_TEST_SUITE(TestGetAlignment);
+	CPPUNIT_TEST(removeDashes1);
+	CPPUNIT_TEST(removeDashes2);
 	CPPUNIT_TEST(GetAlignment1);
 	CPPUNIT_TEST(GetAlignment2);
 	CPPUNIT_TEST(GetAlignment3);
@@ -18,7 +20,8 @@ class TestGetAlignment : public CppUnit::TestFixture
 public:
 
 	void protoTest(std::string readSeq, int readOff, std::string consSeq, double eps, int expectedOff, std::string expectedRead);
-
+	void removeDashes1();
+	void removeDashes2();
 	void GetAlignment1();
 	void GetAlignment2();
 	void GetAlignment3();
