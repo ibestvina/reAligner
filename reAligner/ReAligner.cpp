@@ -27,7 +27,9 @@ Consensus &ReAligner::getConsensus(Alignment & alignment)
 		std::list<char> column = getColumn(alignment, c);
 		Metasymbol* consensusSymbol = getConsensusMetasymbol(column);
 		consensus.addMetasymbol(consensusSymbol);
-		columnScoreTmp = getColumnScore(column, consensusSymbol);
+
+		columnScoreTmp = getColumnScore(column , consensusSymbol);
+
 		f1Score += columnScoreTmp;
 		if (column.size() > 0) {
 			f2Score += columnScoreTmp / column.size();
@@ -250,7 +252,7 @@ std::list<char>& ReAligner::getColumn(Alignment & layoutMap, int index)
 	return column;
 }
 
-double getColumnScore(std::list<char> &column, Metasymbol* sym) {
+double ReAligner::getColumnScore(std::list<char> &column, Metasymbol* sym) {
 	double score = 0.0;
 	for (std::list<char>::iterator c = column.begin(); c != column.end(); ++c) {
 		std::list<char> symbols = sym->getSymbols();
@@ -261,7 +263,7 @@ double getColumnScore(std::list<char> &column, Metasymbol* sym) {
 	return score;
 }
 
-double getColumnScore(std::list<char> &column, char sym) {
+double ReAligner::getColumnScore(std::list<char> &column, char sym) {
 	double score = 0.0;
 	for (std::list<char>::iterator c = column.begin(); c != column.end(); ++c) {
 		if (sym != *c) {
