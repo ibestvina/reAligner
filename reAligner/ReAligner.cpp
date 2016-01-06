@@ -1,6 +1,7 @@
 #include "ReAligner.h"
 #include <vector>
 #include <iostream>
+#include <map>
 #include <list>
 #include <limits>
 #include <algorithm>
@@ -43,7 +44,31 @@ void ReAligner::calculateConsensusScore(Consensus & consensus, Alignment & align
 
 Metasymbol * ReAligner::getConsensusMetasymbol(std::list<char>& column)
 {
-	return nullptr;
+	Metasymbol* sym = new Metasymbol;
+	map<char, int> M;
+	M['A'] = 0;
+	M['C'] = 1;
+	M['G'] = 2;
+	M['T'] = 3;
+	M['-'] = 4;
+	char symbols[5] = { 'A', 'C', 'G', 'T', '-' };
+	int counter[5];
+	memset(counter, 0, sizeof(counter));
+	int maks = 0;
+	for (std::list<char>::iterator itr = column.begin(); itr != column.end(); ++itr) {
+		int index = M[*itr];		
+		counter[index]++;
+		if (counter[index] > maks) {
+			maks = counter[index];
+		}
+	}
+	for (int i = 0; i < 5; ++i) {
+		if (maks == counter[i]) {
+			sym->addSymbol(symbols[i]);
+		}
+	}
+
+	return sym;
 }
 
 void ReAligner::getAlignment(AlignedFragment & read, Consensus & cons, double eps)
