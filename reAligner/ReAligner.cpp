@@ -186,7 +186,6 @@ void ReAligner::getAlignment(AlignedFragment & read, Consensus & cons, double ep
 Consensus ReAligner::reAlign(Alignment & alignment, double epsilonPrecision, int numOfIterations)
 {
 	Consensus consensus = getConsensus(alignment);
-	calculateConsensusScore(consensus, alignment);
 	double initialScore = consensus.getScore();
 	bool shouldContinue = true;
 	int iteration = 1;
