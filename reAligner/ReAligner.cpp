@@ -16,10 +16,16 @@ ReAligner::~ReAligner()
 {
 }
 
+
+double ReAligner::getConsensusScoreWeighted(double scoreF1, double scoreF2)
+{
+	return 0.5 * scoreF1 + 0.5 * scoreF2;
+}
+
 Consensus &ReAligner::getConsensus(Alignment & alignment)
 {
 	int columnsNum = getNumberOfColumns(alignment);
-	Consensus consensus = *new Consensus(); /// zzz fali ID iz alignmenta (koji ne postoji)
+	Consensus consensus = *new Consensus();
 	double f1Score = 0.0;
 	double f2Score = 0.0;
 	double columnScoreTmp;
@@ -35,13 +41,8 @@ Consensus &ReAligner::getConsensus(Alignment & alignment)
 			f2Score += columnScoreTmp / column.size();
 		}
 	}
-	consensus.setScore(0.5 * f1Score + 0.5 + f2Score);
+	consensus.setScore(getConsensusScoreWeighted(f1Score, f2Score));
 	return consensus;
-}
-
-void ReAligner::calculateConsensusScore(Consensus & consensus, Alignment & alignment)
-{
-	// TODO: after calculating do: consensus.setScore(calculatedScore);
 }
 
 Metasymbol * ReAligner::getConsensusMetasymbol(std::list<char>& column)
@@ -187,7 +188,6 @@ void ReAligner::getAlignment(AlignedFragment & read, Consensus & cons, double ep
 Consensus ReAligner::reAlign(Alignment & alignment, double epsilonPrecision, int numOfIterations)
 {
 	Consensus consensus = getConsensus(alignment);
-	calculateConsensusScore(consensus, alignment);
 	double initialScore = consensus.getScore();
 	bool shouldContinue = true;
 	int iteration = 1;
@@ -252,10 +252,16 @@ std::list<char>& ReAligner::getColumn(Alignment & layoutMap, int index)
 	return column;
 }
 
+<<<<<<< HEAD
+=======
+/**
+ * Returns how many symbols from column don't match symbols from metasymbol.
+ */
+>>>>>>> origin/master
 double ReAligner::getColumnScore(std::list<char> &column, Metasymbol* sym) {
 	double score = 0.0;
+	std::list<char> symbols = sym->getSymbols();
 	for (std::list<char>::iterator c = column.begin(); c != column.end(); ++c) {
-		std::list<char> symbols = sym->getSymbols();
 		if (std::find(symbols.begin(), symbols.end(), *c) == symbols.end()) {
 			score += 1;
 		}
@@ -263,6 +269,12 @@ double ReAligner::getColumnScore(std::list<char> &column, Metasymbol* sym) {
 	return score;
 }
 
+<<<<<<< HEAD
+=======
+/**
+ * Returns how many symbols from column don't match sym.
+ */
+>>>>>>> origin/master
 double ReAligner::getColumnScore(std::list<char> &column, char sym) {
 	double score = 0.0;
 	for (std::list<char>::iterator c = column.begin(); c != column.end(); ++c) {

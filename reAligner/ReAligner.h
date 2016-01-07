@@ -10,35 +10,16 @@ public:
 	~ReAligner();
 	static Consensus &getConsensus(Alignment &alignment);
 
-	
-	/**
-	*  Alignment function  Needleman Wunsch algorithm
-	*  @param seqA  detached sequence
-	*  @param seqB  consensus sequence
-	*  @param eps  eps
-	*/
-	static void getAlignment(AlignedFragment &read, Consensus &cons, double eps);
-
-private:
-
-	static void calculateConsensusScore(Consensus &consensus, Alignment &alignment);
+//private:
+	static double getConsensusScoreWeighted(double scoreF1, double scoreF2);
 	static Metasymbol *getConsensusMetasymbol(std::list<char> &column);
-	static double getConsensusScoreWeighted(AlignedFragment &detachedSeq, Consensus &consensus, Alignment &subalignment);
-	static double getConsensusScoreWithFunction1(AlignedFragment &sequence, Consensus &consensus);
-	static double getConsensusScoreWithFunction2(AlignedFragment &sequence, Alignment &alignmentMap);
 	static std::list<char> &getColumn(Alignment &layoutMap, int index);
 	static double getColumnScore(std::list<char> &column, Metasymbol* sym);
 	static double getColumnScore(std::list<char> &column, char sym);
 	static int getNumberOfColumns(Alignment &layoutMap);
 	static void dashFunction(Consensus &consensus);
 	static void dashFunction(AlignedFragment &fragment);
-	
-	/**
-	*  ReAligner
-	*  @param  layoutMap map of reads
-	*  @param  epsilonPrecision - predicted error of read layout, in percentage (0.0 to 1.0)
-	*  @param  numOfIterations max number of iterations
-	*/
+	static void getAlignment(AlignedFragment &read, Consensus &cons, double eps);
 	static Consensus reAlign(Alignment &alignment, double epsilonPrecision, int numOfIterations);
 };
 
