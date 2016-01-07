@@ -250,10 +250,13 @@ std::list<char>& ReAligner::getColumn(Alignment & layoutMap, int index)
 	return column;
 }
 
+/**
+ * Returns how many symbols from column don't match symbols from metasymbol.
+ */
 double ReAligner::getColumnScore(std::list<char> &column, Metasymbol* sym) {
 	double score = 0.0;
+	std::list<char> symbols = sym->getSymbols();
 	for (std::list<char>::iterator c = column.begin(); c != column.end(); ++c) {
-		std::list<char> symbols = sym->getSymbols();
 		if (std::find(symbols.begin(), symbols.end(), *c) == symbols.end()) {
 			score += 1;
 		}
@@ -261,6 +264,9 @@ double ReAligner::getColumnScore(std::list<char> &column, Metasymbol* sym) {
 	return score;
 }
 
+/**
+ * Returns how many symbols from column don't match sym.
+ */
 double ReAligner::getColumnScore(std::list<char> &column, char sym) {
 	double score = 0.0;
 	for (std::list<char>::iterator c = column.begin(); c != column.end(); ++c) {

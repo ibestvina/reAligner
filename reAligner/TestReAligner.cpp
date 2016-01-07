@@ -16,6 +16,13 @@ vector<char> toVector(std::list<char> chars) {
 	return ret;
 }
 
+bool compareDouble(double a, double b) {
+	if (abs(a - b) <= 0.0000001) {
+		return true;
+	}
+	return false;
+}
+
 void TestReAligner::getConsensusTest() {
 	std::list<AlignedFragment*> fragments = std::list<AlignedFragment*>();
 	fragments.push_back(new AlignedFragment(*new Fragment(1, 3, "ACA"), *new FragmentAlignment(1, 3, 0, 0, 0)));
@@ -53,4 +60,25 @@ void TestReAligner::getConsensusMetasymbolTest() {
 	CPPUNIT_ASSERT(symbols.size() == 2);
 	CPPUNIT_ASSERT(symbols[0] == 'A');
 	CPPUNIT_ASSERT(symbols[1] == 'T');
+}
+
+void TestReAligner::getColumnScoreTest() {
+	std::list<char> column;
+	column.push_back('T');
+	column.push_back('A');
+	column.push_back('C');
+	column.push_back('A');
+	Metasymbol* metasymbol = ReAligner::getConsensusMetasymbol(column);
+	double score = ReAligner::getColumnScore(column, metasymbol);
+	
+	column.push_back('T');
+	column.push_back('A');
+	metasymbol = ReAligner::getConsensusMetasymbol(column);
+	score = ReAligner::getColumnScore(column, metasymbol);
+	CPPUNIT_ASSERT(compareDouble(3.0, score) == true);
+
+	column.push_back('T');
+	metasymbol = ReAligner::getConsensusMetasymbol(column);
+	score = ReAligner::getColumnScore(column, metasymbol);
+	CPPUNIT_ASSERT(compareDouble(1.0, score) == true);
 }
