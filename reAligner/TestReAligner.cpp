@@ -22,7 +22,36 @@ bool compareDouble(double a, double b) {
 	}
 	return false;
 }
+void TestReAligner::testRealign()
+{
+	Fragment F1(1,18,std::string("cctggtacgtacacttgt"));
+	Fragment F2(2,20,"tcacgtatccctctgttaga");
+	Fragment F3(3,25,"gtaccctctgttagaaagctcacgt");
+	Fragment F4(4,17,"ctcacttagttctctgt");
+	Fragment F5(5, 17, "tcacttgttctgtgtag");
+	Fragment F6(6, 19, "tgttccgtgctagtagcta");
+	FragmentAlignment FA1(1,18,0,17,0);
+	FragmentAlignment FA2(2,20,5,24,0);
+	FragmentAlignment FA3(3,25,9,33,0);
+	FragmentAlignment FA4(4,17,27,43,0);
+	FragmentAlignment FA5(5,17,28,44,0);
+	FragmentAlignment FA6(6,19,33,51,0);
+	AlignedFragment AF1(F1, FA1);
+	AlignedFragment AF2(F2, FA2);
+	AlignedFragment AF3(F3, FA3);
+	AlignedFragment AF4(F4, FA4);
+	AlignedFragment AF5(F5, FA5);
+	AlignedFragment AF6(F5, FA6);
+	std::list<AlignedFragment*> AFL;
+	AFL.push_back(&AF1);
+	AFL.push_back(&AF2);
+	AFL.push_back(&AF3);
+	AFL.push_back(&AF4);
+	AFL.push_back(&AF5);
+	AFL.push_back(&AF6);
+	Alignment A(AFL);
 
+}
 void TestReAligner::getConsensusTest() {
 	std::list<AlignedFragment*> fragments = std::list<AlignedFragment*>();
 	fragments.push_back(new AlignedFragment(*new Fragment(1, 3, "ACA"), *new FragmentAlignment(1, 3, 0, 0, 0)));
