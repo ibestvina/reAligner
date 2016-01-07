@@ -22,6 +22,15 @@ public:
 
 	}
 
+	std::string toUpperCase(std::string s) {
+		for (int i = 0; i < (int)s.size(); ++i) {
+			if (s[i] >= 'a' && s[i] <= 'z') {
+				s[i] = s[i] - 'a' + 'A';
+			}
+		}
+		return s;
+	}
+
 	std::list<Fragment*> &GetAllFragments(){
 		std::string currentSequence = "";
 		while (!inStream.eof())
@@ -31,7 +40,7 @@ public:
 			if (sLine[0] == '>') {
 				if (currentSequence != "" && fragments->size() > 0) {
 					fragments->back()->setLength(currentSequence.size());
-					fragments->back()->setSequence(currentSequence);
+					fragments->back()->setSequence(toUpperCase(currentSequence));
 					currentSequence = "";
 				}
 				fragments->push_back(new Fragment(StringToInteger(sLine)));
