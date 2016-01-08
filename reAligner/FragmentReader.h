@@ -33,7 +33,11 @@ public:
 
 	std::list<Fragment*> &GetAllFragments(){
 		std::string currentSequence = "";
+<<<<<<< HEAD
 		int indexing = 1;
+=======
+		int counter = 1;
+>>>>>>> origin/master
 		while (!inStream.eof())
 		{
 			std::string sLine;
@@ -44,7 +48,11 @@ public:
 					fragments->back()->setSequence(toUpperCase(currentSequence));
 					currentSequence = "";
 				}
+<<<<<<< HEAD
 				fragments->push_back(new Fragment(indexing++));
+=======
+				fragments->push_back(new Fragment(counter++, sLine));
+>>>>>>> origin/master
 			}
 			else {
 				currentSequence += sLine;
