@@ -2,6 +2,7 @@
 #include "ReAligner.h"
 #include "FragmentReader.h"
 #include "LayoutReader.h"
+#include "Reader.h"
 
 #include <list>
 
@@ -10,6 +11,8 @@ CPPUNIT_TEST_SUITE_REGISTRATION(TestReAligner);
 
 void TestReAligner::setUp(){}
 void TestReAligner::tearDown(){}
+
+std::string mySamplesPath = "D:\\Projects\\bioinf\\realigner\\project\\reAligner\\samples\\";
 
 vector<char> toVector(std::list<char> chars) {
 	vector<char> ret; ret.clear();
@@ -25,7 +28,7 @@ bool compareDouble(double a, double b) {
 	}
 	return false;
 }
-void TestReAligner::testRealign1()
+void TestReAligner::testRealign2()
 {
 	Fragment F1(1,18,std::string("CCTGGTACGTACACTTGT"));
 	Fragment F2(2,20,"TCACGTATCCCTCTGTTAGA");
@@ -57,9 +60,22 @@ void TestReAligner::testRealign1()
 	Consensus& cons = ReAligner::reAlign(A, 4, 10);
 	std::cout << std::endl << cons.toStringFirst();
 }
-void TestReAligner::testRealign2()
+void TestReAligner::testRealign1()
 {
-	
+
+	Reader reader = *new Reader(mySamplesPath + "synthetic500\\500_2_frags.fasta", mySamplesPath + "synthetic500\\500_2_align.mhap");
+	Alignment &alignment = *reader.getAlignment();
+
+	for (AlignedFragment *AF : alignment.getAllFragments()) {
+		if (AF->getOffset() == 0) {
+			std::cout << "Sve je u redu!";
+		}
+	}
+
+	Consensus &consBefore = ReAligner::getConsensus(alignment);
+	std::cout << endl << consBefore.toStringFirst() << endl;
+	Consensus &consAfter = ReAligner::reAlign(alignment, 8, 1);
+	std::cout << endl << consAfter.toStringFirst() << endl;
 }
 void TestReAligner::getConsensusTest() {
 	std::list<AlignedFragment*> fragments = std::list<AlignedFragment*>();

@@ -186,7 +186,8 @@ private:
 					}
 				}
 			//If it does not exist in added indexes throw new exception
-				if (split_matrix) throw new std::exception("Matrix is split");
+				if (split_matrix) 
+					throw new std::exception("Matrix is split");
 				int startPos, endPos, index, length, offset;
 			//if matrix is not split use found overlap and position it
 				if (overlap->getDirection_A() == 0 && overlap->getDirection_B() == 0)

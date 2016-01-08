@@ -32,6 +32,9 @@ Consensus &ReAligner::getConsensus(Alignment & alignment)
 	for (int c = 0; c < columnsNum; ++c) {
 		std::list<char> column = getColumn(alignment, c);
 		Metasymbol* consensusSymbol = getConsensusMetasymbol(column);
+		if (consensusSymbol->getSize() == 5) {
+			int x = c;
+		}
 		consensus.addMetasymbol(consensusSymbol);
 
 		columnScoreTmp = getColumnScore(column , consensusSymbol);
@@ -48,6 +51,10 @@ Consensus &ReAligner::getConsensus(Alignment & alignment)
 Metasymbol * ReAligner::getConsensusMetasymbol(std::list<char>& column)
 {
 	Metasymbol* sym = new Metasymbol;
+	if (column.size() == 0) {
+		sym->addSymbol('-');
+		return sym;
+	}
 	map<char, int> M;
 	M['A'] = 0;
 	M['C'] = 1;
@@ -200,6 +207,7 @@ Consensus& ReAligner::reAlign(Alignment & alignment, double epsilonPrecision, in
 		std::cout << "Iterating...";
 
 		for (int k = 0; k < numOfReads; k++) {
+			std::cout << k << "/" << numOfReads << endl;
 			// detach first fragment in a list - append it last after iteration
 			AlignedFragment* sequence = alignment.PopFirst();
 			dashFunction(*sequence);
