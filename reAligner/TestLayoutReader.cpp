@@ -81,6 +81,8 @@ void TestLayoutReader::Count1(){
 void TestLayoutReader::GetLayoutFromFile(){
 	std::ifstream file;
 	file.open("..\\samples\\synthetic500\\500_align.mhap");
+	if (!file)
+		throw  std::exception("Error reading file!");
 	LayoutReader LR(file);
 	std::map<int,FragmentAlignment*> FL = LR.GetAllFragmentLayouts();
 	file.close();
