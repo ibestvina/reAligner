@@ -18,7 +18,7 @@ public:
 	// Access:    public 
 	// Returns:   
 	// Parameter: std::string input
-	// Description: Container for possible simbols on specific index
+	// Description: Container for possible symbols on specific index
 	//***************************************************************
 	Metasymbol(std::string input)
 	{
