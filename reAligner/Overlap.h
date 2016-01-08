@@ -15,6 +15,25 @@ class Overlap
 	float JaccardScore;
 
 public:
+	//************************************
+	// Method:    Overlap
+	// FullName:  Overlap::Overlap
+	// Access:    public 
+	// Returns:   
+	// Qualifier:
+	// Parameter: int ID_A
+	// Parameter: int ID_B
+	// Parameter: float JaccardScore
+	// Parameter: int Shared
+	// Parameter: int Direction_A
+	// Parameter: int Start_A
+	// Parameter: int End_A
+	// Parameter: int Length_A
+	// Parameter: int Direction_B
+	// Parameter: int Start_B
+	// Parameter: int End_B
+	// Parameter: int Length_B
+	//************************************
 	Overlap(int ID_A, int ID_B, float JaccardScore,int Shared, int Direction_A, int Start_A,
 		int End_A, int Length_A, int Direction_B, int Start_B, int End_B, int Length_B)
 	{

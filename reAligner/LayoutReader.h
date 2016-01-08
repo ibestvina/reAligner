@@ -22,7 +22,15 @@ public:
 	{
 
 	}
-public:
+
+	//*****************************************************************************************
+	// Method:    GetAllFragmentLayouts
+	// FullName:  LayoutReader::GetAllFragmentLayouts
+	// Access:    public 
+	// Returns:   std::map<int,FragmentAlignment*> &
+	// Qualifier:
+	// Description: istream is fetched via constructor and this function returns pure alignment
+	//*****************************************************************************************
 	std::map<int,FragmentAlignment*> &GetAllFragmentLayouts()
 	{
 		readAllOverlaps();
@@ -64,6 +72,15 @@ public:
 		return std::find(lst.begin(), lst.end(), var) != lst.end();
 	}
 private:
+
+	//********************************************************************************
+	// Method:    generateFragmentAlignments
+	// FullName:  LayoutReader::generateFragmentAlignments
+	// Access:    private 
+	// Returns:   std::map<int,FragmentAlignment*> &
+	// Qualifier:
+	// Description: Reads out overlaps and calculates offsets, start and end indexes
+	//********************************************************************************
 	std::map<int,FragmentAlignment*> &generateFragmentAlignments()
 	{
 		std::list<int> AlignedIndexes;
@@ -76,7 +93,7 @@ private:
 			{
 				overlap = Overlaps->front();
 				Overlaps->remove(overlap);
-				//Add Fragments to Alignment Matrix
+				//Add first fragments to Alignment Matrix when B fragment id more left then A fragment
 				if (overlap->getDirection_A() == 0 && overlap->getDirection_B() == 0 &&
 					overlap->getStart_A() <= overlap->getStart_B())
 				{
@@ -87,6 +104,7 @@ private:
 						0, overlap->getLength_A(), 
 						overlap->getStart_B() - overlap->getStart_A());
 				}
+				//Add first fragments to Alignment Matrix when A fragment id more left then B fragment
 				else if (overlap->getDirection_A() == 0 && overlap->getDirection_B() == 0 &&
 					overlap->getStart_A() > overlap->getStart_B())
 				{
@@ -97,9 +115,10 @@ private:
 						0, overlap->getLength_B(), 
 						overlap->getStart_A() - overlap->getStart_B());
 				}
+				//When B direction is rc and B fragment is more left
 				else if (overlap->getDirection_A() == 0 && overlap->getDirection_B() == 1 &&
 					overlap->getStart_A() <= overlap->getLength_B() - overlap->getEnd_B())
-				{//TODO
+				{
 					(*FragmentAlignments)[overlap->getID_B()] =
 						new FragmentAlignment(overlap->getID_B(), overlap->getLength_B(), overlap->getLength_B(), 0, 0);
 					(*FragmentAlignments)[overlap->getID_A()] =
@@ -107,9 +126,10 @@ private:
 						0, overlap->getLength_A(),
 						overlap->getLength_B() - overlap->getEnd_B() - overlap->getStart_A());
 				}
+				//When B direction is rc and A fragment is more left
 				else if (overlap->getDirection_A() == 0 && overlap->getDirection_B() == 1 &&
 					overlap->getStart_A() > overlap->getLength_B() - overlap->getEnd_B())
-				{//TODO
+				{
 					(*FragmentAlignments)[overlap->getID_A()] =
 						new FragmentAlignment(overlap->getID_A(), overlap->getLength_A(), 0, overlap->getLength_A(), 0);
 					(*FragmentAlignments)[overlap->getID_B()] =
@@ -189,7 +209,6 @@ private:
 				}
 				else if (overlap->getDirection_A() == 0 && overlap->getDirection_B() == 1)
 				{
-					//TODO Start End
 					if (contains<int>(AlignedIndexes, overlap->getID_A()))
 					{
 						offset = (*FragmentAlignments)[overlap->getID_A()]->getOffset() -
@@ -227,7 +246,8 @@ private:
 					AlignedIndexes.push_back(overlap->getID_B());
 				else AlignedIndexes.push_back(overlap->getID_A());
 				
-				//move everything
+				//if offset is negative, it means it is most left
+				//so we have to move everything to right
 				if (offset < 0)
 				{
 					for (auto &fragmentAlignment : *FragmentAlignments)
@@ -239,7 +259,6 @@ private:
 				else (*FragmentAlignments)[index] = new FragmentAlignment(index, length, startPos, endPos, offset);
 			}		
 		}
-		//map to list
 		return *FragmentAlignments;
 	}
 

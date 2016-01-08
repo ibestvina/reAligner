@@ -12,6 +12,14 @@ public:
 	{
 	}
 
+	//**************************************************************
+	// Method:    Metasymbol
+	// FullName:  Metasymbol::Metasymbol
+	// Access:    public 
+	// Returns:   
+	// Parameter: std::string input
+	// Description: Container for possible simbols on specific index
+	//***************************************************************
 	Metasymbol(std::string input)
 	{
 		for (int i = 0; i < input.length(); i++) {

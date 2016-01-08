@@ -14,6 +14,15 @@ class Reader
 
 public:
 
+	//************************************
+	// Method:    Reader
+	// FullName:  Reader::Reader
+	// Access:    public 
+	// Returns:   
+	// Qualifier:
+	// Parameter: std::string inputFasta
+	// Parameter: std::string inputMHAP
+	//************************************
 	Reader(std::string inputFasta,std::string inputMHAP)
 	{
 		std::ifstream				fragmentFile;
@@ -50,6 +59,14 @@ public:
 
 		alignment = new Alignment(*alignedFragments);
 	}
+
+	//************************************
+	// Method:    getAlignment
+	// FullName:  Reader::getAlignment
+	// Access:    public 
+	// Returns:   Alignment *
+	// Qualifier:
+	//************************************
 	Alignment *getAlignment()
 	{
 		return alignment;
