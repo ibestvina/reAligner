@@ -22,7 +22,7 @@ public:
 	{
 
 	}
-
+public:
 	std::map<int,FragmentAlignment*> &GetAllFragmentLayouts()
 	{
 		readAllOverlaps();
