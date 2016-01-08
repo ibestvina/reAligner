@@ -7,12 +7,13 @@ class Fragment
 private:
 	int				id;
 	int				length;
+	std::string		inputId;
 	std::string		sequence;
 public:
 	Fragment(int id, int length, std::string sequence) : id(id), length(length), sequence(sequence)
 	{
 	}
-	Fragment(int id) : id(id)
+	Fragment(int id, std::string inputId) : id(id), inputId(inputId)
 	{
 		length = 0;
 		sequence = "";
