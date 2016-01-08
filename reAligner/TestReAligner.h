@@ -10,7 +10,8 @@ class TestReAligner : public CppUnit::TestFixture
 	CPPUNIT_TEST(getConsensusTest);
 	CPPUNIT_TEST(getConsensusMetasymbolTest);
 	CPPUNIT_TEST(getColumnScoreTest);
-	CPPUNIT_TEST(testRealign);
+	CPPUNIT_TEST(testRealign1);
+	CPPUNIT_TEST(testRealign2);
 	CPPUNIT_TEST_SUITE_END();
 public:
 	void setUp();
@@ -20,5 +21,6 @@ public:
 	void getConsensusMetasymbolTest();
 	void getColumnScoreTest();
 
-	void testRealign();
+	void testRealign1();
+	void testRealign2();
 };

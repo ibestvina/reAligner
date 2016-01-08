@@ -36,7 +36,7 @@ void TestReAligner::testRealign1()
 	FragmentAlignment FA1(1,18,0,17,0);
 	FragmentAlignment FA2(2,20,5,24,5);
 	FragmentAlignment FA3(3,25,9,33,9);
-	FragmentAlignment FA4(4,17,27,43,28);
+	FragmentAlignment FA4(4,17,27,43,20);
 	FragmentAlignment FA5(5,17,28,44,29);
 	FragmentAlignment FA6(6,19,33,51,34);
 	AlignedFragment *AF1 = new AlignedFragment(F1, FA1);
@@ -54,7 +54,7 @@ void TestReAligner::testRealign1()
 	AFL.push_back(AF6);
 	Alignment& A = *new Alignment(AFL);
 	Consensus& consBegin = ReAligner::getConsensus(A);
-	Consensus& cons = ReAligner::reAlign(A, 4, 1);
+	Consensus& cons = ReAligner::reAlign(A, 4, 10);
 	std::cout << std::endl << cons.toStringFirst();
 }
 void TestReAligner::testRealign2()
