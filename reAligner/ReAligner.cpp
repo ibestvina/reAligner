@@ -25,7 +25,7 @@ double ReAligner::getConsensusScoreWeighted(double scoreF1, double scoreF2)
 Consensus &ReAligner::getConsensus(Alignment & alignment)
 {
 	int columnsNum = getNumberOfColumns(alignment);
-	Consensus consensus = *new Consensus();
+	Consensus &consensus = *new Consensus();
 	double f1Score = 0.0;
 	double f2Score = 0.0;
 	double columnScoreTmp;

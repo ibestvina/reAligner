@@ -93,5 +93,11 @@ public:
 		
 
 	}
+	std::string toStringFirst() {
+		std::string s = "";
+		for (Metasymbol* M : *metasymbols)
+			s = s + M->getSymbols().front();
+		return s;
+	}
 };
 

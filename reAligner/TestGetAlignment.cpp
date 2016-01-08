@@ -70,3 +70,7 @@ void TestGetAlignment::GetAlignment7()
 {
 	protoTest("BDEGH", 0, "ABCDEFGH", 4, 1, "B-DEGH");
 }
+void TestGetAlignment::GetAlignment8()
+{
+	protoTest("BDEGH", 0, "ABCDEFGH", 4, 1, "B-DEGH");
+}

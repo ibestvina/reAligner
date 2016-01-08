@@ -1,5 +1,8 @@
 #include "TestReAligner.h"
 #include "ReAligner.h"
+#include "FragmentReader.h"
+#include "LayoutReader.h"
+
 #include <list>
 
 // Registers the fixture into the 'registry'
@@ -22,35 +25,41 @@ bool compareDouble(double a, double b) {
 	}
 	return false;
 }
-void TestReAligner::testRealign()
+void TestReAligner::testRealign1()
 {
-	Fragment F1(1,18,std::string("cctggtacgtacacttgt"));
-	Fragment F2(2,20,"tcacgtatccctctgttaga");
-	Fragment F3(3,25,"gtaccctctgttagaaagctcacgt");
-	Fragment F4(4,17,"ctcacttagttctctgt");
-	Fragment F5(5, 17, "tcacttgttctgtgtag");
-	Fragment F6(6, 19, "tgttccgtgctagtagcta");
+	Fragment F1(1,18,std::string("CCTGGTACGTACACTTGT"));
+	Fragment F2(2,20,"TCACGTATCCCTCTGTTAGA");
+	Fragment F3(3,25,"GTACCCTCTGTTAGAAAGCTCACGT");
+	Fragment F4(4,17,"CTCACTTAGTTCTCTGT");
+	Fragment F5(5, 17, "TCACTTGTTCTGTGTAG");
+	Fragment F6(6, 19, "TGTTCCGTGCTAGTAGCTA");
 	FragmentAlignment FA1(1,18,0,17,0);
-	FragmentAlignment FA2(2,20,5,24,0);
-	FragmentAlignment FA3(3,25,9,33,0);
-	FragmentAlignment FA4(4,17,27,43,0);
-	FragmentAlignment FA5(5,17,28,44,0);
-	FragmentAlignment FA6(6,19,33,51,0);
-	AlignedFragment AF1(F1, FA1);
-	AlignedFragment AF2(F2, FA2);
-	AlignedFragment AF3(F3, FA3);
-	AlignedFragment AF4(F4, FA4);
-	AlignedFragment AF5(F5, FA5);
-	AlignedFragment AF6(F5, FA6);
-	std::list<AlignedFragment*> AFL;
-	AFL.push_back(&AF1);
-	AFL.push_back(&AF2);
-	AFL.push_back(&AF3);
-	AFL.push_back(&AF4);
-	AFL.push_back(&AF5);
-	AFL.push_back(&AF6);
-	Alignment A(AFL);
-
+	FragmentAlignment FA2(2,20,5,24,5);
+	FragmentAlignment FA3(3,25,9,33,9);
+	FragmentAlignment FA4(4,17,27,43,28);
+	FragmentAlignment FA5(5,17,28,44,29);
+	FragmentAlignment FA6(6,19,33,51,34);
+	AlignedFragment *AF1 = new AlignedFragment(F1, FA1);
+	AlignedFragment *AF2 = new AlignedFragment(F2, FA2);
+	AlignedFragment *AF3 = new AlignedFragment(F3, FA3);
+	AlignedFragment *AF4 = new AlignedFragment(F4, FA4);
+	AlignedFragment *AF5 = new AlignedFragment(F5, FA5);
+	AlignedFragment *AF6 = new AlignedFragment(F6, FA6);
+	std::list<AlignedFragment*> &AFL = *new std::list<AlignedFragment*>;
+	AFL.push_back(AF1);
+	AFL.push_back(AF2);
+	AFL.push_back(AF3);
+	AFL.push_back(AF4);
+	AFL.push_back(AF5);
+	AFL.push_back(AF6);
+	Alignment& A = *new Alignment(AFL);
+	Consensus& consBegin = ReAligner::getConsensus(A);
+	Consensus& cons = ReAligner::reAlign(A, 4, 1);
+	std::cout << std::endl << cons.toStringFirst();
+}
+void TestReAligner::testRealign2()
+{
+	
 }
 void TestReAligner::getConsensusTest() {
 	std::list<AlignedFragment*> fragments = std::list<AlignedFragment*>();

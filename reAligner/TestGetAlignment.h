@@ -15,6 +15,7 @@ class TestGetAlignment : public CppUnit::TestFixture
 	CPPUNIT_TEST(GetAlignment5);
 	CPPUNIT_TEST(GetAlignment6);
 	CPPUNIT_TEST(GetAlignment7);
+	CPPUNIT_TEST(GetAlignment8);
 	CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -29,6 +30,6 @@ public:
 	void GetAlignment5();
 	void GetAlignment6();
 	void GetAlignment7();
-
+	void GetAlignment8();
 };
 
