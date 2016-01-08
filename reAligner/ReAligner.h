@@ -20,6 +20,6 @@ public:
 	static void dashFunction(Consensus &consensus);
 	static void dashFunction(AlignedFragment &fragment);
 	static void getAlignment(AlignedFragment &read, Consensus &cons, double eps);
-	static Consensus reAlign(Alignment &alignment, double epsilonPrecision, int numOfIterations);
+	static Consensus& reAlign(Alignment &alignment, double epsilonPrecision, int numOfIterations);
 };
 

@@ -185,16 +185,16 @@ void ReAligner::getAlignment(AlignedFragment & read, Consensus & cons, double ep
 	return;
 }
 
-Consensus ReAligner::reAlign(Alignment & alignment, double epsilonPrecision, int numOfIterations)
+Consensus& ReAligner::reAlign(Alignment & alignment, double epsilonPrecision, int numOfIterations)
 {
-	Consensus consensus = getConsensus(alignment);
+	Consensus &consensus = getConsensus(alignment);
 	double initialScore = consensus.getScore();
 	bool shouldContinue = true;
 	int iteration = 1;
 	int numOfReads = alignment.getSize();
 	
 	double minimalScore = initialScore;
-	Consensus bestConsensus = consensus;
+	Consensus& bestConsensus = consensus;
 
 	while (shouldContinue) {
 		std::cout << "Iterating...";
