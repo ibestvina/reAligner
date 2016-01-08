@@ -44,6 +44,7 @@ public:
 		{
 			std::string sLine;
 			std::getline(inputStream, sLine);
+			float sharedH;
 			if (sLine == "")
 				continue;
 			std::istringstream line(sLine);
@@ -53,11 +54,13 @@ public:
 			float JaccardScore;
 
 			line >> ID_A			>> ID_B		>>
-					JaccardScore	>> shared	>>
+					JaccardScore	>> sharedH	>>
 					direction_A		>> start_A  >>
 					end_A			>> length_A >>
 					direction_B		>> start_B  >>
 					end_B			>> length_B;
+			
+			shared = (int)sharedH;
 			
 			Overlaps->push_back(
 				new Overlap(ID_A, ID_B, JaccardScore, shared,
