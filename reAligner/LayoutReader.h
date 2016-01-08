@@ -173,14 +173,19 @@ private:
 			{
 
 				bool split_matrix = true;
+				Overlap *overlapToRemove = nullptr;
 				for (Overlap* O : *Overlaps)
 				{
 					bool findA = std::find(AlignedIndexes.begin(), AlignedIndexes.end(), O->getID_A()) != AlignedIndexes.end();
 					bool findB = std::find(AlignedIndexes.begin(), AlignedIndexes.end(), O->getID_B()) != AlignedIndexes.end();
 					if (findA || findB)
 					{
-						if (findA && findB)
-							throw std::exception("Double overlaps!");
+						if (overlapToRemove != nullptr)
+							Overlaps->remove(overlapToRemove);
+						if (findA && findB){
+							overlapToRemove = O;
+							continue;
+						}
 						split_matrix = false;
 						overlap = O;
 						Overlaps->remove(O);

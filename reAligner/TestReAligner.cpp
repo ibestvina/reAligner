@@ -12,7 +12,7 @@ CPPUNIT_TEST_SUITE_REGISTRATION(TestReAligner);
 void TestReAligner::setUp(){}
 void TestReAligner::tearDown(){}
 
-std::string mySamplesPath = "D:\\Projects\\bioinf\\realigner\\project\\reAligner\\samples\\";
+std::string mySamplesPath = "..\\samples\\";
 
 vector<char> toVector(std::list<char> chars) {
 	vector<char> ret; ret.clear();
