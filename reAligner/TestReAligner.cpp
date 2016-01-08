@@ -34,11 +34,11 @@ void TestReAligner::testRealign1()
 	Fragment F5(5, 17, "TCACTTGTTCTGTGTAG");
 	Fragment F6(6, 19, "TGTTCCGTGCTAGTAGCTA");
 	FragmentAlignment FA1(1,18,0,17,0);
-	FragmentAlignment FA2(2,20,5,24,5);
-	FragmentAlignment FA3(3,25,9,33,9);
-	FragmentAlignment FA4(4,17,27,43,20);
-	FragmentAlignment FA5(5,17,28,44,29);
-	FragmentAlignment FA6(6,19,33,51,34);
+	FragmentAlignment FA2(2,20,0,24,5);
+	FragmentAlignment FA3(3,25,0,33,9);
+	FragmentAlignment FA4(4,17,0,43,27);
+	FragmentAlignment FA5(5,17,0,44,28);
+	FragmentAlignment FA6(6,19,0,51,33);
 	AlignedFragment *AF1 = new AlignedFragment(F1, FA1);
 	AlignedFragment *AF2 = new AlignedFragment(F2, FA2);
 	AlignedFragment *AF3 = new AlignedFragment(F3, FA3);

@@ -33,14 +33,14 @@ void TestLayoutReader::GetAllFragmentLayouts2(){
 	CPPUNIT_ASSERT_EQUAL(alignemnts[2]->getId(), 2);
 	CPPUNIT_ASSERT_EQUAL(alignemnts[3]->getId(), 3);
 	CPPUNIT_ASSERT_EQUAL(alignemnts[4]->getId(), 4);
-	CPPUNIT_ASSERT_EQUAL(alignemnts[1]->getStart(), 1139);
-	CPPUNIT_ASSERT_EQUAL(alignemnts[2]->getStart(), 0);
-	CPPUNIT_ASSERT_EQUAL(alignemnts[3]->getStart(), 1088);
-	CPPUNIT_ASSERT_EQUAL(alignemnts[4]->getStart(), 1594);
-	CPPUNIT_ASSERT_EQUAL(alignemnts[1]->getEnd(), 2842);
-	CPPUNIT_ASSERT_EQUAL(alignemnts[2]->getEnd(), 5870);
-	CPPUNIT_ASSERT_EQUAL(alignemnts[3]->getEnd(), 4022);
-	CPPUNIT_ASSERT_EQUAL(alignemnts[4]->getEnd(), 3455);
+	CPPUNIT_ASSERT_EQUAL(alignemnts[1]->getOffset(), 1139);
+	CPPUNIT_ASSERT_EQUAL(alignemnts[2]->getOffset(), 0);
+	CPPUNIT_ASSERT_EQUAL(alignemnts[3]->getOffset(), 1088);
+	CPPUNIT_ASSERT_EQUAL(alignemnts[4]->getOffset(), 1594);
+	CPPUNIT_ASSERT_EQUAL(alignemnts[1]->getEnd(), 1704);
+	CPPUNIT_ASSERT_EQUAL(alignemnts[2]->getEnd(), 5871);
+	CPPUNIT_ASSERT_EQUAL(alignemnts[3]->getEnd(), 2935);
+	CPPUNIT_ASSERT_EQUAL(alignemnts[4]->getEnd(), 1862);
 
 }
 void TestLayoutReader::GetAllFragmentLayouts3(){
@@ -57,14 +57,14 @@ void TestLayoutReader::GetAllFragmentLayouts3(){
 	CPPUNIT_ASSERT_EQUAL(alignemnts[2]->getId(), 2);
 	CPPUNIT_ASSERT_EQUAL(alignemnts[3]->getId(), 3);
 	CPPUNIT_ASSERT_EQUAL(alignemnts[4]->getId(), 4);
-	CPPUNIT_ASSERT_EQUAL(alignemnts[1]->getStart(), 1190);
-	CPPUNIT_ASSERT_EQUAL(alignemnts[2]->getStart(), 51);
-	CPPUNIT_ASSERT_EQUAL(alignemnts[3]->getStart(), 0);
-	CPPUNIT_ASSERT_EQUAL(alignemnts[4]->getStart(), 1645);
-	CPPUNIT_ASSERT_EQUAL(alignemnts[1]->getEnd(), 2893);
-	CPPUNIT_ASSERT_EQUAL(alignemnts[2]->getEnd(), 5921);
-	CPPUNIT_ASSERT_EQUAL(alignemnts[3]->getEnd(), 2934);
-	CPPUNIT_ASSERT_EQUAL(alignemnts[4]->getEnd(), 3506);
+	CPPUNIT_ASSERT_EQUAL(alignemnts[1]->getOffset(), 1190);
+	CPPUNIT_ASSERT_EQUAL(alignemnts[2]->getOffset(), 51);
+	CPPUNIT_ASSERT_EQUAL(alignemnts[3]->getOffset(), 0);
+	CPPUNIT_ASSERT_EQUAL(alignemnts[4]->getOffset(), 1645);
+	CPPUNIT_ASSERT_EQUAL(alignemnts[1]->getEnd(), 1704);
+	CPPUNIT_ASSERT_EQUAL(alignemnts[2]->getEnd(), 5871);
+	CPPUNIT_ASSERT_EQUAL(alignemnts[3]->getEnd(), 2935);
+	CPPUNIT_ASSERT_EQUAL(alignemnts[4]->getEnd(), 1862);
 }
 void TestLayoutReader::Count1(){
 	std::list<int> lst;
@@ -93,12 +93,10 @@ void TestLayoutReader::GetAllFragmentLayouts4(){
 	CPPUNIT_ASSERT_EQUAL(alignemnts[2]->getId(), 2);
 	CPPUNIT_ASSERT_EQUAL(alignemnts[3]->getId(), 3);
 	CPPUNIT_ASSERT_EQUAL(alignemnts[4]->getId(), 4);
-	CPPUNIT_ASSERT_EQUAL(alignemnts[1]->getStart(), 3022);
-	CPPUNIT_ASSERT_EQUAL(alignemnts[2]->getStart(), 51);
-	CPPUNIT_ASSERT_EQUAL(alignemnts[3]->getStart(), 0);
-	CPPUNIT_ASSERT_EQUAL(alignemnts[4]->getStart(), 2841);
-	CPPUNIT_ASSERT_EQUAL(alignemnts[1]->getEnd(), 4725);
-	CPPUNIT_ASSERT_EQUAL(alignemnts[2]->getEnd(), 5921);
-	CPPUNIT_ASSERT_EQUAL(alignemnts[3]->getEnd(), 2934);
-	CPPUNIT_ASSERT_EQUAL(alignemnts[4]->getEnd(), 4702);
+	CPPUNIT_ASSERT_EQUAL(alignemnts[1]->getOffset(), 3022);
+	CPPUNIT_ASSERT_EQUAL(alignemnts[2]->getOffset(), 51);
+	CPPUNIT_ASSERT_EQUAL(alignemnts[3]->getOffset(), 0);
+	CPPUNIT_ASSERT_EQUAL(alignemnts[4]->getOffset(), 2841);
+	CPPUNIT_ASSERT_EQUAL(alignemnts[1]->getEnd(), 1704);
+
 }
