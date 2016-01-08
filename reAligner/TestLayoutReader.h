@@ -12,18 +12,19 @@ class TestLayoutReader : public CppUnit::TestFixture
 	CPPUNIT_TEST(GetAllFragmentLayouts2);
 	CPPUNIT_TEST(GetAllFragmentLayouts3);
 	CPPUNIT_TEST(GetAllFragmentLayouts4);
+	CPPUNIT_TEST(GetLayoutFromFile);
 	CPPUNIT_TEST_SUITE_END();
 
 public:
 
 	void setUp();
 	void tearDown();
-
 	void testConstructor();
 	void Count1();
 	void GetAllFragmentLayouts1();
 	void GetAllFragmentLayouts2();
 	void GetAllFragmentLayouts3();
 	void GetAllFragmentLayouts4();
+	void GetLayoutFromFile();
 };
 

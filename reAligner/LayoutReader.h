@@ -179,6 +179,8 @@ private:
 					bool findB = std::find(AlignedIndexes.begin(), AlignedIndexes.end(), O->getID_B()) != AlignedIndexes.end();
 					if (findA || findB)
 					{
+						if (findA && findB)
+							throw std::exception("Double overlaps!");
 						split_matrix = false;
 						overlap = O;
 						Overlaps->remove(O);

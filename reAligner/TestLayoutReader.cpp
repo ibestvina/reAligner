@@ -78,6 +78,15 @@ void TestLayoutReader::Count1(){
 	CPPUNIT_ASSERT(!LayoutReader::contains<int>(lst, 5));
 
 }
+void TestLayoutReader::GetLayoutFromFile(){
+	std::ifstream file;
+	file.open("..\\samples\\synthetic500\\500_align.mhap");
+	LayoutReader LR(file);
+	std::map<int,FragmentAlignment*> FL = LR.GetAllFragmentLayouts();
+	file.close();
+	CPPUNIT_ASSERT_EQUAL(500, (int)FL.size());
+
+}
 void TestLayoutReader::GetAllFragmentLayouts4(){
 
 	std::stringstream input;
