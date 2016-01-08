@@ -173,19 +173,20 @@ private:
 			{
 
 				bool split_matrix = true;
-				Overlap *overlapToRemove = nullptr;
 				for (Overlap* O : *Overlaps)
 				{
 					bool findA = std::find(AlignedIndexes.begin(), AlignedIndexes.end(), O->getID_A()) != AlignedIndexes.end();
 					bool findB = std::find(AlignedIndexes.begin(), AlignedIndexes.end(), O->getID_B()) != AlignedIndexes.end();
 					if (findA || findB)
 					{
-						if (overlapToRemove != nullptr)
+						/*if (overlapToRemove != nullptr){
 							Overlaps->remove(overlapToRemove);
+							overlapToRemove = nullptr;
+						}
 						if (findA && findB){
 							overlapToRemove = O;
 							continue;
-						}
+						}*/
 						split_matrix = false;
 						overlap = O;
 						Overlaps->remove(O);
@@ -193,8 +194,10 @@ private:
 					}
 				}
 			//If it does not exist in added indexes throw new exception
-				if (split_matrix) 
+				if (split_matrix) {
+					std::cout << "Matrix is split" << std::endl;
 					throw new std::exception("Matrix is split");
+				}
 				int startPos, endPos, index, length, offset;
 			//if matrix is not split use found overlap and position it
 				if (overlap->getDirection_A() == 0 && overlap->getDirection_B() == 0)
