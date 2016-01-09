@@ -7,19 +7,19 @@
 #include <vector>
 #include <fstream>
 
-class GFAWriter :
-	public GFAWriter
+class OutputWriter :
+	public OutputWriter
 {
 	std::istream &outStream;
 	Alignment alignment;
 	Consensus consensus;
 public:
 
-	GFAWriter(std::istream &outputStream, Alignment alignment, Consensus consensus) : outStream(outputStream), alignment(alignment), consensus(consensus)
+	OutputWriter(std::istream &outputStream, Alignment alignment, Consensus consensus) : outStream(outputStream), alignment(alignment), consensus(consensus)
 	{		
 
 	}
-	~GFAWriter()
+	~OutputWriter()
 	{
 
 	}
@@ -81,9 +81,12 @@ public:
 		return getRows(ret);
 	}
 
-	void outputGFAWithN() {
+	/*
+	* If there are multiple symbols writes n;
+	*/
+	void outputConsensusWithN() {
 		ofstream file;
-		file.open("GFAWithN.gfa");
+		file.open("ConsensusWithN.fasta");
 		file << consensus.getId();
 		vector<string> rows = getOutput(true);
 		for (int i = 0; i < (int)rows.size(); ++i) {
@@ -92,10 +95,28 @@ public:
 		file.close();
 	}
 
-	void outputGFAwithBrackets() {
+	/*
+	* If there are multiple symbols writes them inside of []
+	*/
+	void outputConsensuswithBrackets() {
 		vector<string> rows = getOutput(false);
 		ofstream file;
-		file.open("GFAWithBrackets.gfa");
+		file.open("ConsensusWithBrackets.fasta");
+		file << consensus.getId();
+		vector<string> rows = getOutput(true);
+		for (int i = 0; i < (int)rows.size(); ++i) {
+			file << rows[i];
+		}
+		file.close();
+	}
+
+	/*
+	 * If there are multiple symbols writes first one.
+	 */
+	void outputGFAWithStringFirst() {
+		vector<string> rows = getOutput(false);
+		ofstream file;
+		file.open("ConsensusWithBrackets.fasta");
 		file << consensus.getId();
 		vector<string> rows = getOutput(true);
 		for (int i = 0; i < (int)rows.size(); ++i) {
