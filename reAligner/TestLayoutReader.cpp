@@ -28,20 +28,22 @@ void TestLayoutReader::GetAllFragmentLayouts2(){
 	LayoutReader *LR = new LayoutReader(input);
 
 	//std::list<Overlap*> *O = LR->readAllOverlaps();
-	std::map<int,FragmentAlignment*> alignemnts = LR->GetAllFragmentLayouts();
+	
+	std::map<int, std::map<int, FragmentAlignment*>*> alignemnts = LR->GetAllFragmentLayouts();
+	std::map<int, FragmentAlignment*> alignemnt = *(alignemnts[0]);
 	//std::cout << "out" << std::endl;
-	CPPUNIT_ASSERT_EQUAL(alignemnts[1]->getId(), 1);
-	CPPUNIT_ASSERT_EQUAL(alignemnts[2]->getId(), 2);
-	CPPUNIT_ASSERT_EQUAL(alignemnts[3]->getId(), 3);
-	CPPUNIT_ASSERT_EQUAL(alignemnts[4]->getId(), 4);
-	CPPUNIT_ASSERT_EQUAL(alignemnts[1]->getOffset(), 1139);
-	CPPUNIT_ASSERT_EQUAL(alignemnts[2]->getOffset(), 0);
-	CPPUNIT_ASSERT_EQUAL(alignemnts[3]->getOffset(), 1088);
-	CPPUNIT_ASSERT_EQUAL(alignemnts[4]->getOffset(), 1594);
-	CPPUNIT_ASSERT_EQUAL(alignemnts[1]->getEnd(), 1704);
-	CPPUNIT_ASSERT_EQUAL(alignemnts[2]->getEnd(), 5871);
-	CPPUNIT_ASSERT_EQUAL(alignemnts[3]->getEnd(), 2935);
-	CPPUNIT_ASSERT_EQUAL(alignemnts[4]->getEnd(), 1862);
+	CPPUNIT_ASSERT_EQUAL(alignemnt[1]->getId(), 1);
+	CPPUNIT_ASSERT_EQUAL(alignemnt[2]->getId(), 2);
+	CPPUNIT_ASSERT_EQUAL(alignemnt[3]->getId(), 3);
+	CPPUNIT_ASSERT_EQUAL(alignemnt[4]->getId(), 4);
+	CPPUNIT_ASSERT_EQUAL(alignemnt[1]->getOffset(), 1139);
+	CPPUNIT_ASSERT_EQUAL(alignemnt[2]->getOffset(), 0);
+	CPPUNIT_ASSERT_EQUAL(alignemnt[3]->getOffset(), 1088);
+	CPPUNIT_ASSERT_EQUAL(alignemnt[4]->getOffset(), 1594);
+	CPPUNIT_ASSERT_EQUAL(alignemnt[1]->getEnd(), 1704);
+	CPPUNIT_ASSERT_EQUAL(alignemnt[2]->getEnd(), 5871);
+	CPPUNIT_ASSERT_EQUAL(alignemnt[3]->getEnd(), 2935);
+	CPPUNIT_ASSERT_EQUAL(alignemnt[4]->getEnd(), 1862);
 
 }
 void TestLayoutReader::GetAllFragmentLayouts3(){
@@ -52,20 +54,21 @@ void TestLayoutReader::GetAllFragmentLayouts3(){
 	LayoutReader *LR = new LayoutReader(input);
 
 	//std::list<Overlap*> *O = LR->readAllOverlaps();
-	std::map<int, FragmentAlignment*> alignemnts = LR->GetAllFragmentLayouts();
+	std::map<int, std::map<int, FragmentAlignment*>*> alignemnts = LR->GetAllFragmentLayouts();
+	std::map<int, FragmentAlignment*> alignemnt = *(alignemnts[0]);
 	//std::cout << "out" << std::endl;
-	CPPUNIT_ASSERT_EQUAL(alignemnts[1]->getId(), 1);
-	CPPUNIT_ASSERT_EQUAL(alignemnts[2]->getId(), 2);
-	CPPUNIT_ASSERT_EQUAL(alignemnts[3]->getId(), 3);
-	CPPUNIT_ASSERT_EQUAL(alignemnts[4]->getId(), 4);
-	CPPUNIT_ASSERT_EQUAL(alignemnts[1]->getOffset(), 1190);
-	CPPUNIT_ASSERT_EQUAL(alignemnts[2]->getOffset(), 51);
-	CPPUNIT_ASSERT_EQUAL(alignemnts[3]->getOffset(), 0);
-	CPPUNIT_ASSERT_EQUAL(alignemnts[4]->getOffset(), 1645);
-	CPPUNIT_ASSERT_EQUAL(alignemnts[1]->getEnd(), 1704);
-	CPPUNIT_ASSERT_EQUAL(alignemnts[2]->getEnd(), 5871);
-	CPPUNIT_ASSERT_EQUAL(alignemnts[3]->getEnd(), 2935);
-	CPPUNIT_ASSERT_EQUAL(alignemnts[4]->getEnd(), 1862);
+	CPPUNIT_ASSERT_EQUAL(alignemnt[1]->getId(), 1);
+	CPPUNIT_ASSERT_EQUAL(alignemnt[2]->getId(), 2);
+	CPPUNIT_ASSERT_EQUAL(alignemnt[3]->getId(), 3);
+	CPPUNIT_ASSERT_EQUAL(alignemnt[4]->getId(), 4);
+	CPPUNIT_ASSERT_EQUAL(alignemnt[1]->getOffset(), 1190);
+	CPPUNIT_ASSERT_EQUAL(alignemnt[2]->getOffset(), 51);
+	CPPUNIT_ASSERT_EQUAL(alignemnt[3]->getOffset(), 0);
+	CPPUNIT_ASSERT_EQUAL(alignemnt[4]->getOffset(), 1645);
+	CPPUNIT_ASSERT_EQUAL(alignemnt[1]->getEnd(), 1704);
+	CPPUNIT_ASSERT_EQUAL(alignemnt[2]->getEnd(), 5871);
+	CPPUNIT_ASSERT_EQUAL(alignemnt[3]->getEnd(), 2935);
+	CPPUNIT_ASSERT_EQUAL(alignemnt[4]->getEnd(), 1862);
 }
 void TestLayoutReader::Count1(){
 	std::list<int> lst;
@@ -85,9 +88,8 @@ void TestLayoutReader::GetLayoutFromFile(){
 	if (!file)
 		throw  std::exception("Error reading file!");
 	LayoutReader LR(file);
-	std::map<int,FragmentAlignment*> FL = LR.GetAllFragmentLayouts();
+	std::map<int, std::map<int, FragmentAlignment*>*> FL = LR.GetAllFragmentLayouts();
 	file.close();
-	CPPUNIT_ASSERT_EQUAL(500, (int)FL.size());
 
 }
 void TestLayoutReader::GetAllFragmentLayouts4(){
@@ -99,16 +101,17 @@ void TestLayoutReader::GetAllFragmentLayouts4(){
 	LayoutReader *LR = new LayoutReader(input);
 
 	//std::list<Overlap*> *O = LR->readAllOverlaps();
-	std::map<int, FragmentAlignment*> alignemnts = LR->GetAllFragmentLayouts();
+	std::map<int, std::map<int, FragmentAlignment*>*> alignemnts = LR->GetAllFragmentLayouts();
+	std::map<int, FragmentAlignment*> alignemnt = *(alignemnts[0]);
 	//std::cout << "out" << std::endl;
-	CPPUNIT_ASSERT_EQUAL(alignemnts[1]->getId(), 1);
-	CPPUNIT_ASSERT_EQUAL(alignemnts[2]->getId(), 2);
-	CPPUNIT_ASSERT_EQUAL(alignemnts[3]->getId(), 3);
-	CPPUNIT_ASSERT_EQUAL(alignemnts[4]->getId(), 4);
-	CPPUNIT_ASSERT_EQUAL(alignemnts[1]->getOffset(), 3022);
-	CPPUNIT_ASSERT_EQUAL(alignemnts[2]->getOffset(), 51);
-	CPPUNIT_ASSERT_EQUAL(alignemnts[3]->getOffset(), 0);
-	CPPUNIT_ASSERT_EQUAL(alignemnts[4]->getOffset(), 2841);
-	CPPUNIT_ASSERT_EQUAL(alignemnts[1]->getEnd(), 1704);
+	CPPUNIT_ASSERT_EQUAL(alignemnt[1]->getId(), 1);
+	CPPUNIT_ASSERT_EQUAL(alignemnt[2]->getId(), 2);
+	CPPUNIT_ASSERT_EQUAL(alignemnt[3]->getId(), 3);
+	CPPUNIT_ASSERT_EQUAL(alignemnt[4]->getId(), 4);
+	CPPUNIT_ASSERT_EQUAL(alignemnt[1]->getOffset(), 3022);
+	CPPUNIT_ASSERT_EQUAL(alignemnt[2]->getOffset(), 51);
+	CPPUNIT_ASSERT_EQUAL(alignemnt[3]->getOffset(), 0);
+	CPPUNIT_ASSERT_EQUAL(alignemnt[4]->getOffset(), 2841);
+	CPPUNIT_ASSERT_EQUAL(alignemnt[1]->getEnd(), 1704);
 
 }

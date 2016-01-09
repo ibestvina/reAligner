@@ -32,7 +32,7 @@ public:
 	// Qualifier:
 	// Description: istream is fetched via constructor and this function returns pure alignment
 	//*****************************************************************************************
-	std::map<int,FragmentAlignment*> &GetAllFragmentLayouts()
+	std::map<int, std::map<int, FragmentAlignment*>*> &GetAllFragmentLayouts()
 	{
 		readAllOverlaps();
 		return generateFragmentAlignments();
@@ -85,18 +85,31 @@ private:
 	// Qualifier:
 	// Description: Reads out overlaps and calculates offsets, start and end indexes
 	//********************************************************************************
-	std::map<int,FragmentAlignment*> &generateFragmentAlignments()
+	std::map<int, std::map<int, FragmentAlignment*>*> &generateFragmentAlignments()
 	{
-		std::list<int> AlignedIndexes;
+		//map<alignemnt id, alignedIndexes>
+		int alignmentId = 0;
+		std::map<int, std::list<int>*> AlignedIndexes;
+		AlignedIndexes[alignmentId] = new std::list<int>();
+		std::map<int, std::map<int, FragmentAlignment*>*> *alignmentContainer = 
+			new std::map<int, std::map<int, FragmentAlignment*>*>();
+		//TODO map of maps of alignments
 		std::map<int,FragmentAlignment*> *FragmentAlignments = new std::map<int,FragmentAlignment*>();
+		//read until all overlaps are processed
 		while (!Overlaps->empty())
 		{
 			//Get any overlap if we have just started
 			Overlap *overlap = NULL;
-			if (AlignedIndexes.empty())
+			if (AlignedIndexes[alignmentId]->empty())
 			{
+				//TODO
+				//select first overlap, find all with same id
+				//find all with same ids, select one with highest jaccard score
+				//remove them all
 				overlap = Overlaps->front();
-				Overlaps->remove(overlap);
+
+				overlap = getOverlapWithHighestJaccard(overlap->getID_A(), overlap->getID_B(), *Overlaps);
+				
 				//Add first fragments to Alignment Matrix when B fragment id more left then A fragment
 				if (overlap->getDirection_A() == 0 && overlap->getDirection_B() == 0 &&
 					overlap->getStart_A() <= overlap->getStart_B())
@@ -165,8 +178,8 @@ private:
 				{
 					throw new std::exception("Something went wrong!");
 				}
-				AlignedIndexes.push_back(overlap->getID_A());
-				AlignedIndexes.push_back(overlap->getID_B());
+				AlignedIndexes[alignmentId]->push_back(overlap->getID_A());
+				AlignedIndexes[alignmentId]->push_back(overlap->getID_B());
 			}
 			//If we have not just started, get Overlap which one of indexes
 			//exists in aligned_indexes
@@ -174,30 +187,32 @@ private:
 			{
 
 				bool split_matrix = true;
+				bool alreadyPlaced = false;
 				for (Overlap* O : *Overlaps)
 				{
-					bool findA = std::find(AlignedIndexes.begin(), AlignedIndexes.end(), O->getID_A()) != AlignedIndexes.end();
-					bool findB = std::find(AlignedIndexes.begin(), AlignedIndexes.end(), O->getID_B()) != AlignedIndexes.end();
+					bool findA = std::find(AlignedIndexes[alignmentId]->begin(), AlignedIndexes[alignmentId]->end(), O->getID_A()) != AlignedIndexes[alignmentId]->end();
+					bool findB = std::find(AlignedIndexes[alignmentId]->begin(), AlignedIndexes[alignmentId]->end(), O->getID_B()) != AlignedIndexes[alignmentId]->end();
 					if (findA || findB)
 					{
-						/*if (overlapToRemove != nullptr){
-							Overlaps->remove(overlapToRemove);
-							overlapToRemove = nullptr;
-						}
 						if (findA && findB){
-							overlapToRemove = O;
-							continue;
-						}*/
+							getOverlapWithHighestJaccard(O->getID_A(), O->getID_B(), *Overlaps);
+							alreadyPlaced = true;
+							break;
+						}
+						//find all overlaps with same ids, select one with highest jaccard score
+						overlap = getOverlapWithHighestJaccard(O->getID_A(), O->getID_B(), *Overlaps);
 						split_matrix = false;
-						overlap = O;
-						Overlaps->remove(O);
 						break;
 					}
 				}
-			//If it does not exist in added indexes throw new exception
+			//crate new alignment and push it to map, continue
+				if (alreadyPlaced)
+					continue;
 				if (split_matrix) {
-					std::cout << "Matrix is split" << std::endl;
-					throw new std::exception("Matrix is split");
+					(*alignmentContainer)[alignmentId++] = FragmentAlignments;
+					AlignedIndexes[alignmentId] = new std::list<int>();
+					FragmentAlignments = new std::map<int, FragmentAlignment*>();
+					continue;
 				}
 				int startPos, endPos, index, length, offset;
 			//if matrix is not split use found overlap and position it
@@ -205,7 +220,7 @@ private:
 				{
 					//if index A exist add indexB
 					//if index B exist add indexA
-					if (contains<int>(AlignedIndexes, overlap->getID_A()))
+					if (contains<int>(*AlignedIndexes[alignmentId], overlap->getID_A()))
 					{
 						offset		= (*FragmentAlignments)[overlap->getID_A()]->getOffset() - (overlap->getStart_B() - overlap->getStart_A());
 						startPos	= 0;
@@ -224,7 +239,7 @@ private:
 				}
 				else if (overlap->getDirection_A() == 0 && overlap->getDirection_B() == 1)
 				{
-					if (contains<int>(AlignedIndexes, overlap->getID_A()))
+					if (contains<int>(*AlignedIndexes[alignmentId], overlap->getID_A()))
 					{
 						offset = (*FragmentAlignments)[overlap->getID_A()]->getOffset() -
 							((overlap->getLength_B() - 1 - overlap->getEnd_B()) - overlap->getStart_A());
@@ -257,9 +272,9 @@ private:
 				}
 
 				//add index to AlignedIndexes
-				if (contains<int>(AlignedIndexes, overlap->getID_A()))
-					AlignedIndexes.push_back(overlap->getID_B());
-				else AlignedIndexes.push_back(overlap->getID_A());
+				if (contains<int>(*AlignedIndexes[alignmentId], overlap->getID_A()))
+					AlignedIndexes[alignmentId]->push_back(overlap->getID_B());
+				else AlignedIndexes[alignmentId]->push_back(overlap->getID_A());
 				
 				//if offset is negative, it means it is most left
 				//so we have to move everything to right
@@ -274,18 +289,57 @@ private:
 				else (*FragmentAlignments)[index] = new FragmentAlignment(index, length, startPos, endPos, offset);
 			}		
 		}
-		int minOffset = -1;
-		for (auto &fragmentAlignment : *FragmentAlignments)
+		//int minOffset = -1;
+		//for (auto &fragmentAlignment : *FragmentAlignments)
+		//{
+		//	if (fragmentAlignment.second->getOffset() < minOffset || minOffset==-1)
+		//		minOffset = fragmentAlignment.second->getOffset();
+		//}
+		//for (auto &fragmentAlignment : *FragmentAlignments)
+		//{
+		//	fragmentAlignment.second->setOffset(fragmentAlignment.second->getOffset() - minOffset);
+		//}
+		(*alignmentContainer)[alignmentId++] = FragmentAlignments;
+		return *alignmentContainer;
+	}
+
+	//************************************
+	// Method:    getOverlapWithHighestJaccard
+	// FullName:  LayoutReader::getOverlapWithHighestJaccard
+	// Access:    private 
+	// Returns:   Overlap *
+	// Qualifier:
+	// Parameter: int idA
+	// Parameter: int idB
+	// Parameter: std::list<Overlap * > & overlaps
+	// Description: It fetches all overlaps with same ids, and removes them from list of 
+	//				overlaps, and returns one with highest score
+	//************************************
+	Overlap *getOverlapWithHighestJaccard(int idA, int idB, std::list<Overlap*> &overlaps)
+	{
+		std::list<Overlap*> doubles;
+		for (Overlap *O : overlaps)
 		{
-			if (fragmentAlignment.second->getOffset() < minOffset || minOffset==-1)
-				minOffset = fragmentAlignment.second->getOffset();
+			if ((O->getID_A() == idA && O->getID_B() == idB) ||
+				(O->getID_A() == idB && O->getID_B() == idA))
+				doubles.push_back(O);
 		}
-		for (auto &fragmentAlignment : *FragmentAlignments)
+		for (Overlap *O : doubles)
+			overlaps.remove(O);
+
+		float highestJaccardScore = -1;
+		Overlap *retOverlap;
+		
+		for (Overlap *O : doubles)
 		{
-			fragmentAlignment.second->setOffset(fragmentAlignment.second->getOffset() - minOffset);
+			if (O->getJaccardScore() > highestJaccardScore)
+			{
+				highestJaccardScore = O->getJaccardScore();
+				retOverlap = O;
+			}
 		}
 
-		return *FragmentAlignments;
+		return retOverlap;
 	}
 
 	

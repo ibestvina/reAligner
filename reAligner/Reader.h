@@ -43,11 +43,30 @@ public:
 			fragmentReader	= new FragmentReader(fragmentFile);
 
 			std::list<Fragment*>				fragments			= fragmentReader->GetAllFragments();
-			std::map<int, FragmentAlignment*>	fragmentAlignments	= layoutReader->GetAllFragmentLayouts();
+			std::map<int,std::map<int, FragmentAlignment*>*>	fragmentAlignments	= layoutReader->GetAllFragmentLayouts();
+			
+			int mostFragments = 0;
+			std::map<int, FragmentAlignment*>* A;
+			for (std::pair<int,std::map<int, FragmentAlignment*>*> FA : fragmentAlignments)
+			{
+				if ((int)FA.second->size() > mostFragments)
+				{
+					mostFragments = FA.second->size();
+					A = FA.second;
+				}
+			}
+			
 
 			for (Fragment *F : fragments)
 			{
-				alignedFragments->push_back(new AlignedFragment(*F, *fragmentAlignments[F->getId()]));
+				if (A->count(F->getId()) != 0)
+				{
+					if ((*A)[F->getId()]->getStart() != 0)
+						std::reverse(F->getSequence().begin(),F->getSequence().end());
+
+					alignedFragments->push_back(new AlignedFragment(*F, *(*A)[F->getId()]));
+				}
+				
 			}
 		}
 		catch (int e)
