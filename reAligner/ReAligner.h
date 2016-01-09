@@ -1,4 +1,7 @@
 #pragma once
+
+#include <list>
+
 #include "Consensus.h"
 #include "Alignment.h"
 #include "AlignedFragment.h"

@@ -1,4 +1,5 @@
 #pragma once
+
 class Overlap
 {
 	int ID_A;

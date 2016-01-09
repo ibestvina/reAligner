@@ -1,5 +1,7 @@
 #pragma once
 
+#include <string>
+
 #include "Fragment.h"
 #include "FragmentAlignment.h"
 

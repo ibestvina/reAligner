@@ -1,6 +1,8 @@
 #pragma once
 
-#include<list>
+#include <list>
+#include <string>
+#include <algorithm>
 
 class Metasymbol
 {

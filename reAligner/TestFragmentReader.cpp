@@ -1,3 +1,8 @@
+#include <list>
+#include <string>
+#include <sstream>
+#include <iostream>
+
 #include "TestFragmentReader.h"
 
 // Registers the fixture into the 'registry'

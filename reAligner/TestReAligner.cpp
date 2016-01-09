@@ -1,10 +1,13 @@
+#include <list>
+#include <vector>
+#include <string>
+#include <iostream>
+
 #include "TestReAligner.h"
 #include "ReAligner.h"
 #include "FragmentReader.h"
 #include "LayoutReader.h"
 #include "Reader.h"
-
-#include <list>
 
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION(TestReAligner);
@@ -12,10 +15,11 @@ CPPUNIT_TEST_SUITE_REGISTRATION(TestReAligner);
 void TestReAligner::setUp(){}
 void TestReAligner::tearDown(){}
 
-std::string mySamplesPath = "..\\samples\\";
+std::string mySamplesPath = "D:/Projects/bioinf/realigner/project/reAligner/samples/";
+//std::string mySamplesPath = "../samples/";
 
-vector<char> toVector(std::list<char> chars) {
-	vector<char> ret; ret.clear();
+std::vector<char> toVector(std::list<char> chars) {
+	std::vector<char> ret; ret.clear();
 	for (std::list<char>::iterator it = chars.begin(); it != chars.end(); ++it) {
 		ret.push_back(*it);
 	}
@@ -63,7 +67,7 @@ void TestReAligner::testRealign2()
 void TestReAligner::testRealign1()
 {
 
-	Reader reader = *new Reader(mySamplesPath + "synthetic500\\500_2_frags.fasta", mySamplesPath + "synthetic500\\500_2_align.mhap");
+	Reader reader = *new Reader(mySamplesPath + "synthetic500/500_2_frags.fasta", mySamplesPath + "synthetic500/500_2_align.mhap");
 	Alignment &alignment = *reader.getAlignment();
 
 	for (AlignedFragment *AF : alignment.getAllFragments()) {
@@ -84,7 +88,7 @@ void TestReAligner::getConsensusTest() {
 	fragments.push_back(new AlignedFragment(*new Fragment(1, 3, "AAT"), *new FragmentAlignment(1, 3, 0, 0, 0)));
 	Consensus consensus = ReAligner::getConsensus(*new Alignment(fragments));
 	std::list<Metasymbol*> metasymbols = consensus.getPart(0, 3);
-	vector<char> symbols[3];
+	std::vector<char> symbols[3];
 	int counter = 0;
 	for (std::list<Metasymbol*>::iterator itr = metasymbols.begin(); itr != metasymbols.end(); ++itr) {
 		symbols[counter].clear();
@@ -105,7 +109,7 @@ void TestReAligner::getConsensusMetasymbolTest() {
 	column.push_back('A');
 	column.push_back('C');
 	column.push_back('A');
-	vector<char> symbols = toVector(ReAligner::getConsensusMetasymbol(column)->getSymbols());
+	std::vector<char> symbols = toVector(ReAligner::getConsensusMetasymbol(column)->getSymbols());
 	CPPUNIT_ASSERT(symbols.size() == 1);
 	CPPUNIT_ASSERT(symbols[0] == 'A');
 

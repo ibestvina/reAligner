@@ -1,10 +1,13 @@
 #pragma once
 
-#include "Metasymbol.h"
-#include <exception>
 #include <string>
 #include <list>
 #include <iostream>
+#include <iterator>
+#include <stdexcept>
+
+#include "Metasymbol.h"
+
 
 using namespace std;
 
@@ -38,7 +41,7 @@ public:
 	std::list<Metasymbol*> getPart(int start, int end) {
 		if (start < 0 || end < 0 || start > metasymbols->size() || end > metasymbols->size() || start > end) {
 			std::cout << "Start: " << start << ", end: " << end << ", size: " << metasymbols->size();
-			throw exception("Invalid start/end arguments. (Consensus::getPart)");
+			throw std::runtime_error("Invalid start/end arguments. (Consensus::getPart)");
 		}
 		std::list<Metasymbol*> part;
 		std::list<Metasymbol*>::iterator iter = std::next(metasymbols->begin(), start);
@@ -76,7 +79,7 @@ public:
 		for (Metasymbol *var : *metasymbols)
 			if (++r == row)
 				return var;
-		throw exception("Index out of range");
+		throw std::runtime_error("Index out of range");
 	}
 	int getLength() {
 		return metasymbols->size();

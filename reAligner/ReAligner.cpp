@@ -1,10 +1,14 @@
-#include "ReAligner.h"
 #include <vector>
 #include <iostream>
 #include <map>
 #include <list>
 #include <limits>
 #include <algorithm>
+#include <iterator>
+#include <string>
+#include <cstring>
+
+#include "ReAligner.h"
 
 
 ReAligner::ReAligner()
@@ -63,7 +67,7 @@ Metasymbol * ReAligner::getConsensusMetasymbol(std::list<char>& column)
 	M['-'] = 4;
 	char symbols[5] = { 'A', 'C', 'G', 'T', '-' };
 	int counter[5];
-	memset(counter, 0, sizeof(counter));
+	std::memset(counter, 0, sizeof(counter));
 	int maks = 0;
 	for (std::list<char>::iterator itr = column.begin(); itr != column.end(); ++itr) {
 		int index = M[*itr];		
@@ -118,11 +122,11 @@ void ReAligner::getAlignment(AlignedFragment & read, Consensus & cons, double ep
 
 	// -- Needleman–Wunsch algorithm --
 
-	vector<vector<int>> valueTable;
-	vector<vector<bool>> isDiagonal;
+	std::vector<vector<int>> valueTable;
+	std::vector<vector<bool>> isDiagonal;
 	for (int i = 0; i <= readLen; i++) {
-		vector<int> rowInt;
-		vector<bool> rowBool;
+		std::vector<int> rowInt;
+		std::vector<bool> rowBool;
 		for (int j = 0; j <= consPartLen; j++) {
 			rowInt.push_back(min);
 			rowBool.push_back(false);

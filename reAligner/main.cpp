@@ -4,8 +4,9 @@
 #include <cppunit/CompilerOutputter.h>
 #include <cppunit/extensions/TestFactoryRegistry.h>
 #include <cppunit/ui/text/TestRunner.h>
-#include <iostream>
 #endif //TESTING
+
+#include <iostream>
 
 
 int main()

@@ -1,5 +1,8 @@
-#include "TestGetAlignment.h"
+#include <list>
 #include <string>
+#include <iostream>
+
+#include "TestGetAlignment.h"
 
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION(TestGetAlignment);

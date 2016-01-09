@@ -1,3 +1,6 @@
+#include <stdexcept>
+#include <list>
+
 #include "Alignment.h"
 
 
@@ -21,7 +24,7 @@ AlignedFragment& Alignment::FragmentAt(int index)
 		if (A->getId() == index)
 			return *A;
 
-	throw new std::exception("Index out of range");
+	throw std::runtime_error("Index out of range");
 	//TODO if needed (this is mock only)
 	//FragmentAlignment &fa = *new FragmentAlignment(0, 0, 0, 0, 0);
 	//Fragment &f = *new Fragment(0, 0, "");
