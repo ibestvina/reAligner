@@ -90,7 +90,7 @@ public:
 		file << consensus.getId();
 		vector<string> rows = getOutput(true);
 		for (int i = 0; i < (int)rows.size(); ++i) {
-			file << rows[i];
+			file << rows[i] << endl;
 		}
 		file.close();
 	}
@@ -105,7 +105,7 @@ public:
 		file << consensus.getId();
 		vector<string> rows = getOutput(true);
 		for (int i = 0; i < (int)rows.size(); ++i) {
-			file << rows[i];
+			file << rows[i] << endl;
 		}
 		file.close();
 	}
@@ -120,10 +120,30 @@ public:
 		file << consensus.getId();
 		vector<string> rows = getOutput(true);
 		for (int i = 0; i < (int)rows.size(); ++i) {
-			file << rows[i];
+			file << rows[i] << endl;
 		}
 		file.close();
 	}
 
-
+	void outputGFA() {
+		ofstream file;
+		file.open("output.gfa");
+		std::list<AlignedFragment*> fragments = alignment.getAllFragments();
+		for (std::list<AlignedFragment*>::iterator itr = fragments.begin(); itr != fragments.end(); ++itr) {
+			AlignedFragment* fragment = *itr;
+			file << "a\t" << "comment\t";
+			file << fragment->getId() << "\t" << fragment->getOffset() << "\t";
+			file << fragment->getInputId() << ":";
+			int start = fragment->getStart();
+			int end = fragment->getEnd();
+			if (start <= end) {
+				file << start << "-" << end << "\t+\t";
+			}
+			else {
+				file << end << "-" << start << "\t-\t";
+			}
+			file << fragment->getLength() << endl;
+		}
+		file.close();
+	}
 };

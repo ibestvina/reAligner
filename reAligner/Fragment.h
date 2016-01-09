@@ -34,6 +34,10 @@ public:
 		return length;
 	}
 
+	inline std::string getInputId() {
+		return inputId;
+	}
+
 	inline std::string getSequence(){
 		return sequence;
 	}

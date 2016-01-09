@@ -27,6 +27,9 @@ public:
 	inline int getLength(){
 		return fragment.getLength();
 	}
+	inline std::string getInputId() {
+		return fragment.getInputId();
+	}
 	inline int getStart(){
 		return fragmentAlignment.getStart();
 	};
