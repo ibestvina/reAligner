@@ -273,6 +273,17 @@ private:
 				else (*FragmentAlignments)[index] = new FragmentAlignment(index, length, startPos, endPos, offset);
 			}		
 		}
+		int minOffset = -1;
+		for (auto &fragmentAlignment : *FragmentAlignments)
+		{
+			if (fragmentAlignment.second->getOffset() < minOffset || minOffset==-1)
+				minOffset = fragmentAlignment.second->getOffset();
+		}
+		for (auto &fragmentAlignment : *FragmentAlignments)
+		{
+			fragmentAlignment.second->setOffset(fragmentAlignment.second->getOffset() - minOffset);
+		}
+
 		return *FragmentAlignments;
 	}
 
