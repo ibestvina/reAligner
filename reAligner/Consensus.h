@@ -31,6 +31,9 @@ public:
 	{
 	}
 	
+	int getId() {
+		return ID;
+	}
 
 	std::list<Metasymbol*> getPart(int start, int end) {
 		if (start < 0 || end < 0 || start > metasymbols->size() || end > metasymbols->size() || start > end) {
@@ -98,6 +101,10 @@ public:
 		for (Metasymbol* M : *metasymbols)
 			s = s + M->getSymbols().front();
 		return s;
+	}
+
+	std::list<Metasymbol*> getMetasymbols() {
+		return *metasymbols;
 	}
 };
 
