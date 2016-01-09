@@ -4,6 +4,7 @@
 #include <iostream>
 #include <string>
 #include <fstream>
+#include <exception>
 
 class FragmentReader :
 	public FileReader

@@ -1,4 +1,5 @@
 #include "Alignment.h"
+#include <exception>
 
 
 Alignment::Alignment(std::list<AlignedFragment*> &Fragments) :Fragments(Fragments)

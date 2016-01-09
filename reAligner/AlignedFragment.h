@@ -3,6 +3,8 @@
 #include "Fragment.h"
 #include "FragmentAlignment.h"
 
+#include <exception>
+
 class AlignedFragment
 {
 private:

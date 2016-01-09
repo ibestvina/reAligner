@@ -1,4 +1,6 @@
 #pragma once
+#include <exception>
+
 class Overlap
 {
 	int ID_A;

@@ -1,6 +1,7 @@
 #pragma once
 
 #include <list>
+#include <exception>
 
 #include "AlignedFragment.h"
 

@@ -2,6 +2,7 @@
 #include "Consensus.h"
 #include "Alignment.h"
 #include "AlignedFragment.h"
+#include <exception>
 
 class ReAligner
 {

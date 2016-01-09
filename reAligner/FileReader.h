@@ -2,6 +2,7 @@
 
 #include <string>
 #include <list>
+#include <exception>
 
 #include "Fragment.h"
 #include "FragmentAlignment.h"

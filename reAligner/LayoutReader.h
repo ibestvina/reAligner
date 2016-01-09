@@ -4,6 +4,7 @@
 #include "AlignedFragment.h"
 
 #include <fstream>
+#include <exception>
 #include <iostream>
 
 class LayoutReader :

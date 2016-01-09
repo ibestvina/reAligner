@@ -5,6 +5,7 @@
 #include <list>
 #include <limits>
 #include <algorithm>
+#include <exception>
 
 
 ReAligner::ReAligner()
