@@ -6,6 +6,7 @@
 #include <algorithm>
 #include <iterator>
 #include <string>
+#include <cstring>
 
 #include "ReAligner.h"
 
@@ -66,7 +67,7 @@ Metasymbol * ReAligner::getConsensusMetasymbol(std::list<char>& column)
 	M['-'] = 4;
 	char symbols[5] = { 'A', 'C', 'G', 'T', '-' };
 	int counter[5];
-	memset(counter, 0, sizeof(counter));
+	std::memset(counter, 0, sizeof(counter));
 	int maks = 0;
 	for (std::list<char>::iterator itr = column.begin(); itr != column.end(); ++itr) {
 		int index = M[*itr];		
