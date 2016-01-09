@@ -31,8 +31,11 @@
 *.sdf
 *.suo
 *.sln
+*.tlog
 *.opensdf
 reAligner/Debug/*
+reAligner/Release/*
+
 
 #packages
 packages/*
