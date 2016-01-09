@@ -1,7 +1,6 @@
 #pragma once
 
 #include "Fragment.h"
-#include <exception>
 
 class FragmentAlignment
 {

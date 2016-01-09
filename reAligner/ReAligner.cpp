@@ -1,11 +1,13 @@
-#include "ReAligner.h"
 #include <vector>
 #include <iostream>
 #include <map>
 #include <list>
 #include <limits>
 #include <algorithm>
-#include <exception>
+#include <iterator>
+#include <string>
+
+#include "ReAligner.h"
 
 
 ReAligner::ReAligner()
@@ -119,11 +121,11 @@ void ReAligner::getAlignment(AlignedFragment & read, Consensus & cons, double ep
 
 	// -- Needleman–Wunsch algorithm --
 
-	vector<vector<int>> valueTable;
-	vector<vector<bool>> isDiagonal;
+	std::vector<vector<int>> valueTable;
+	std::vector<vector<bool>> isDiagonal;
 	for (int i = 0; i <= readLen; i++) {
-		vector<int> rowInt;
-		vector<bool> rowBool;
+		std::vector<int> rowInt;
+		std::vector<bool> rowBool;
 		for (int j = 0; j <= consPartLen; j++) {
 			rowInt.push_back(min);
 			rowBool.push_back(false);

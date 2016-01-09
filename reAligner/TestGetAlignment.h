@@ -1,7 +1,6 @@
 #pragma once
 #include <cppunit/extensions/HelperMacros.h>
 #include <string>
-#include <exception>
 #include "ReAligner.h"
 
 class TestGetAlignment : public CppUnit::TestFixture

@@ -1,11 +1,17 @@
 #pragma once
+
+#include <fstream>
+#include <iostream>
+#include <istream>
+#include <list>
+#include <map>
+#include <sstream>
+#include <algorithm>
+
 #include "FileReader.h"
 #include "Overlap.h"
 #include "AlignedFragment.h"
 
-#include <fstream>
-#include <exception>
-#include <iostream>
 
 class LayoutReader :
 	public FileReader
@@ -163,7 +169,7 @@ private:
 				//}
 				else //Both have same index
 				{
-					throw new std::exception("Something went wrong!");
+					throw std::runtime_error("Something went wrong!");
 				}
 				AlignedIndexes.push_back(overlap->getID_A());
 				AlignedIndexes.push_back(overlap->getID_B());
@@ -197,7 +203,7 @@ private:
 			//If it does not exist in added indexes throw new exception
 				if (split_matrix) {
 					std::cout << "Matrix is split" << std::endl;
-					throw new std::exception("Matrix is split");
+					throw std::runtime_error("Matrix is split");
 				}
 				int startPos, endPos, index, length, offset;
 			//if matrix is not split use found overlap and position it
@@ -253,7 +259,7 @@ private:
 				}*/
 				else
 				{
-					throw new std::exception("Read something wrong!");
+					throw std::runtime_error("Read something wrong!");
 				}
 
 				//add index to AlignedIndexes

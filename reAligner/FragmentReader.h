@@ -1,10 +1,12 @@
 #pragma once
 
-#include "FileReader.h"
 #include <iostream>
+#include <istream>
 #include <string>
 #include <fstream>
-#include <exception>
+#include <list>
+
+#include "FileReader.h"
 
 class FragmentReader :
 	public FileReader

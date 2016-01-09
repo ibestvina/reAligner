@@ -1,7 +1,5 @@
 #pragma once
 #include <cppunit/extensions/HelperMacros.h>
-#include <string>
-#include <exception>
 #include "LayoutReader.h"
 
 class TestLayoutReader : public CppUnit::TestFixture

@@ -1,7 +1,6 @@
 #pragma once
 
 #include <cppunit/extensions/HelperMacros.h>
-#include <exception>
 
 #include "AlignedFragment.h"
 

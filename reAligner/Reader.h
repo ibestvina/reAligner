@@ -1,8 +1,13 @@
 #pragma once
+
 #include <string>
-#include <exception>
 #include <map>
 #include <fstream>
+#include <list>
+#include <iostream>
+#include <stdexcept>
+
+
 #include "FragmentReader.h"
 #include "Alignment.h"
 #include "LayoutReader.h"
@@ -34,9 +39,9 @@ public:
 		layoutFile	.open(inputMHAP);
 		
 		if (!layoutFile)
-			throw std::exception("Problem loading MHAP file!");
+			throw std::runtime_error("Problem loading MHAP file!");
 		if (!fragmentFile)
-			throw std::exception("Problem loading FASTA file!");
+			throw std::runtime_error("Problem loading FASTA file!");
 
 		try{
 			layoutReader	= new LayoutReader(layoutFile);

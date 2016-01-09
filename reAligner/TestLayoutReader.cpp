@@ -1,5 +1,12 @@
+#include <list>
+#include <string>
+#include <sstream>
+#include <iostream>
+#include <map>
+#include <fstream>
+#include <stdexcept>
+
 #include "TestLayoutReader.h"
-#include <exception>
 
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION(TestLayoutReader);
@@ -83,7 +90,7 @@ void TestLayoutReader::GetLayoutFromFile(){
 	std::ifstream file;
 	file.open("..\\samples\\synthetic500\\500_align.mhap");
 	if (!file)
-		throw  std::exception("Error reading file!");
+		throw std::runtime_error("Error reading file!");
 	LayoutReader LR(file);
 	std::map<int,FragmentAlignment*> FL = LR.GetAllFragmentLayouts();
 	file.close();
