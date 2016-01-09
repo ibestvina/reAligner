@@ -334,7 +334,7 @@ private:
 			overlaps.remove(O);
 
 		float highestJaccardScore = -1;
-		Overlap *retOverlap;
+		Overlap *retOverlap = NULL;
 		
 		for (Overlap *O : doubles)
 		{

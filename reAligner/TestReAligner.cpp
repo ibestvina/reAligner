@@ -15,8 +15,8 @@ CPPUNIT_TEST_SUITE_REGISTRATION(TestReAligner);
 void TestReAligner::setUp(){}
 void TestReAligner::tearDown(){}
 
-//std::string mySamplesPath = "D:\\Projects\\bioinf\\realigner\\project\\reAligner\\samples\\";
-std::string mySamplesPath = "..\\samples\\";
+std::string mySamplesPath = "D:/Projects/bioinf/realigner/project/reAligner/samples/";
+//std::string mySamplesPath = "../samples/";
 
 std::vector<char> toVector(std::list<char> chars) {
 	std::vector<char> ret; ret.clear();
@@ -67,7 +67,7 @@ void TestReAligner::testRealign2()
 void TestReAligner::testRealign1()
 {
 
-	Reader reader = *new Reader(mySamplesPath + "synthetic500\\500_2_frags.fasta", mySamplesPath + "synthetic500\\500_2_align.mhap");
+	Reader reader = *new Reader(mySamplesPath + "synthetic500/500_2_frags.fasta", mySamplesPath + "synthetic500/500_2_align.mhap");
 	Alignment &alignment = *reader.getAlignment();
 
 	for (AlignedFragment *AF : alignment.getAllFragments()) {
