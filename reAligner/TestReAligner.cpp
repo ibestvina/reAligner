@@ -2,6 +2,7 @@
 #include <vector>
 #include <string>
 #include <iostream>
+#include <chrono>
 
 #include "TestReAligner.h"
 #include "ReAligner.h"
@@ -16,8 +17,8 @@ CPPUNIT_TEST_SUITE_REGISTRATION(TestReAligner);
 void TestReAligner::setUp(){}
 void TestReAligner::tearDown(){}
 
-std::string mySamplesPath = "D:/Projects/bioinf/realigner/project/reAligner/samples/";
-//std::string mySamplesPath = "../samples/";
+//std::string mySamplesPath = "D:/Projects/bioinf/realigner/project/reAligner/samples/";
+std::string mySamplesPath = "../samples/";
 
 std::vector<char> toVector(std::list<char> chars) {
 	std::vector<char> ret; ret.clear();
@@ -67,19 +68,35 @@ void TestReAligner::testRealign2()
 }
 void TestReAligner::testRealign1()
 {
-	
-	Reader reader = *new Reader(mySamplesPath + "synthetic500/500_2_frags.fasta", mySamplesPath + "synthetic500/500_2_align.mhap");
-	Alignment &alignment = *reader.getAlignment();
-
-	for (AlignedFragment *AF : alignment.getAllFragments()) {
+	std::chrono::high_resolution_clock::time_point t1 = std::chrono::high_resolution_clock::now();
+	//Reader reader = *new Reader(mySamplesPath + "synthetic500/500_2_frags.fasta", mySamplesPath + "synthetic500/500_2_align.mhap");
+	Reader reader = *new Reader(mySamplesPath + "test4/readsInput4.fasta", mySamplesPath + "test4/readsInput4.mhap");
+	std::list<Alignment*> alignments = reader.getAlignment();
+	Alignment *alignment;
+	int maxSize = 0;
+	for (auto A : alignments)
+		if (A->getSize() > maxSize)
+		{
+			alignment = A;
+			maxSize = A->getSize();
+		}
+	std::chrono::high_resolution_clock::time_point t2 = std::chrono::high_resolution_clock::now();
+	for (AlignedFragment *AF : alignment->getAllFragments()) {
 		if (AF->getOffset() == 0) {
 			std::cout << "Sve je u redu!";
 		}
 	}
 
-	Consensus &consBefore = ReAligner::getConsensus(alignment);
-	std::cout << endl << consBefore.toStringFirst() << endl;
-	Consensus &consAfter = ReAligner::reAlign(alignment, 0.5, 10);
+	Consensus &consBefore = ReAligner::getConsensus(*alignment);
+	std::cout << std::endl << consBefore.toStringFirst() << std::endl;
+	Consensus &consAfter = ReAligner::reAlign(*alignment, 0.005, 10);
+
+	std::chrono::high_resolution_clock::time_point t3 = std::chrono::high_resolution_clock::now();
+
+	auto readTime = std::chrono::duration_cast<std::chrono::microseconds>(t2-t1).count();
+	auto doTime = std::chrono::duration_cast<std::chrono::microseconds>(t3 - t2).count();
+	std::cout << std::endl<<"TIME READ: " << (float)readTime/1000000.0 << std::endl;
+	std::cout << "TIME DO: " << (float)doTime/1000000.0 << std::endl;
 
 	// TEST OUTPUT WRITER
 	//(*new OutputWriter("D:/Desktop/", alignment, consAfter)).outputAll();

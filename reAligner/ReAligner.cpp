@@ -202,9 +202,9 @@ void ReAligner::getAlignment(AlignedFragment & read, Consensus & cons, int delta
 	return;
 }
 
-Consensus& ReAligner::reAlign(Alignment & alignment, double epsilonPrecision, int numOfIterations)
+Consensus ReAligner::reAlign(Alignment & alignment, double epsilonPrecision, int numOfIterations)
 {
-	Consensus &consensus = getConsensus(alignment);
+	Consensus consensus = getConsensus(alignment);
 	double initialScore = consensus.getScore();
 	bool shouldContinue = true;
 	int iteration = 1;
@@ -243,7 +243,7 @@ Consensus& ReAligner::reAlign(Alignment & alignment, double epsilonPrecision, in
 		std::cout << "Iterating..." << std::endl;
 
 		for (int k = 0; k < numOfReads; k++) {
-			//std::cout << k << "/" << numOfReads << endl;
+			std::cout << k << "/" << numOfReads << endl;
 			// detach first fragment in a list - append it last after iteration
 			AlignedFragment* sequence = alignment.PopFirst();
 			dashFunction(*sequence);
@@ -282,10 +282,10 @@ void ReAligner::dashFunction(AlignedFragment & fragment)
 	fragment.removeDashesFrontAndBack();
 }
 
-std::list<char>& ReAligner::getColumn(Alignment & layoutMap, int index)
+std::list<char> ReAligner::getColumn(Alignment & layoutMap, int index)
 {
-	std::list<char> &column = *new std::list<char>;
-	std::list<AlignedFragment*> &fragments = layoutMap.getAllFragments();
+	std::list<char> column;
+	std::list<AlignedFragment*> fragments = layoutMap.getAllFragments();
 	for (std::list<AlignedFragment*>::const_iterator iter = fragments.begin(); iter != fragments.end(); ++iter) {
 		int offset = (*iter)->getOffset();
 		int length = (*iter)->getLength();

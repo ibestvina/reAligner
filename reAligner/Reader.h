@@ -14,9 +14,7 @@
 
 class Reader
 {
-	LayoutReader	*layoutReader;
-	FragmentReader	*fragmentReader;
-	Alignment		*alignment;
+	std::list<Alignment*>	alignments;
 
 public:
 
@@ -44,34 +42,27 @@ public:
 			throw std::runtime_error("Problem loading FASTA file!");
 
 		try{
-			layoutReader	= new LayoutReader(layoutFile);
-			fragmentReader	= new FragmentReader(fragmentFile);
+			LayoutReader	layoutReader(layoutFile);
+			FragmentReader	fragmentReader(fragmentFile);
 
-			std::list<Fragment*>				fragments			= fragmentReader->GetAllFragments();
-			std::map<int,std::map<int, FragmentAlignment*>*>	fragmentAlignments	= layoutReader->GetAllFragmentLayouts();
+			std::list<Fragment*>								fragments			= fragmentReader.GetAllFragments();
+			std::map<int,std::map<int, FragmentAlignment*>*>	fragmentAlignments	= layoutReader.GetAllFragmentLayouts();			
 			
-			int mostFragments = 0;
-			std::map<int, FragmentAlignment*>* A = 0;
-			for (std::pair<int,std::map<int, FragmentAlignment*>*> FA : fragmentAlignments)
+			for (auto A : fragmentAlignments)
 			{
-				if ((int)FA.second->size() > mostFragments)
+				for (Fragment *F : fragments)
 				{
-					mostFragments = FA.second->size();
-					A = FA.second;
+					if (A.second->count(F->getId()) != 0)
+					{
+						if ((*A.second)[F->getId()]->getStart() != 0)
+						{
+							std::string str = F->getSequence();
+							F->setSequence(std::string(str.rbegin(),str.rend()));
+						}
+						alignedFragments->push_back(new AlignedFragment(*F, *(*A.second)[F->getId()]));
+					}
 				}
-			}
-			
-
-			for (Fragment *F : fragments)
-			{
-				if (A->count(F->getId()) != 0)
-				{
-					if ((*A)[F->getId()]->getStart() != 0)
-						std::reverse(F->getSequence().begin(),F->getSequence().end());
-
-					alignedFragments->push_back(new AlignedFragment(*F, *(*A)[F->getId()]));
-				}
-				
+				alignments.push_back(new Alignment(*alignedFragments));
 			}
 		}
 		catch (int e)
@@ -81,8 +72,6 @@ public:
 
 		fragmentFile.close();
 		layoutFile	.close();
-
-		alignment = new Alignment(*alignedFragments);
 	}
 
 	//************************************
@@ -92,9 +81,9 @@ public:
 	// Returns:   Alignment *
 	// Qualifier:
 	//************************************
-	Alignment *getAlignment()
+	std::list<Alignment*> getAlignment()
 	{
-		return alignment;
+		return alignments;
 	}
 	~Reader()
 	{
