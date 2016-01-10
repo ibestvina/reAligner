@@ -8,6 +8,7 @@
 #include "FragmentReader.h"
 #include "LayoutReader.h"
 #include "Reader.h"
+#include "OutputWriter.h"
 
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION(TestReAligner);
@@ -66,8 +67,8 @@ void TestReAligner::testRealign2()
 }
 void TestReAligner::testRealign1()
 {
-
-	Reader reader = *new Reader(mySamplesPath + "synthetic500/500_2_frags.fasta", mySamplesPath + "synthetic500/500_2_align.mhap");
+	
+	Reader reader = *new Reader(mySamplesPath + "synthetic500/500_frags.fasta", mySamplesPath + "synthetic500/500_align.mhap");
 	Alignment &alignment = *reader.getAlignment();
 
 	for (AlignedFragment *AF : alignment.getAllFragments()) {
@@ -78,8 +79,14 @@ void TestReAligner::testRealign1()
 
 	Consensus &consBefore = ReAligner::getConsensus(alignment);
 	std::cout << endl << consBefore.toStringFirst() << endl;
-	Consensus &consAfter = ReAligner::reAlign(alignment, 8, 1);
+	Consensus &consAfter = ReAligner::reAlign(alignment, 4, 1);
+
+	// TEST OUTPUT WRITER
+	(*new OutputWriter("D:/Desktop/", alignment, consAfter)).outputAll();
+
 	std::cout << endl << consAfter.toStringFirst() << endl;
+
+
 }
 void TestReAligner::getConsensusTest() {
 	std::list<AlignedFragment*> fragments = std::list<AlignedFragment*>();

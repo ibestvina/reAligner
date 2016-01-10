@@ -1,21 +1,21 @@
 #include "FileReader.h"
 #include "Alignment.h"
 #include "Consensus.h"
+#include "FileWriter.h"
 
 #include <iostream>
 #include <string>
 #include <vector>
 #include <fstream>
 
-class OutputWriter :
-	public OutputWriter
+class OutputWriter : public FileWriter
 {
-	std::istream &outStream;
-	Alignment alignment;
-	Consensus consensus;
+	std::string folderPath;
+	Alignment &alignment;
+	Consensus &consensus;
 public:
 
-	OutputWriter(std::istream &outputStream, Alignment alignment, Consensus consensus) : outStream(outputStream), alignment(alignment), consensus(consensus)
+	OutputWriter(std::string folderPath, Alignment& alignment, Consensus& consensus) : folderPath(folderPath), alignment(alignment), consensus(consensus)
 	{		
 
 	}
@@ -38,7 +38,7 @@ public:
 	vector<string> getRows(string s) {
 		string ss = "";
 		vector<string> ret;
-		for (i = 0; i * 60 < (int)s.size(); ++i) {
+		for (int i = 0; i * 60 < (int)s.size(); ++i) {
 			for (int j = 0; i * 60 + j < (int)s.size(); ++j) {
 				ss += "-";
 				ss[(int)ss.size() - 1] = s[i * 60 + j];
@@ -55,7 +55,7 @@ public:
 		for (std::list<Metasymbol*>::iterator itr = metasymbols.begin(); itr != metasymbols.end(); ++itr) {
 			vector<string> chars = getVector(*itr);
 			if (chars.size() == 1) {
-				ret += chars[0]
+				ret += chars[0];
 			}
 			else if (chars.size() == 2 && (chars[0] == "-" || chars[1] == "-")) {
 				if (chars[0] == "-") {
@@ -67,7 +67,7 @@ public:
 			}
 			else {
 				if (withN) {
-					ret += "n"
+					ret += "n";
 				}
 				else {
 					ret += "[";
@@ -86,7 +86,7 @@ public:
 	*/
 	void outputConsensusWithN() {
 		ofstream file;
-		file.open("ConsensusWithN.fasta");
+		file.open(folderPath + "consensusWithN.fasta");
 		file << consensus.getId();
 		vector<string> rows = getOutput(true);
 		for (int i = 0; i < (int)rows.size(); ++i) {
@@ -98,12 +98,11 @@ public:
 	/*
 	* If there are multiple symbols writes them inside of []
 	*/
-	void outputConsensuswithBrackets() {
-		vector<string> rows = getOutput(false);
+	void outputConsensusWithBrackets() {
 		ofstream file;
-		file.open("ConsensusWithBrackets.fasta");
+		file.open(folderPath + "consensusWithBrackets.fasta");
 		file << consensus.getId();
-		vector<string> rows = getOutput(true);
+		vector<string> rows = getOutput(false);
 		for (int i = 0; i < (int)rows.size(); ++i) {
 			file << rows[i] << endl;
 		}
@@ -113,10 +112,9 @@ public:
 	/*
 	 * If there are multiple symbols writes first one.
 	 */
-	void outputGFAWithStringFirst() {
-		vector<string> rows = getOutput(false);
+	void outputConsensusWithFirstSymbol() {
 		ofstream file;
-		file.open("ConsensusWithBrackets.fasta");
+		file.open(folderPath + "consensusWithBrackets.fasta");
 		file << consensus.getId();
 		vector<string> rows = getOutput(true);
 		for (int i = 0; i < (int)rows.size(); ++i) {
@@ -127,7 +125,7 @@ public:
 
 	void outputGFA() {
 		ofstream file;
-		file.open("output.gfa");
+		file.open(folderPath + "output.gfa");
 		std::list<AlignedFragment*> fragments = alignment.getAllFragments();
 		for (std::list<AlignedFragment*>::iterator itr = fragments.begin(); itr != fragments.end(); ++itr) {
 			AlignedFragment* fragment = *itr;
@@ -145,5 +143,12 @@ public:
 			file << fragment->getLength() << endl;
 		}
 		file.close();
+	}
+
+	void outputAll() {
+		outputConsensusWithN();
+		outputConsensusWithBrackets();
+		outputConsensusWithFirstSymbol();
+		outputGFA();
 	}
 };
