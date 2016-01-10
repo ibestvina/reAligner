@@ -55,7 +55,7 @@ public:
 	}
 
 	char getAt(int index) {
-		return fragment.getSequence()[index];
+		return fragment.getAt(index);
 	}
 
 	void setSequence(std::string seq) {

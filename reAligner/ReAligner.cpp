@@ -11,6 +11,11 @@
 #include "ReAligner.h"
 
 
+
+std::vector<vector<int>> valueTable;
+std::vector<vector<bool>> isDiagonal;
+
+
 ReAligner::ReAligner()
 {
 }
@@ -85,15 +90,14 @@ Metasymbol * ReAligner::getConsensusMetasymbol(std::list<char>& column)
 	return sym;
 }
 
-void ReAligner::getAlignment(AlignedFragment & read, Consensus & cons, double eps)
+
+void ReAligner::getAlignment(AlignedFragment & read, Consensus & cons, int delta)
 {
-	int min = std::numeric_limits<int>::min();
 	std::list<Metasymbol*> consPartList;
 
 	Metasymbol* dashSym = new Metasymbol();
 	dashSym->addSymbol('-');
 
-	int delta = (int)(eps / 2);
 
 	int readLen = read.getLength();
 	int readOff = read.getOffset();
@@ -122,54 +126,57 @@ void ReAligner::getAlignment(AlignedFragment & read, Consensus & cons, double ep
 
 	// -- Needleman–Wunsch algorithm --
 
-	std::vector<vector<int>> valueTable;
-	std::vector<vector<bool>> isDiagonal;
-	for (int i = 0; i <= readLen; i++) {
-		std::vector<int> rowInt;
-		std::vector<bool> rowBool;
-		for (int j = 0; j <= consPartLen; j++) {
-			rowInt.push_back(min);
-			rowBool.push_back(false);
-		}
-		valueTable.push_back(rowInt);
-		isDiagonal.push_back(rowBool);
-	}
 
 	// Initial values
 	for (int j = 0; j <= 2 * delta; j++) {
 		valueTable[0][j] = -abs(j - delta);
 	}
 
+	// First column
+	for (int i = 1; i <= readLen; i++) {
+		Metasymbol *sym = consPart[i - 1];
+		int cost = -1;
+		if (sym->contains(read.getAt(i - 1)) || sym->isDashOnly())
+			cost = 0;
+
+		int scoreDiag = valueTable[i - 1][0] + cost;
+
+		valueTable[i][0] = scoreDiag;
+		isDiagonal[i][0] = true;
+	}
+
+
+	int stripWidth = 2 * delta + 1;
+
 	// Main loop
 	for (int i = 1; i <= readLen; i++) {
-		for (int j = 1; j <= consPartLen; j++) {
-			if (j >= i && j <= i + 2 * delta) {
-				Metasymbol *sym = consPart[j - 1];
-				int cost = -1;
-				if (sym->contains(read.getAt(i - 1)) || sym->isDashOnly())
-					cost = 0;
+		for (int k = 1; k < stripWidth; k++) {
+			Metasymbol *sym = consPart[k + i - 1];
+			int cost = -1;
+			if (sym->contains(read.getAt(i - 1)) || sym->isDashOnly())
+				cost = 0;
 
-				int scoreDiag = valueTable[i - 1][j - 1] + cost;
-				int scoreLeft = (valueTable[i][j - 1] == min) ? min : valueTable[i][j - 1] - 1;
+			int scoreDiag = valueTable[i - 1][k] + cost;
+			int scoreLeft = valueTable[i][k - 1] - 1;
 
-				if (scoreDiag >= scoreLeft) {
-					valueTable[i][j] = scoreDiag;
-					isDiagonal[i][j] = true;
-				}
-				else {
-					valueTable[i][j] = scoreLeft;
-				}
+			if (scoreDiag >= scoreLeft) {
+				valueTable[i][k] = scoreDiag;
+				isDiagonal[i][k] = true;
+			}
+			else {
+				valueTable[i][k] = scoreLeft;
+				isDiagonal[i][k] = false;
 			}
 		}
 	}
 
-	int score = min;
+	int score = std::numeric_limits<int>::min();
 	int endPoisition = 0;
 	for (int i = 0; i <= 2 * delta; i++) {
-		int currentValue = valueTable[readLen][consPartLen - i];
+		int currentValue = valueTable[readLen][stripWidth - 1 - i];
 		if (score < currentValue) {
 			score = currentValue;
-			endPoisition = consPartLen - i;
+			endPoisition = stripWidth - 1 - i;
 		}
 	}
 
@@ -180,7 +187,6 @@ void ReAligner::getAlignment(AlignedFragment & read, Consensus & cons, double ep
 		if (isDiagonal[tabi][tabj]) {
 			newSequence = read.getAt(tabi-1) + newSequence;
 			tabi--;
-			tabj--;
 		}
 		else {
 			newSequence = "-" + newSequence;
@@ -203,21 +209,48 @@ Consensus& ReAligner::reAlign(Alignment & alignment, double epsilonPrecision, in
 	bool shouldContinue = true;
 	int iteration = 1;
 	int numOfReads = alignment.getSize();
+
+	// initialize valueTable and isDiagonal
+	int maxReadLen = 0;
+	int maxDelta = 0;
+	for each (AlignedFragment* AF in alignment.getAllFragments())
+	{
+		int currLen = AF->getLength();
+		if (currLen > maxReadLen) {
+			maxReadLen = currLen;
+		}
+		int currDelta = (int)((epsilonPrecision * currLen) / 2);
+		if (currDelta > maxDelta) {
+			maxDelta = currDelta;
+		}
+	}
+	valueTable.clear();
+	isDiagonal.clear();
+	int maxStripWidth = 2 * maxDelta + 1;
+	for (int i = 0; i <= maxReadLen; i++) {
+		std::vector<int> rowInt(maxStripWidth);
+		std::vector<bool> rowBool(maxStripWidth);
+
+		valueTable.push_back(rowInt);
+		isDiagonal.push_back(rowBool);
+	}
+
 	
 	double minimalScore = initialScore;
 	Consensus& bestConsensus = consensus;
 
 	while (shouldContinue) {
-		std::cout << "Iterating...";
+		std::cout << "Iterating..." << std::endl;
 
 		for (int k = 0; k < numOfReads; k++) {
-			std::cout << k << "/" << numOfReads << endl;
+			//std::cout << k << "/" << numOfReads << endl;
 			// detach first fragment in a list - append it last after iteration
 			AlignedFragment* sequence = alignment.PopFirst();
 			dashFunction(*sequence);
 			dashFunction(consensus);
 			consensus = getConsensus(alignment);
-			getAlignment(*sequence, consensus, sequence->getLength() * epsilonPrecision);
+			int delta = (int)((epsilonPrecision * sequence->getLength()) / 2);
+			getAlignment(*sequence, consensus, delta);
 
 			alignment.AddFragment(sequence);
 			consensus = getConsensus(alignment);

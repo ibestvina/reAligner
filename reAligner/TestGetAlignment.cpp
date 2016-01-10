@@ -25,7 +25,7 @@ void TestGetAlignment::removeDashes2(){
 
 }
 
-void TestGetAlignment::protoTest(std::string readSeq, int readOff, std::string consSeq, double eps, int expectedOff, std::string expectedRead)
+void TestGetAlignment::protoTest(std::string readSeq, int readOff, std::string consSeq, int delta, int expectedOff, std::string expectedRead)
 {
 	int readLen = readSeq.length();
 
@@ -38,7 +38,7 @@ void TestGetAlignment::protoTest(std::string readSeq, int readOff, std::string c
 		consensus.addMetasymbol(new Metasymbol(string(1, consSeq[i])));
 	}
 
-	ReAligner::getAlignment(read, consensus, eps);
+	ReAligner::getAlignment(read, consensus, delta);
 
 
 	CPPUNIT_ASSERT_EQUAL(expectedOff, read.getOffset());

@@ -51,7 +51,7 @@ public:
 			std::map<int,std::map<int, FragmentAlignment*>*>	fragmentAlignments	= layoutReader->GetAllFragmentLayouts();
 			
 			int mostFragments = 0;
-			std::map<int, FragmentAlignment*>* A = NULL;
+			std::map<int, FragmentAlignment*>* A = 0;
 			for (std::pair<int,std::map<int, FragmentAlignment*>*> FA : fragmentAlignments)
 			{
 				if ((int)FA.second->size() > mostFragments)

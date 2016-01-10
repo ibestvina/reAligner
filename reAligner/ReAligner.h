@@ -22,7 +22,7 @@ public:
 	static int getNumberOfColumns(Alignment &layoutMap);
 	static void dashFunction(Consensus &consensus);
 	static void dashFunction(AlignedFragment &fragment);
-	static void getAlignment(AlignedFragment &read, Consensus &cons, double eps);
+	static void getAlignment(AlignedFragment &read, Consensus &cons, int delta);
 	static Consensus& reAlign(Alignment &alignment, double epsilonPrecision, int numOfIterations);
 };
 
