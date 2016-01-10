@@ -15,6 +15,7 @@ class OutputWriter : public FileWriter
 	Consensus &consensus;
 public:
 
+	
 	OutputWriter(std::string folderPath, Alignment& alignment, Consensus& consensus) : folderPath(folderPath), alignment(alignment), consensus(consensus)
 	{		
 
@@ -49,7 +50,7 @@ public:
 		return ret;
 	}
 
-	vector<string> getOutput(bool withN) {
+	vector<string> getOutput(int version) {
 		std::list<Metasymbol*> metasymbols = consensus.getMetasymbols();
 		string ret = "";
 		for (std::list<Metasymbol*>::iterator itr = metasymbols.begin(); itr != metasymbols.end(); ++itr) {
@@ -66,8 +67,11 @@ public:
 				}
 			}
 			else {
-				if (withN) {
+				if (version == 0) {
 					ret += "n";
+				}
+				else if (version == 2) {
+					ret += chars[0];
 				}
 				else {
 					ret += "[";
@@ -88,7 +92,7 @@ public:
 		ofstream file;
 		file.open(folderPath + "consensusWithN.fasta");
 		file << consensus.getId();
-		vector<string> rows = getOutput(true);
+		vector<string> rows = getOutput(0);
 		for (int i = 0; i < (int)rows.size(); ++i) {
 			file << rows[i] << endl;
 		}
@@ -102,7 +106,7 @@ public:
 		ofstream file;
 		file.open(folderPath + "consensusWithBrackets.fasta");
 		file << consensus.getId();
-		vector<string> rows = getOutput(false);
+		vector<string> rows = getOutput(1);
 		for (int i = 0; i < (int)rows.size(); ++i) {
 			file << rows[i] << endl;
 		}
@@ -114,9 +118,9 @@ public:
 	 */
 	void outputConsensusWithFirstSymbol() {
 		ofstream file;
-		file.open(folderPath + "consensusWithBrackets.fasta");
+		file.open(folderPath + "consensusOnlyFirst.fasta");
 		file << consensus.getId();
-		vector<string> rows = getOutput(true);
+		vector<string> rows = getOutput(2);
 		for (int i = 0; i < (int)rows.size(); ++i) {
 			file << rows[i] << endl;
 		}
