@@ -15,7 +15,7 @@ class OutputWriter2
 public:
 	// NAPOMENA:
 	//		prije zapisivanja, fileNameu dodati .fasta/.gfa
-	//		funkciji se salje samo ime fileova, bez ekstenzije, kako bi se u outputConsensusAll funkciji moglo imenima dodati N/B/F prije ekstenzije
+	//		funkciji se salje samo ime fileova, bez ekstenzije, kako bi se u outputConsensusAll funkciji moglo imenima dodati N/B/F/C prije ekstenzije
 
 
 	/*
@@ -33,6 +33,19 @@ public:
 	*/
 	static void outputConsensusWithFirstSymbol(std::list<Consensus&> consensusList, std::string path, std::string fileName);
 
+	/*
+	* Concatenate all consensuses from list, write to "<path>/<fileName>C.fasta" as one fragment.
+	*/
+	static void outputConsensusFirstSymbolConcat(std::list<Consensus&> consensusList, std::string path, std::string fileName) {
+		std::string sequence = "";
+		for each (Consensus& cons in consensusList)
+		{
+			sequence = sequence + cons.toStringFirst();
+		}
+		// TODO
+		// upisati sequence u "<path>/<fileName>C.fasta" kao jedan fragment
+		
+	}
 	
 	static void outputGFA(Alignment& alignment, std::string path, std::string fileName);
 
