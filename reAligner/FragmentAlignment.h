@@ -43,22 +43,18 @@ public:
 	int getOffset(){
 		return offset;
 	}
-	FragmentAlignment &setOffset(int offset){
+	void setOffset(int offset){
 		this->offset = offset;
-		return *this;
 	}
-	FragmentAlignment &setEnd(int end){
+	void setEnd(int end){
 		this->end = end;
-		return *this;
 	}
-	FragmentAlignment &setLength(int length){
+	void setLength(int length){
 		this->length = length;
-		return *this;
 	}
-	FragmentAlignment &setStart(int start)
+	void setStart(int start)
 	{
 		this->start = start;
-		return *this;
 	}
 };
 

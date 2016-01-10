@@ -55,41 +55,40 @@ public:
 	{
 
 	}
-
-	int getID_A(){
+	inline int getID_A(){
 		return ID_A;
 	};
-	int getID_B(){
+	inline int getID_B(){
 		return ID_B;
 	};
-	int getDirection_A(){
+	inline int getDirection_A(){
 		return Direction_A;
 	};
-	int getDirection_B(){
+	inline int getDirection_B(){
 		return Direction_B;
 	};
-	int getStart_A(){
+	inline int getStart_A(){
 		return Start_A;
 	};
-	int getStart_B(){
+	inline int getStart_B(){
 		return Start_B;
 	};
-	int getEnd_A(){
+	inline int getEnd_A(){
 		return End_A;
 	};
-	int getEnd_B(){
+	inline int getEnd_B(){
 		return End_B;
 	};
-	int getLength_A(){
+	inline int getLength_A(){
 		return Length_A;
 	};
-	int getLength_B(){
+	inline int getLength_B(){
 		return Length_B;
 	};
-	float getJaccardScore(){
+	inline float getJaccardScore(){
 		return JaccardScore;
 	};
-	int getShared(){
+	inline int getShared(){
 		return Shared;
 	};
 

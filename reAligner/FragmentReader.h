@@ -12,12 +12,12 @@ class FragmentReader :
 	public FileReader
 {
 	std::istream &inStream;
-	std::list<Fragment*> *fragments = NULL;
+	std::list<Fragment*> fragments;
 public:
 	
 	FragmentReader(std::istream &inputStream) :inStream(inputStream)
 	{
-		fragments = new std::list<Fragment*>();
+		//fragments = new std::list<Fragment*>();
 
 	}
 	~FragmentReader()
@@ -26,15 +26,15 @@ public:
 	}
 
 	std::string toUpperCase(std::string s) {
-		for (int i = 0; i < (int)s.size(); ++i) {
-			if (s[i] >= 'a' && s[i] <= 'z') {
-				s[i] = s[i] - 'a' + 'A';
+		for (char c : s) {
+			if (c >= 'a' && c <= 'z') {
+				c = c - 'a' + 'A';
 			}
 		}
 		return s;
 	}
 
-	std::list<Fragment*> &GetAllFragments(){
+	std::list<Fragment*> GetAllFragments(){
 		std::string currentSequence = "";
 
 		int counter = 1;
@@ -44,14 +44,14 @@ public:
 			std::string sLine;
 			std::getline(inStream, sLine);
 			if (sLine[0] == '>') {
-				if (currentSequence != "" && fragments->size() > 0) {
-					fragments->back()->setLength(currentSequence.size());
-					fragments->back()->setSequence(toUpperCase(currentSequence));
+				if (currentSequence != "" && fragments.size() > 0) {
+					fragments.back()->setLength(currentSequence.size());
+					fragments.back()->setSequence(toUpperCase(currentSequence));
 					currentSequence = "";
 				}
 
 				//fragments->push_back(new Fragment(counter++));
-				fragments->push_back(new Fragment(counter++,sLine));
+				fragments.push_back(new Fragment(counter++,sLine));
 
 
 			}
@@ -60,8 +60,8 @@ public:
 			}
 		}
 		if (currentSequence != "") {
-			fragments->back()->setLength(currentSequence.size());
-			fragments->back()->setSequence(toUpperCase(currentSequence));
+			fragments.back()->setLength(currentSequence.size());
+			fragments.back()->setSequence(toUpperCase(currentSequence));
 		}
 		/*
 		// temp debug ispis
@@ -69,7 +69,7 @@ public:
 			printf("%d %d %s\n", (*itr)->getId(), (*itr)->getLength(), (*itr)->getSequence().c_str());
 		}
 		*/
-		return *fragments;
+		return fragments;
 	}
 };
 

@@ -44,21 +44,21 @@ public:
 		return fragment.getSequence();
 	}
 	
-	void insertDashAt(int index)
+	inline void insertDashAt(int index)
 	{
-		fragmentAlignment.setEnd(fragmentAlignment.getEnd() + 1)
-					     .setLength(fragmentAlignment.getLength() + 1);
+		fragmentAlignment.setEnd(fragmentAlignment.getEnd() + 1);
+		fragmentAlignment.setLength(fragmentAlignment.getLength() + 1);
 		fragment.insertDashAt(index);
 	}
 
-	char getAt(int index) {
+	inline char getAt(int index) {
 		return fragment.getSequence()[index];
 	}
 
-	void setSequence(std::string seq) {
+	inline void setSequence(std::string seq) {
 		fragment.setSequence(seq);
 	}
-	void  removeDashesFrontAndBack()
+	inline void  removeDashesFrontAndBack()
 	{
 		std::string newSeq;
 		for (char C : fragment.getSequence())

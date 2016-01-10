@@ -38,7 +38,7 @@ public:
 	// Qualifier:
 	// Description: istream is fetched via constructor and this function returns pure alignment
 	//*****************************************************************************************
-	std::map<int, std::map<int, FragmentAlignment*>*> &GetAllFragmentLayouts()
+	std::map<int, std::map<int, FragmentAlignment*>*> GetAllFragmentLayouts()
 	{
 		readAllOverlaps();
 		return generateFragmentAlignments();
@@ -91,14 +91,13 @@ private:
 	// Qualifier:
 	// Description: Reads out overlaps and calculates offsets, start and end indexes
 	//********************************************************************************
-	std::map<int, std::map<int, FragmentAlignment*>*> &generateFragmentAlignments()
+	std::map<int, std::map<int, FragmentAlignment*>*> generateFragmentAlignments()
 	{
 		//map<alignemnt id, alignedIndexes>
 		int alignmentId = 0;
 		std::map<int, std::list<int>*> AlignedIndexes;
 		AlignedIndexes[alignmentId] = new std::list<int>();
-		std::map<int, std::map<int, FragmentAlignment*>*> *alignmentContainer = 
-			new std::map<int, std::map<int, FragmentAlignment*>*>();
+		std::map<int, std::map<int, FragmentAlignment*>*> alignmentContainer;
 		//TODO map of maps of alignments
 		std::map<int,FragmentAlignment*> *FragmentAlignments = new std::map<int,FragmentAlignment*>();
 		//read until all overlaps are processed
@@ -215,7 +214,7 @@ private:
 				if (alreadyPlaced)
 					continue;
 				if (split_matrix) {
-					(*alignmentContainer)[alignmentId++] = FragmentAlignments;
+					alignmentContainer[alignmentId++] = FragmentAlignments;
 					AlignedIndexes[alignmentId] = new std::list<int>();
 					FragmentAlignments = new std::map<int, FragmentAlignment*>();
 					continue;
@@ -305,8 +304,8 @@ private:
 		//{
 		//	fragmentAlignment.second->setOffset(fragmentAlignment.second->getOffset() - minOffset);
 		//}
-		(*alignmentContainer)[alignmentId++] = FragmentAlignments;
-		return *alignmentContainer;
+		alignmentContainer[alignmentId++] = FragmentAlignments;
+		return alignmentContainer;
 	}
 
 	//************************************

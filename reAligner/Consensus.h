@@ -40,7 +40,7 @@ public:
 
 	std::list<Metasymbol*> getPart(int start, int end) {
 		if (start < 0 || end < 0 || start > metasymbols->size() || end > metasymbols->size() || start > end) {
-			std::cout << "Start: " << start << ", end: " << end << ", size: " << metasymbols->size();
+			//std::cout << "Start: " << start << ", end: " << end << ", size: " << metasymbols->size();
 			throw std::runtime_error("Invalid start/end arguments. (Consensus::getPart)");
 		}
 		std::list<Metasymbol*> part;
@@ -81,11 +81,11 @@ public:
 				return var;
 		throw std::runtime_error("Index out of range");
 	}
-	int getLength() {
+	inline int getLength() {
 		return metasymbols->size();
 	}
 
-	void addMetasymbol(Metasymbol *ms) {
+	inline void addMetasymbol(Metasymbol *ms) {
 		metasymbols->push_back(ms);
 	}
 	void removeDashesFrontAndBack()
@@ -99,14 +99,14 @@ public:
 		
 
 	}
-	std::string toStringFirst() {
+	inline std::string toStringFirst() {
 		std::string s = "";
 		for (Metasymbol* M : *metasymbols)
 			s = s + M->getSymbols().front();
 		return s;
 	}
 
-	std::list<Metasymbol*> getMetasymbols() {
+	inline std::list<Metasymbol*> getMetasymbols() {
 		return *metasymbols;
 	}
 };

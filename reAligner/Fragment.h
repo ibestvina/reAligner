@@ -41,7 +41,7 @@ public:
 	/************************************************************************/
 	/*					METHODS                                             */
 	/************************************************************************/
-	void insertDashAt(int index)
+	inline void insertDashAt(int index)
 	{
 		sequence.insert(index, "-");
 		length++;
