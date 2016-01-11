@@ -232,7 +232,7 @@ Consensus *ReAligner::reAlign(Alignment & alignment, double epsilonPrecision, in
 	// initialize valueTable and isDiagonal
 	int maxReadLen = 0;
 	int maxDelta = 0;
-	for each (AlignedFragment* AF in *(alignment.getAllFragments()))
+	for(AlignedFragment* AF : *(alignment.getAllFragments()))
 	{
 		int currLen = AF->getLength();
 		if (currLen > maxReadLen) {

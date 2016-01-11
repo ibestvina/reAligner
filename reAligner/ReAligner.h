@@ -14,7 +14,7 @@ public:
 	static Consensus *getConsensus(Alignment *alignment);
 
 //private:
-	static std::vector<Metasymbol*> ReAligner::getPartOfConsensus(Alignment* alignment, int start, int end);
+	static std::vector<Metasymbol*> getPartOfConsensus(Alignment* alignment, int start, int end);
 	static double getConsensusScoreWeighted(double scoreF1, double scoreF2);
 	static Metasymbol *getConsensusMetasymbol(std::list<char> *column);
 	static std::list<char>* getColumn(Alignment* layoutMap, int index);
