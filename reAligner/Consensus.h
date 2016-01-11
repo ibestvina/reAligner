@@ -5,6 +5,7 @@
 #include <iostream>
 #include <iterator>
 #include <stdexcept>
+#include <vector>
 
 #include "Metasymbol.h"
 
@@ -32,6 +33,7 @@ public:
 	}
 	~Consensus()
 	{
+		while (!metasymbols->empty()) delete metasymbols->front(), metasymbols->pop_front();
 	}
 	
 	int getId() {

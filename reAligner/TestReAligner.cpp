@@ -71,7 +71,7 @@ void TestReAligner::testRealign1()
 {
 	std::chrono::high_resolution_clock::time_point t1 = std::chrono::high_resolution_clock::now();
 	//Reader reader = *new Reader(mySamplesPath + "synthetic500/500_2_frags.fasta", mySamplesPath + "synthetic500/500_2_align.mhap");
-	Reader reader = *new Reader(mySamplesPath + "synthetic500/500_2_frags.fasta", mySamplesPath + "synthetic500/500_2_align.mhap");
+	Reader reader = *new Reader(mySamplesPath + "test4/readsInput4.fasta", mySamplesPath + "test4/readsInput4.mhap");
 	std::list<Alignment*> alignments = reader.getAlignment();
 	Alignment *alignment = NULL;
 	int maxSize = 0;
@@ -86,7 +86,7 @@ void TestReAligner::testRealign1()
 	
 	Consensus *consBefore = ReAligner::getConsensus(alignment);
 	std::cout << std::endl << consBefore->toStringFirst() << std::endl;
-	Consensus *consAfter = ReAligner::reAlign(*alignment, 0.005, 10);
+	Consensus *consAfter = ReAligner::reAlign(*alignment, 0.01, 1);
 
 
 	std::chrono::high_resolution_clock::time_point t3 = std::chrono::high_resolution_clock::now();

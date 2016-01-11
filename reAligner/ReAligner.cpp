@@ -14,6 +14,7 @@
 
 std::vector<vector<int>> valueTable;
 std::vector<vector<bool>> isDiagonal;
+int numberOfColumns = 0;
 
 
 ReAligner::ReAligner()
@@ -31,6 +32,21 @@ double ReAligner::getConsensusScoreWeighted(double scoreF1, double scoreF2)
 	return 0.5 * scoreF1 + 0.5 * scoreF2;
 }
 
+std::vector<Metasymbol*> ReAligner::getPartOfConsensus(Alignment* alignment, int start, int end)
+{
+	int columnsNum = numberOfColumns;
+	std::vector<Metasymbol*> part(end-start);
+
+	for (int c = 0; c < end - start; ++c) {
+		std::list<char> *column = getColumn(alignment, c+start);
+		Metasymbol* consensusSymbol = getConsensusMetasymbol(column);
+
+		part[c] = consensusSymbol;
+
+		delete column;
+	}
+	return part;
+}
 
 Consensus *ReAligner::getConsensus(Alignment* alignment)
 {
@@ -93,9 +109,9 @@ Metasymbol * ReAligner::getConsensusMetasymbol(std::list<char>* column)
 }
 
 
-void ReAligner::getAlignment(AlignedFragment & read, Consensus * cons, int delta)
+void ReAligner::getAlignment(AlignedFragment & read, Alignment *alignment, int delta)
 {
-	std::list<Metasymbol*> consPartList;
+	std::vector<Metasymbol*> consMiddlePart;
 
 	Metasymbol* dashSym = new Metasymbol();
 	dashSym->addSymbol('-');
@@ -103,7 +119,7 @@ void ReAligner::getAlignment(AlignedFragment & read, Consensus * cons, int delta
 
 	int readLen = read.getLength();
 	int readOff = read.getOffset();
-	int consLen = cons->getLength();
+	int consLen = numberOfColumns;
 
 
 	// -- Consensus part construction --
@@ -114,17 +130,15 @@ void ReAligner::getAlignment(AlignedFragment & read, Consensus * cons, int delta
 	int backDashes = (consPartEnd > consLen) ? consPartEnd-consLen : 0;
 	consPartEnd = (consPartEnd > consLen) ? consLen : consPartEnd;
 
-	consPartList = cons->getPart(consPartStart, consPartEnd);
+	consMiddlePart = getPartOfConsensus(alignment, consPartStart, consPartEnd);
 
-	for (int i = 0; i < backDashes; i++)
-		consPartList.push_back(dashSym);
-	for (int i = 0; i < frontDashes; i++)
-		consPartList.push_front(dashSym);
+	std::vector<Metasymbol*> consPart(backDashes, dashSym);
+	std::vector<Metasymbol*> frontPart(frontDashes, dashSym);
 
-	int consPartLen = consPartList.size();
+	consPart.insert(consPart.end(), consMiddlePart.begin(), consMiddlePart.end());
+	consPart.insert(consPart.end(), frontPart.begin(), frontPart.end());
 
-	std::vector<Metasymbol*> consPart(std::begin(consPartList), std::end(consPartList));
-
+	int consPartLen = consPart.size();
 
 	// -- Needleman–Wunsch algorithm --
 
@@ -201,11 +215,14 @@ void ReAligner::getAlignment(AlignedFragment & read, Consensus * cons, int delta
 	read.setSequence(newSequence);
 	read.setOffset(newOffset);
 
+	while (!consMiddlePart.empty()) delete consMiddlePart.back(), consMiddlePart.pop_back();
+
 	return;
 }
 
 Consensus *ReAligner::reAlign(Alignment & alignment, double epsilonPrecision, int numOfIterations)
 {
+	numberOfColumns = getNumberOfColumns(&alignment);
 	Consensus *initialConsensus = getConsensus(&alignment);
 	double initialScore = initialConsensus->getScore();
 	bool shouldContinue = true;
@@ -241,7 +258,7 @@ Consensus *ReAligner::reAlign(Alignment & alignment, double epsilonPrecision, in
 
 	double bestScore = initialScore;
 	Consensus *bestConsensus = initialConsensus;
-
+	int oldNumberOfColumns = numberOfColumns;
 
 	while (shouldContinue) 
 	{
@@ -249,18 +266,22 @@ Consensus *ReAligner::reAlign(Alignment & alignment, double epsilonPrecision, in
 
 		for (int k = 0; k < numOfReads; k++) 
 		{
-			std::cout << k << "/" << numOfReads << endl;
+			//std::cout << k << "/" << numOfReads << endl;
 
 			// detach first fragment in a list - append it last after iteration
 			AlignedFragment* sequence = alignment.PopFirst();
-			dashFunction(*sequence);
+			if (sequence->getLength() + sequence->getOffset() == numberOfColumns) {
+				oldNumberOfColumns = numberOfColumns;
+				numberOfColumns = getNumberOfColumns(&alignment);
+			}
+			
+			//dashFunction(*sequence);
 
-			Consensus *partialConsensus = getConsensus(&alignment);
 			int delta = (int)((epsilonPrecision * sequence->getLength()) / 2);
-			getAlignment(*sequence, partialConsensus, delta);
-			delete partialConsensus;
+			getAlignment(*sequence, &alignment, delta);
 
 			alignment.AddFragment(sequence);
+			numberOfColumns = oldNumberOfColumns;
 		}
 
 		Consensus *newConsensus = getConsensus(&alignment);

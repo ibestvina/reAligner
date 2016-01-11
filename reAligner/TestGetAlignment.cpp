@@ -38,7 +38,7 @@ void TestGetAlignment::protoTest(std::string readSeq, int readOff, std::string c
 		consensus->addMetasymbol(new Metasymbol(string(1, consSeq[i])));
 	}
 
-	ReAligner::getAlignment(read, consensus, delta);
+	//ReAligner::getAlignment(read, consensus, delta);
 
 
 	CPPUNIT_ASSERT_EQUAL(expectedOff, read.getOffset());
