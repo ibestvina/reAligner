@@ -51,7 +51,7 @@ public:
 				}
 
 				//fragments->push_back(new Fragment(counter++));
-				fragments->push_back(new Fragment(counter++,sLine));
+				fragments->push_back(new Fragment(counter++,sLine.substr(1)));
 
 
 			}

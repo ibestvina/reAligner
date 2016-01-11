@@ -18,6 +18,7 @@ void TestReAligner::setUp(){}
 void TestReAligner::tearDown(){}
 
 std::string mySamplesPath = "D:/Projects/bioinf/realigner/project/reAligner/samples/";
+//std::string mySamplesPath = "C:/prog/bioinformatika/reAligner/samples/";
 //std::string mySamplesPath = "../samples/";
 
 std::vector<char> toVector(std::list<char> chars) {
@@ -71,7 +72,9 @@ void TestReAligner::testRealign1()
 {
 	std::chrono::high_resolution_clock::time_point t1 = std::chrono::high_resolution_clock::now();
 	//Reader reader = *new Reader(mySamplesPath + "synthetic500/500_2_frags.fasta", mySamplesPath + "synthetic500/500_2_align.mhap");
-	Reader reader = *new Reader(mySamplesPath + "test4/readsInput4.fasta", mySamplesPath + "test4/readsInput4.mhap");
+
+	Reader reader = *new Reader(mySamplesPath + "synthetic500/500_frags.fasta", mySamplesPath + "synthetic500/500_align.mhap");
+	//Reader reader = *new Reader(mySamplesPath + "test4/readsInput4.fasta", mySamplesPath + "test4/readsInput4.mhap");
 	std::list<Alignment*> alignments = reader.getAlignment();
 	Alignment *alignment = NULL;
 	int maxSize = 0;
@@ -96,12 +99,15 @@ void TestReAligner::testRealign1()
 	std::cout << std::endl<<"TIME READ: " << (float)readTime/1000000.0 << std::endl;
 	std::cout << "TIME DO: " << (float)doTime/1000000.0 << std::endl;
 
+	std::cout << "sad ce ispisati" << endl;
 	// TEST OUTPUT WRITER
-	//(*new OutputWriter("D:/Desktop/", alignment, consAfter)).outputAll();
-
+	/*std::string outputTestPath = "C:/Users/Zrinka/Desktop/bioinf/";
+	std::list<Consensus> cons = std::list<Consensus>();
+	cons.push_back(*consAfter);
+	OutputWriter::outputConsensusAll(cons, outputTestPath, "konsenzusi");
+	OutputWriter::outputGFA(*alignment, outputTestPath, "gfa_output");*/
+	
 	std::cout << endl << consAfter->toStringFirst() << endl;
-
-
 }
 void TestReAligner::getConsensusTest() {
 	std::list<AlignedFragment*> fragments = std::list<AlignedFragment*>();
