@@ -61,9 +61,9 @@ void TestReAligner::testRealign2()
 	AFL.push_back(AF4);
 	AFL.push_back(AF5);
 	AFL.push_back(AF6);
-	Alignment& A = *new Alignment(AFL);
-	Consensus& consBegin = ReAligner::getConsensus(A);
-	Consensus& cons = ReAligner::reAlign(A, 4, 10);
+	Alignment A(AFL);
+	Consensus consBegin = ReAligner::getConsensus(A);
+	Consensus cons = ReAligner::reAlign(A, 4, 10);
 	std::cout << std::endl << cons.toStringFirst();
 }
 void TestReAligner::testRealign1()
@@ -87,9 +87,9 @@ void TestReAligner::testRealign1()
 		}
 	}
 
-	Consensus &consBefore = ReAligner::getConsensus(*alignment);
+	Consensus consBefore = ReAligner::getConsensus(*alignment);
 	std::cout << std::endl << consBefore.toStringFirst() << std::endl;
-	Consensus &consAfter = ReAligner::reAlign(*alignment, 0.005, 10);
+	Consensus consAfter = ReAligner::reAlign(*alignment, 0.005, 10);
 
 	std::chrono::high_resolution_clock::time_point t3 = std::chrono::high_resolution_clock::now();
 

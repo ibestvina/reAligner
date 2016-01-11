@@ -11,7 +11,7 @@ class ReAligner
 public:
 	ReAligner();
 	~ReAligner();
-	static Consensus &getConsensus(Alignment &alignment);
+	static Consensus getConsensus(Alignment &alignment);
 
 //private:
 	static double getConsensusScoreWeighted(double scoreF1, double scoreF2);

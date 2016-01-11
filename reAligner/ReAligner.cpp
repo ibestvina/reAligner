@@ -31,10 +31,10 @@ double ReAligner::getConsensusScoreWeighted(double scoreF1, double scoreF2)
 	return 0.5 * scoreF1 + 0.5 * scoreF2;
 }
 
-Consensus &ReAligner::getConsensus(Alignment & alignment)
+Consensus ReAligner::getConsensus(Alignment & alignment)
 {
 	int columnsNum = getNumberOfColumns(alignment);
-	Consensus &consensus = *new Consensus();
+	Consensus consensus;
 	double f1Score = 0.0;
 	double f2Score = 0.0;
 	double columnScoreTmp;
@@ -237,13 +237,13 @@ Consensus ReAligner::reAlign(Alignment & alignment, double epsilonPrecision, int
 
 	
 	double minimalScore = initialScore;
-	Consensus& bestConsensus = consensus;
+	Consensus bestConsensus = consensus;
 
 	while (shouldContinue) {
 		std::cout << "Iterating..." << std::endl;
 
 		for (int k = 0; k < numOfReads; k++) {
-			std::cout << k << "/" << numOfReads << endl;
+			//std::cout << k << "/" << numOfReads << endl;
 			// detach first fragment in a list - append it last after iteration
 			AlignedFragment* sequence = alignment.PopFirst();
 			dashFunction(*sequence);
