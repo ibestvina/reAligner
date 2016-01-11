@@ -10,22 +10,17 @@
 
 class OutputWriter : public FileWriter
 {
-	std::string folderPath;
-	Alignment &alignment;
-	Consensus &consensus;
-public:
-
 	
-	OutputWriter(std::string folderPath, Alignment& alignment, Consensus& consensus) : folderPath(folderPath), alignment(alignment), consensus(consensus)
-	{		
+public:
+	OutputWriter() {
 
 	}
 	~OutputWriter()
 	{
 
 	}
-
-	vector<string> getVector(Metasymbol* metasymbol) {
+	
+	static vector<string> getVector(Metasymbol* metasymbol) {
 		std::list<char> row = metasymbol->getSymbols();
 		vector<string> ret; ret.clear();
 		string tmp = "-";
@@ -36,21 +31,20 @@ public:
 		return ret;
 	}
 
-	vector<string> getRows(string s) {
-		string ss = "";
+	static vector<string> getRows(string s) {
 		vector<string> ret;
-		for (int i = 0; i * 60 < (int)s.size(); ++i) {
-			for (int j = 0; i * 60 + j < (int)s.size(); ++j) {
-				ss += "-";
-				ss[(int)ss.size() - 1] = s[i * 60 + j];
+		for (int i = 0; i < (int)s.size(); i += 60) {
+			if (i + 60 <= (int)s.size()) {
+				ret.push_back(s.substr(i, 60));
 			}
-			ret.push_back(ss);
-			ss = "";
+			else {
+				ret.push_back(s.substr(i));
+			}
 		}
 		return ret;
 	}
 
-	vector<string> getOutput(int version) {
+	static vector<string> getOutput(Consensus& consensus, int version) {
 		std::list<Metasymbol*> metasymbols = consensus.getMetasymbols();
 		string ret = "";
 		for (std::list<Metasymbol*>::iterator itr = metasymbols.begin(); itr != metasymbols.end(); ++itr) {
@@ -86,52 +80,38 @@ public:
 	}
 
 	/*
-	* If there are multiple symbols writes n;
-	*/
-	void outputConsensusWithN() {
-		ofstream file;
-		file.open(folderPath + "consensusWithN.fasta");
-		file << consensus.getId();
-		vector<string> rows = getOutput(0);
-		for (int i = 0; i < (int)rows.size(); ++i) {
-			file << rows[i] << endl;
-		}
-		file.close();
-	}
-
-	/*
-	* If there are multiple symbols writes them inside of []
-	*/
-	void outputConsensusWithBrackets() {
-		ofstream file;
-		file.open(folderPath + "consensusWithBrackets.fasta");
-		file << consensus.getId();
-		vector<string> rows = getOutput(1);
-		for (int i = 0; i < (int)rows.size(); ++i) {
-			file << rows[i] << endl;
-		}
-		file.close();
-	}
-
-	/*
-	 * If there are multiple symbols writes first one.
+	 * Outputs consensus with different versions depending on parameter version:
+	 *    if version == 0 outputs n in place of multiple symbols
+	 *    if version == 1 outputs multiple symbols inside of []
+	 *    if version == 2 outputs first one if there are multiple symbols
 	 */
-	void outputConsensusWithFirstSymbol() {
+	static void outputConsensus(std::list<Consensus> consensusList, std::string path, std::string fileName, int version) {
 		ofstream file;
-		file.open(folderPath + "consensusOnlyFirst.fasta");
-		file << consensus.getId();
-		vector<string> rows = getOutput(2);
-		for (int i = 0; i < (int)rows.size(); ++i) {
-			file << rows[i] << endl;
+		file.open(path + fileName);
+		for (std::list<Consensus>::iterator itr = consensusList.begin(); itr != consensusList.end(); ++itr) {
+			Consensus consensus = *itr;
+			file << ">" << consensus.getId() << endl;
+			vector<string> rows = getOutput(consensus, version);
+			for (int i = 0; i < (int)rows.size(); ++i) {
+				file << rows[i] << endl;
+			}
 		}
 		file.close();
 	}
 
-	void outputGFA() {
+	static void outputConsensusAll(std::list<Consensus> consensusList, std::string path, std::string fileName) {
+		std::string consensusExt = ".fasta";
+		std::string versionNames[3] = { "N", "B", "F" };
+		for (int i = 0; i < 3; ++i) {
+			outputConsensus(consensusList, path, fileName + versionNames[i] + consensusExt, i);
+		}
+	}
+
+	static void outputGFA(Alignment& alignment, std::string path, std::string fileName) {
 		ofstream file;
-		file.open(folderPath + "output.gfa");
-		std::list<AlignedFragment*> fragments = alignment.getAllFragments();
-		for (std::list<AlignedFragment*>::iterator itr = fragments.begin(); itr != fragments.end(); ++itr) {
+		file.open(path + fileName + ".gfa");
+		std::list<AlignedFragment*> *fragments = alignment.getAllFragments();
+		for (std::list<AlignedFragment*>::iterator itr = fragments->begin(); itr != fragments->end(); ++itr) {
 			AlignedFragment* fragment = *itr;
 			file << "a\t" << "comment\t";
 			file << fragment->getId() << "\t" << fragment->getOffset() << "\t";
@@ -147,12 +127,5 @@ public:
 			file << fragment->getLength() << endl;
 		}
 		file.close();
-	}
-
-	void outputAll() {
-		outputConsensusWithN();
-		outputConsensusWithBrackets();
-		outputConsensusWithFirstSymbol();
-		outputGFA();
 	}
 };

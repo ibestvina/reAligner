@@ -13,9 +13,9 @@ Alignment::~Alignment()
 {
 }
 
-std::list<AlignedFragment*>& Alignment::getAllFragments()
+std::list<AlignedFragment*>* Alignment::getAllFragments()
 {
-	return Fragments;
+	return &Fragments;
 }
 
 AlignedFragment& Alignment::FragmentAt(int index)
