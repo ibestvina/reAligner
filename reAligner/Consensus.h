@@ -32,6 +32,8 @@ public:
 	}
 	~Consensus()
 	{
+		while (!metasymbols->empty()) 
+			delete metasymbols->front(), metasymbols->pop_front();
 	}
 	
 	int getId() {
