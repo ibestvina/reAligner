@@ -33,9 +33,9 @@ void TestGetAlignment::protoTest(std::string readSeq, int readOff, std::string c
 	FragmentAlignment &fragAlign = *new FragmentAlignment(0, readLen, 0, readLen, readOff);
 	AlignedFragment &read = *new AlignedFragment(fragment, fragAlign);
 
-	Consensus &consensus = *new Consensus(0);
+	Consensus *consensus = new Consensus(0);
 	for (int i = 0; i < consSeq.length(); i++) {
-		consensus.addMetasymbol(new Metasymbol(string(1, consSeq[i])));
+		consensus->addMetasymbol(new Metasymbol(string(1, consSeq[i])));
 	}
 
 	ReAligner::getAlignment(read, consensus, delta);

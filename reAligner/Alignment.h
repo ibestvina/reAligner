@@ -27,7 +27,7 @@ public:
 	// Returns:   std::list<AlignedFragment*> &
 	// Qualifier:
 	//************************************
-	std::list<AlignedFragment*> &getAllFragments();
+	std::list<AlignedFragment*> *getAllFragments();
 
 	//************************************
 	// Method:    FragmentAt

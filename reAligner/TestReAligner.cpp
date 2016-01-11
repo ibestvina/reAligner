@@ -17,8 +17,8 @@ CPPUNIT_TEST_SUITE_REGISTRATION(TestReAligner);
 void TestReAligner::setUp(){}
 void TestReAligner::tearDown(){}
 
-//std::string mySamplesPath = "D:/Projects/bioinf/realigner/project/reAligner/samples/";
-std::string mySamplesPath = "../samples/";
+std::string mySamplesPath = "D:/Projects/bioinf/realigner/project/reAligner/samples/";
+//std::string mySamplesPath = "../samples/";
 
 std::vector<char> toVector(std::list<char> chars) {
 	std::vector<char> ret; ret.clear();
@@ -62,17 +62,17 @@ void TestReAligner::testRealign2()
 	AFL.push_back(AF5);
 	AFL.push_back(AF6);
 	Alignment& A = *new Alignment(AFL);
-	Consensus& consBegin = ReAligner::getConsensus(A);
-	Consensus& cons = ReAligner::reAlign(A, 4, 10);
-	std::cout << std::endl << cons.toStringFirst();
+	Consensus* consBegin = ReAligner::getConsensus(&A);
+	Consensus* cons = ReAligner::reAlign(A, 4, 10);
+	std::cout << std::endl << cons->toStringFirst();
 }
 void TestReAligner::testRealign1()
 {
 	std::chrono::high_resolution_clock::time_point t1 = std::chrono::high_resolution_clock::now();
 	//Reader reader = *new Reader(mySamplesPath + "synthetic500/500_2_frags.fasta", mySamplesPath + "synthetic500/500_2_align.mhap");
-	Reader reader = *new Reader(mySamplesPath + "test4/readsInput4.fasta", mySamplesPath + "test4/readsInput4.mhap");
+	Reader reader = *new Reader(mySamplesPath + "synthetic500/500_2_frags.fasta", mySamplesPath + "synthetic500/500_2_align.mhap");
 	std::list<Alignment*> alignments = reader.getAlignment();
-	Alignment *alignment;
+	Alignment *alignment = NULL;
 	int maxSize = 0;
 	for (auto A : alignments)
 		if (A->getSize() > maxSize)
@@ -81,15 +81,10 @@ void TestReAligner::testRealign1()
 			maxSize = A->getSize();
 		}
 	std::chrono::high_resolution_clock::time_point t2 = std::chrono::high_resolution_clock::now();
-	for (AlignedFragment *AF : alignment->getAllFragments()) {
-		if (AF->getOffset() == 0) {
-			std::cout << "Sve je u redu!";
-		}
-	}
-
-	Consensus &consBefore = ReAligner::getConsensus(*alignment);
-	std::cout << std::endl << consBefore.toStringFirst() << std::endl;
-	Consensus &consAfter = ReAligner::reAlign(*alignment, 0.005, 10);
+	
+	Consensus *consBefore = ReAligner::getConsensus(alignment);
+	std::cout << std::endl << consBefore->toStringFirst() << std::endl;
+	Consensus *consAfter = ReAligner::reAlign(*alignment, 0.005, 10);
 
 	std::chrono::high_resolution_clock::time_point t3 = std::chrono::high_resolution_clock::now();
 
@@ -101,7 +96,7 @@ void TestReAligner::testRealign1()
 	// TEST OUTPUT WRITER
 	//(*new OutputWriter("D:/Desktop/", alignment, consAfter)).outputAll();
 
-	std::cout << endl << consAfter.toStringFirst() << endl;
+	std::cout << endl << consAfter->toStringFirst() << endl;
 
 
 }
@@ -110,8 +105,8 @@ void TestReAligner::getConsensusTest() {
 	fragments.push_back(new AlignedFragment(*new Fragment(1, 3, "ACA"), *new FragmentAlignment(1, 3, 0, 0, 0)));
 	fragments.push_back(new AlignedFragment(*new Fragment(1, 3, "TAT"), *new FragmentAlignment(1, 3, 0, 0, 0)));
 	fragments.push_back(new AlignedFragment(*new Fragment(1, 3, "AAT"), *new FragmentAlignment(1, 3, 0, 0, 0)));
-	Consensus consensus = ReAligner::getConsensus(*new Alignment(fragments));
-	std::list<Metasymbol*> metasymbols = consensus.getPart(0, 3);
+	Consensus *consensus = ReAligner::getConsensus(new Alignment(fragments));
+	std::list<Metasymbol*> metasymbols = consensus->getPart(0, 3);
 	std::vector<char> symbols[3];
 	int counter = 0;
 	for (std::list<Metasymbol*>::iterator itr = metasymbols.begin(); itr != metasymbols.end(); ++itr) {
@@ -133,12 +128,12 @@ void TestReAligner::getConsensusMetasymbolTest() {
 	column.push_back('A');
 	column.push_back('C');
 	column.push_back('A');
-	std::vector<char> symbols = toVector(ReAligner::getConsensusMetasymbol(column)->getSymbols());
+	std::vector<char> symbols = toVector(ReAligner::getConsensusMetasymbol(&column)->getSymbols());
 	CPPUNIT_ASSERT(symbols.size() == 1);
 	CPPUNIT_ASSERT(symbols[0] == 'A');
 
 	column.push_back('T');
-	symbols = toVector(ReAligner::getConsensusMetasymbol(column)->getSymbols());
+	symbols = toVector(ReAligner::getConsensusMetasymbol(&column)->getSymbols());
 	CPPUNIT_ASSERT(symbols.size() == 2);
 	CPPUNIT_ASSERT(symbols[0] == 'A');
 	CPPUNIT_ASSERT(symbols[1] == 'T');
@@ -150,17 +145,17 @@ void TestReAligner::getColumnScoreTest() {
 	column.push_back('A');
 	column.push_back('C');
 	column.push_back('A');
-	Metasymbol* metasymbol = ReAligner::getConsensusMetasymbol(column);
-	double score = ReAligner::getColumnScore(column, metasymbol);
+	Metasymbol* metasymbol = ReAligner::getConsensusMetasymbol(&column);
+	double score = ReAligner::getColumnScore(&column, metasymbol);
 	
 	column.push_back('T');
 	column.push_back('A');
-	metasymbol = ReAligner::getConsensusMetasymbol(column);
-	score = ReAligner::getColumnScore(column, metasymbol);
+	metasymbol = ReAligner::getConsensusMetasymbol(&column);
+	score = ReAligner::getColumnScore(&column, metasymbol);
 	CPPUNIT_ASSERT(compareDouble(3.0, score) == true);
 
 	column.push_back('T');
-	metasymbol = ReAligner::getConsensusMetasymbol(column);
-	score = ReAligner::getColumnScore(column, metasymbol);
+	metasymbol = ReAligner::getConsensusMetasymbol(&column);
+	score = ReAligner::getColumnScore(&column, metasymbol);
 	CPPUNIT_ASSERT(compareDouble(1.0, score) == true);
 }

@@ -31,36 +31,36 @@ double ReAligner::getConsensusScoreWeighted(double scoreF1, double scoreF2)
 	return 0.5 * scoreF1 + 0.5 * scoreF2;
 }
 
-Consensus &ReAligner::getConsensus(Alignment & alignment)
+Consensus *ReAligner::getConsensus(Alignment* alignment)
 {
 	int columnsNum = getNumberOfColumns(alignment);
-	Consensus &consensus = *new Consensus();
+	Consensus *consensus = new Consensus();
 	double f1Score = 0.0;
 	double f2Score = 0.0;
 	double columnScoreTmp;
 	for (int c = 0; c < columnsNum; ++c) {
-		std::list<char> column = getColumn(alignment, c);
+		std::list<char> *column = getColumn(alignment, c);
 		Metasymbol* consensusSymbol = getConsensusMetasymbol(column);
-		if (consensusSymbol->getSize() == 5) {
-			int x = c;
-		}
-		consensus.addMetasymbol(consensusSymbol);
+
+		consensus->addMetasymbol(consensusSymbol);
 
 		columnScoreTmp = getColumnScore(column , consensusSymbol);
 
 		f1Score += columnScoreTmp;
-		if (column.size() > 0) {
-			f2Score += columnScoreTmp / column.size();
+		int colSize = column->size();
+		if (colSize > 0) {
+			f2Score += columnScoreTmp / colSize;
 		}
+		delete column;
 	}
-	consensus.setScore(getConsensusScoreWeighted(f1Score, f2Score));
+	consensus->setScore(getConsensusScoreWeighted(f1Score, f2Score));
 	return consensus;
 }
 
-Metasymbol * ReAligner::getConsensusMetasymbol(std::list<char>& column)
+Metasymbol * ReAligner::getConsensusMetasymbol(std::list<char>* column)
 {
 	Metasymbol* sym = new Metasymbol;
-	if (column.size() == 0) {
+	if (column->size() == 0) {
 		sym->addSymbol('-');
 		return sym;
 	}
@@ -74,7 +74,7 @@ Metasymbol * ReAligner::getConsensusMetasymbol(std::list<char>& column)
 	int counter[5];
 	std::memset(counter, 0, sizeof(counter));
 	int maks = 0;
-	for (std::list<char>::iterator itr = column.begin(); itr != column.end(); ++itr) {
+	for (std::list<char>::iterator itr = column->begin(); itr != column->end(); ++itr) {
 		int index = M[*itr];		
 		counter[index]++;
 		if (counter[index] > maks) {
@@ -91,7 +91,7 @@ Metasymbol * ReAligner::getConsensusMetasymbol(std::list<char>& column)
 }
 
 
-void ReAligner::getAlignment(AlignedFragment & read, Consensus & cons, int delta)
+void ReAligner::getAlignment(AlignedFragment & read, Consensus * cons, int delta)
 {
 	std::list<Metasymbol*> consPartList;
 
@@ -101,7 +101,7 @@ void ReAligner::getAlignment(AlignedFragment & read, Consensus & cons, int delta
 
 	int readLen = read.getLength();
 	int readOff = read.getOffset();
-	int consLen = cons.getLength();
+	int consLen = cons->getLength();
 
 
 	// -- Consensus part construction --
@@ -112,7 +112,7 @@ void ReAligner::getAlignment(AlignedFragment & read, Consensus & cons, int delta
 	int backDashes = (consPartEnd > consLen) ? consPartEnd-consLen : 0;
 	consPartEnd = (consPartEnd > consLen) ? consLen : consPartEnd;
 
-	consPartList = cons.getPart(consPartStart, consPartEnd);
+	consPartList = cons->getPart(consPartStart, consPartEnd);
 
 	for (int i = 0; i < backDashes; i++)
 		consPartList.push_back(dashSym);
@@ -202,10 +202,10 @@ void ReAligner::getAlignment(AlignedFragment & read, Consensus & cons, int delta
 	return;
 }
 
-Consensus ReAligner::reAlign(Alignment & alignment, double epsilonPrecision, int numOfIterations)
+Consensus *ReAligner::reAlign(Alignment & alignment, double epsilonPrecision, int numOfIterations)
 {
-	Consensus consensus = getConsensus(alignment);
-	double initialScore = consensus.getScore();
+	Consensus *initialConsensus = getConsensus(&alignment);
+	double initialScore = initialConsensus->getScore();
 	bool shouldContinue = true;
 	int iteration = 1;
 	int numOfReads = alignment.getSize();
@@ -213,7 +213,7 @@ Consensus ReAligner::reAlign(Alignment & alignment, double epsilonPrecision, int
 	// initialize valueTable and isDiagonal
 	int maxReadLen = 0;
 	int maxDelta = 0;
-	for each (AlignedFragment* AF in alignment.getAllFragments())
+	for each (AlignedFragment* AF in *(alignment.getAllFragments()))
 	{
 		int currLen = AF->getLength();
 		if (currLen > maxReadLen) {
@@ -236,45 +236,47 @@ Consensus ReAligner::reAlign(Alignment & alignment, double epsilonPrecision, int
 	}
 
 	
-	double minimalScore = initialScore;
-	Consensus& bestConsensus = consensus;
+	double bestScore = initialScore;
+	Consensus *bestConsensus = initialConsensus;
+	
 
-	while (shouldContinue) {
+	while (shouldContinue) 
+	{
 		std::cout << "Iterating..." << std::endl;
 
-		for (int k = 0; k < numOfReads; k++) {
+		for (int k = 0; k < numOfReads; k++) 
+		{
 			std::cout << k << "/" << numOfReads << endl;
 			// detach first fragment in a list - append it last after iteration
 			AlignedFragment* sequence = alignment.PopFirst();
 			dashFunction(*sequence);
-			dashFunction(consensus);
-			consensus = getConsensus(alignment);
+
+			Consensus *partialConsensus = getConsensus(&alignment);
 			int delta = (int)((epsilonPrecision * sequence->getLength()) / 2);
-			getAlignment(*sequence, consensus, delta);
+			getAlignment(*sequence, partialConsensus, delta);
+			delete partialConsensus;
 
 			alignment.AddFragment(sequence);
-			consensus = getConsensus(alignment);
-			if (consensus.getScore() < minimalScore) {
-				bestConsensus = consensus;
-				minimalScore = consensus.getScore();
-			}
 		}
 
-		if (bestConsensus.getScore() >= initialScore || iteration == numOfIterations) {
+		Consensus *newConsensus = getConsensus(&alignment);
+		double newScore = newConsensus->getScore();
+		if (newScore >= bestScore || iteration == numOfIterations) 
+		{
 			shouldContinue = false;
 		}
 
-		std::cout << "After " << iteration << " iterations score is: " << bestConsensus.getScore() << "   previous score : " << initialScore;
-		initialScore = bestConsensus.getScore();
+		std::cout << "After " << iteration << " iterations score is: " << newScore << std::endl;
+		bestScore = newScore;
 		iteration++;
 	}
 
 	return bestConsensus;
 }
 
-void ReAligner::dashFunction(Consensus &consensus)
+void ReAligner::dashFunction(Consensus *consensus)
 {
-	consensus.removeDashesFrontAndBack();
+	consensus->removeDashesFrontAndBack();
 }
 
 void ReAligner::dashFunction(AlignedFragment & fragment)
@@ -282,16 +284,16 @@ void ReAligner::dashFunction(AlignedFragment & fragment)
 	fragment.removeDashesFrontAndBack();
 }
 
-std::list<char> ReAligner::getColumn(Alignment & layoutMap, int index)
+std::list<char>* ReAligner::getColumn(Alignment* layoutMap, int index)
 {
-	std::list<char> column;
-	std::list<AlignedFragment*> fragments = layoutMap.getAllFragments();
-	for (std::list<AlignedFragment*>::const_iterator iter = fragments.begin(); iter != fragments.end(); ++iter) {
+	std::list<char> *column = new std::list<char>;
+	std::list<AlignedFragment*> *fragments = layoutMap->getAllFragments();
+	for (std::list<AlignedFragment*>::const_iterator iter = fragments->begin(); iter != fragments->end(); ++iter) {
 		int offset = (*iter)->getOffset();
 		int length = (*iter)->getLength();
 		if (offset <= index && offset + length > index) {
 			char sym = (*iter)->getAt(index - offset);
-			column.push_back(sym);
+			column->push_back(sym);
 		}
 	}
 	return column;
@@ -300,10 +302,10 @@ std::list<char> ReAligner::getColumn(Alignment & layoutMap, int index)
 /**
  * Returns how many symbols from column don't match symbols from metasymbol.
  */
-double ReAligner::getColumnScore(std::list<char> &column, Metasymbol* sym) {
+double ReAligner::getColumnScore(std::list<char> *column, Metasymbol* sym) {
 	double score = 0.0;
 	std::list<char> symbols = sym->getSymbols();
-	for (std::list<char>::iterator c = column.begin(); c != column.end(); ++c) {
+	for (std::list<char>::iterator c = column->begin(); c != column->end(); ++c) {
 		if (std::find(symbols.begin(), symbols.end(), *c) == symbols.end()) {
 			score += 1;
 		}
@@ -314,9 +316,9 @@ double ReAligner::getColumnScore(std::list<char> &column, Metasymbol* sym) {
 /**
  * Returns how many symbols from column don't match sym.
  */
-double ReAligner::getColumnScore(std::list<char> &column, char sym) {
+double ReAligner::getColumnScore(std::list<char> *column, char sym) {
 	double score = 0.0;
-	for (std::list<char>::iterator c = column.begin(); c != column.end(); ++c) {
+	for (std::list<char>::iterator c = column->begin(); c != column->end(); ++c) {
 		if (sym != *c) {
 			score += 1;
 		}
@@ -324,11 +326,11 @@ double ReAligner::getColumnScore(std::list<char> &column, char sym) {
 	return score;
 }
 
-int ReAligner::getNumberOfColumns(Alignment & layoutMap)
+int ReAligner::getNumberOfColumns(Alignment* layoutMap)
 {
 	int numOfColumns = 0;
-	std::list<AlignedFragment*> &fragments = layoutMap.getAllFragments();
-	for (std::list<AlignedFragment*>::const_iterator iter = fragments.begin(); iter != fragments.end(); ++iter) {
+	std::list<AlignedFragment*> *fragments = layoutMap->getAllFragments();
+	for (std::list<AlignedFragment*>::const_iterator iter = fragments->begin(); iter != fragments->end(); ++iter) {
 		int offset = (*iter)->getOffset();
 		int length = (*iter)->getLength();
 		numOfColumns = std::max(numOfColumns, offset + length);

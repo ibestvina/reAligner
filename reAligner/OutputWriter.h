@@ -130,8 +130,8 @@ public:
 	void outputGFA() {
 		ofstream file;
 		file.open(folderPath + "output.gfa");
-		std::list<AlignedFragment*> fragments = alignment.getAllFragments();
-		for (std::list<AlignedFragment*>::iterator itr = fragments.begin(); itr != fragments.end(); ++itr) {
+		std::list<AlignedFragment*> *fragments = alignment.getAllFragments();
+		for (std::list<AlignedFragment*>::iterator itr = fragments->begin(); itr != fragments->end(); ++itr) {
 			AlignedFragment* fragment = *itr;
 			file << "a\t" << "comment\t";
 			file << fragment->getId() << "\t" << fragment->getOffset() << "\t";
