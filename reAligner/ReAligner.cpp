@@ -12,7 +12,7 @@
 
 
 
-std::vector<vector<int>> valueTable;
+std::vector<vector<double>> valueTable;
 std::vector<vector<bool>> isDiagonal;
 int numberOfColumns = 0;
 ColumnCount* dash;
@@ -150,9 +150,9 @@ void ReAligner::getAlignment(AlignedFragment & read, Alignment *alignment, int d
 	// First column
 	for (int i = 1; i <= readLen; i++) {
 		ColumnCount cc = consPart[i - 1];
-		int cost = cc.getScore(read.getAt(i - 1));
+		double cost = cc.getScore(read.getAt(i - 1));
 
-		int scoreDiag = valueTable[i - 1][0] + cost;
+		double scoreDiag = valueTable[i - 1][0] + cost;
 
 		valueTable[i][0] = scoreDiag;
 		isDiagonal[i][0] = true;
@@ -165,10 +165,10 @@ void ReAligner::getAlignment(AlignedFragment & read, Alignment *alignment, int d
 	for (int i = 1; i <= readLen; i++) {
 		for (int k = 1; k < stripWidth; k++) {
 			ColumnCount cc = consPart[k + i - 1];
-			int cost = cc.getScore(read.getAt(i - 1));
+			double cost = cc.getScore(read.getAt(i - 1));
 
-			int scoreDiag = valueTable[i - 1][k] + cost;
-			int scoreLeft = valueTable[i][k - 1] - 1;
+			double scoreDiag = valueTable[i - 1][k] + cost;
+			double scoreLeft = valueTable[i][k - 1] - 1;
 
 			if (scoreDiag >= scoreLeft) {
 				valueTable[i][k] = scoreDiag;
@@ -181,7 +181,7 @@ void ReAligner::getAlignment(AlignedFragment & read, Alignment *alignment, int d
 		}
 	}
 
-	int score = std::numeric_limits<int>::min();
+	double score = -1 * numeric_limits<double>::max();
 	int endPoisition = 0;
 	for (int i = 0; i <= 2 * delta; i++) {
 		int currentValue = valueTable[readLen][stripWidth - 1 - i];
@@ -240,7 +240,7 @@ Consensus *ReAligner::reAlign(Alignment & alignment, double epsilonPrecision, in
 	maxReadLen = maxReadLen * pow((epsilonPrecision + 1), numOfIterations);
 	int maxStripWidth = (int)(epsilonPrecision * maxReadLen) + 1;
 	for (int i = 0; i <= maxReadLen; i++) {
-		std::vector<int> rowInt(maxStripWidth);
+		std::vector<double> rowInt(maxStripWidth);
 		std::vector<bool> rowBool(maxStripWidth);
 
 		valueTable.push_back(rowInt);
@@ -252,6 +252,8 @@ Consensus *ReAligner::reAlign(Alignment & alignment, double epsilonPrecision, in
 	double bestScore = initialScore;
 	Consensus *bestConsensus = initialConsensus;
 	int oldNumberOfColumns = numberOfColumns;
+
+	std::cout << "Starting score is: " << bestScore << std::endl;
 
 	while (true) 
 	{
