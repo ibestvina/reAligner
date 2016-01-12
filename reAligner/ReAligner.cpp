@@ -15,6 +15,7 @@
 std::vector<vector<int>> valueTable;
 std::vector<vector<bool>> isDiagonal;
 int numberOfColumns = 0;
+ColumnCount* dash;
 
 
 ReAligner::ReAligner()
@@ -32,19 +33,28 @@ double ReAligner::getConsensusScoreWeighted(double scoreF1, double scoreF2)
 	return 0.5 * scoreF1 + 0.5 * scoreF2;
 }
 
-std::vector<Metasymbol*> ReAligner::getPartOfConsensus(Alignment* alignment, int start, int end)
+std::vector<ColumnCount> ReAligner::getPartOfConsensus(Alignment* alignment, int start, int end, int dashesFront, int dashesBack)
 {
 	int columnsNum = numberOfColumns;
-	std::vector<Metasymbol*> part(end-start);
+	std::vector<ColumnCount> part(end-start + dashesFront + dashesBack);
+	
+	for (int c = 0; c < dashesBack; c++) {
+		part[c] = *dash;
+	}
 
 	for (int c = 0; c < end - start; ++c) {
 		std::list<char> *column = getColumn(alignment, c+start);
-		Metasymbol* consensusSymbol = getConsensusMetasymbol(column);
+		ColumnCount columnCount(column);
 
-		part[c] = consensusSymbol;
+		part[c+dashesBack] = columnCount;
 
 		delete column;
 	}
+	int partEnd = dashesBack + end - start + dashesFront;
+	for (int c = dashesBack + end - start; c < partEnd; c++) {
+		part[c] = *dash;
+	}
+
 	return part;
 }
 
@@ -111,12 +121,6 @@ Metasymbol * ReAligner::getConsensusMetasymbol(std::list<char>* column)
 
 void ReAligner::getAlignment(AlignedFragment & read, Alignment *alignment, int delta)
 {
-	std::vector<Metasymbol*> consMiddlePart;
-
-	Metasymbol* dashSym = new Metasymbol();
-	dashSym->addSymbol('-');
-
-
 	int readLen = read.getLength();
 	int readOff = read.getOffset();
 	int consLen = numberOfColumns;
@@ -130,13 +134,8 @@ void ReAligner::getAlignment(AlignedFragment & read, Alignment *alignment, int d
 	int backDashes = (consPartEnd > consLen) ? consPartEnd-consLen : 0;
 	consPartEnd = (consPartEnd > consLen) ? consLen : consPartEnd;
 
-	consMiddlePart = getPartOfConsensus(alignment, consPartStart, consPartEnd);
-
-	std::vector<Metasymbol*> consPart(backDashes, dashSym);
-	std::vector<Metasymbol*> frontPart(frontDashes, dashSym);
-
-	consPart.insert(consPart.end(), consMiddlePart.begin(), consMiddlePart.end());
-	consPart.insert(consPart.end(), frontPart.begin(), frontPart.end());
+	std::vector<ColumnCount> consPart = getPartOfConsensus(alignment, consPartStart, consPartEnd, frontDashes, backDashes);
+	
 
 	int consPartLen = consPart.size();
 
@@ -150,10 +149,8 @@ void ReAligner::getAlignment(AlignedFragment & read, Alignment *alignment, int d
 
 	// First column
 	for (int i = 1; i <= readLen; i++) {
-		Metasymbol *sym = consPart[i - 1];
-		int cost = -1;
-		if (sym->contains(read.getAt(i - 1)) || sym->isDashOnly())
-			cost = 0;
+		ColumnCount cc = consPart[i - 1];
+		int cost = cc.getScore(read.getAt(i - 1));
 
 		int scoreDiag = valueTable[i - 1][0] + cost;
 
@@ -167,10 +164,8 @@ void ReAligner::getAlignment(AlignedFragment & read, Alignment *alignment, int d
 	// Main loop
 	for (int i = 1; i <= readLen; i++) {
 		for (int k = 1; k < stripWidth; k++) {
-			Metasymbol *sym = consPart[k + i - 1];
-			int cost = -1;
-			if (sym->contains(read.getAt(i - 1)) || sym->isDashOnly())
-				cost = 0;
+			ColumnCount cc = consPart[k + i - 1];
+			int cost = cc.getScore(read.getAt(i - 1));
 
 			int scoreDiag = valueTable[i - 1][k] + cost;
 			int scoreLeft = valueTable[i][k - 1] - 1;
@@ -215,8 +210,6 @@ void ReAligner::getAlignment(AlignedFragment & read, Alignment *alignment, int d
 	read.setSequence(newSequence);
 	read.setOffset(newOffset);
 
-	while (!consMiddlePart.empty()) delete consMiddlePart.back(), consMiddlePart.pop_back();
-
 	return;
 }
 
@@ -225,27 +218,27 @@ Consensus *ReAligner::reAlign(Alignment & alignment, double epsilonPrecision, in
 	numberOfColumns = getNumberOfColumns(&alignment);
 	Consensus *initialConsensus = getConsensus(&alignment);
 	double initialScore = initialConsensus->getScore();
-	bool shouldContinue = true;
 	int iteration = 1;
 	int numOfReads = alignment.getSize();
 
+	std::list<char> *dashList = new std::list<char>();
+	dashList->push_back('-');
+	dash = new ColumnCount(dashList);
+
 	// initialize valueTable and isDiagonal
 	int maxReadLen = 0;
-	int maxDelta = 0;
-	for(AlignedFragment* AF : *(alignment.getAllFragments()))
+	for (AlignedFragment* AF : *(alignment.getAllFragments()))
 	{
 		int currLen = AF->getLength();
 		if (currLen > maxReadLen) {
 			maxReadLen = currLen;
 		}
-		int currDelta = (int)((epsilonPrecision * currLen) / 2);
-		if (currDelta > maxDelta) {
-			maxDelta = currDelta;
-		}
 	}
+
 	valueTable.clear();
 	isDiagonal.clear();
-	int maxStripWidth = 2 * maxDelta + 1;
+	maxReadLen = maxReadLen * pow((epsilonPrecision + 1), numOfIterations);
+	int maxStripWidth = (int)(epsilonPrecision * maxReadLen) + 1;
 	for (int i = 0; i <= maxReadLen; i++) {
 		std::vector<int> rowInt(maxStripWidth);
 		std::vector<bool> rowBool(maxStripWidth);
@@ -260,13 +253,13 @@ Consensus *ReAligner::reAlign(Alignment & alignment, double epsilonPrecision, in
 	Consensus *bestConsensus = initialConsensus;
 	int oldNumberOfColumns = numberOfColumns;
 
-	while (shouldContinue) 
+	while (true) 
 	{
 		std::cout << "Iterating..." << std::endl;
 
 		for (int k = 0; k < numOfReads; k++) 
 		{
-			std::cout << k << "/" << numOfReads << endl;
+			//std::cout << k << "/" << numOfReads << endl;
 
 			// detach first fragment in a list - append it last after iteration
 			AlignedFragment* sequence = alignment.PopFirst();
@@ -286,12 +279,20 @@ Consensus *ReAligner::reAlign(Alignment & alignment, double epsilonPrecision, in
 
 		Consensus *newConsensus = getConsensus(&alignment);
 		double newScore = newConsensus->getScore();
-		if (newScore >= bestScore || iteration == numOfIterations) 
+		if (newScore >= bestScore) 
 		{
-			shouldContinue = false;
+			std::cout << "Ending with score: " << bestScore << std::endl;
+			return bestConsensus;
+		}
+		if (iteration == numOfIterations) 
+		{
+			std::cout << "Ending with score: " << newScore << std::endl;
+			return newConsensus;
 		}
 
 		std::cout << "After " << iteration << " iterations score is: " << newScore << std::endl;
+		delete bestConsensus;
+		bestConsensus = newConsensus;
 		bestScore = newScore;
 		iteration++;
 	}

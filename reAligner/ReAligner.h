@@ -5,6 +5,9 @@
 #include "Consensus.h"
 #include "Alignment.h"
 #include "AlignedFragment.h"
+#include "Metasymbol.h"
+#include "ColumnCount.h"
+
 
 class ReAligner
 {
@@ -14,7 +17,7 @@ public:
 	static Consensus *getConsensus(Alignment *alignment);
 
 //private:
-	static std::vector<Metasymbol*> getPartOfConsensus(Alignment* alignment, int start, int end);
+	static std::vector<ColumnCount> getPartOfConsensus(Alignment* alignment, int start, int end, int dashesFront, int dashesBack);
 	static double getConsensusScoreWeighted(double scoreF1, double scoreF2);
 	static Metasymbol *getConsensusMetasymbol(std::list<char> *column);
 	static std::list<char>* getColumn(Alignment* layoutMap, int index);
