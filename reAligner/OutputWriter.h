@@ -20,6 +20,9 @@ public:
 
 	}
 	
+	/**
+	 * Receives metasymbol and returns vector of symbols inside of that metasymbol.
+	 */
 	static vector<string> getVector(Metasymbol* metasymbol) {
 		std::list<char> row = metasymbol->getSymbols();
 		vector<string> ret; ret.clear();
@@ -31,6 +34,9 @@ public:
 		return ret;
 	}
 
+	/**
+	 * Divides string s into chunks of size 60.
+	 */
 	static vector<string> getRows(string s) {
 		vector<string> ret;
 		for (int i = 0; i < (int)s.size(); i += 60) {
@@ -44,6 +50,12 @@ public:
 		return ret;
 	}
 
+	/**
+	 * Returns output for consensus depending on version
+	 *    if version == 0 outputs n in place of multiple symbols
+	 *    if version == 1 outputs multiple symbols inside of []
+	 *    if version == 2 outputs first one if there are multiple symbol
+	 */
 	static vector<string> getOutput(Consensus* consensus, int version) {
 		std::list<Metasymbol*> metasymbols = consensus->getMetasymbols();
 		string ret = "";
@@ -99,6 +111,9 @@ public:
 		file.close();
 	}
 
+	/**
+	 * Outputs all three versions of consensus into appropriate files.
+	 */
 	static void outputConsensusAll(std::list<Consensus*> consensusList, std::string path, std::string fileName) {
 		std::string consensusExt = ".fasta";
 		std::string versionNames[3] = { "N", "B", "F" };
@@ -120,6 +135,9 @@ public:
 		file << concatSeq << endl;
 	}
 
+	/**
+	 * Outputs alignment in GFA.
+	 */
 	static void outputGFA(Alignment& alignment, std::string path, std::string fileName) {
 		ofstream file;
 		file.open(path + fileName + ".gfa");

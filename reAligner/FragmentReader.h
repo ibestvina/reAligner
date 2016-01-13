@@ -25,6 +25,9 @@ public:
 
 	}
 
+	/**
+	 * Takes string that might have lowercase letters and makes them uppercase.
+	 */
 	std::string toUpperCase(std::string s) {
 		for (int i = 0; i < (int)s.size(); ++i) {
 			if (s[i] >= 'a' && s[i] <= 'z') {
@@ -34,6 +37,10 @@ public:
 		return s;
 	}
 
+	/**
+	 * Goes through input file line by line and reads all fragments, saves them to list and returns.
+	 * If fragment is divided on multiple lines concates them together.
+	 */
 	std::list<Fragment*> &GetAllFragments(){
 		std::string currentSequence = "";
 
@@ -49,8 +56,6 @@ public:
 					fragments->back()->setSequence(toUpperCase(currentSequence));
 					currentSequence = "";
 				}
-
-				//fragments->push_back(new Fragment(counter++));
 				fragments->push_back(new Fragment(counter++,sLine.substr(1)));
 
 
@@ -63,12 +68,6 @@ public:
 			fragments->back()->setLength(currentSequence.size());
 			fragments->back()->setSequence(toUpperCase(currentSequence));
 		}
-		/*
-		// temp debug ispis
-		for (std::list<Fragment*>::iterator itr = fragments->begin(); itr != fragments->end(); ++itr) {
-			printf("%d %d %s\n", (*itr)->getId(), (*itr)->getLength(), (*itr)->getSequence().c_str());
-		}
-		*/
 		return *fragments;
 	}
 };
