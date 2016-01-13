@@ -4,5 +4,5 @@ Project by Zrinka Gavran, Karlo Fodor and Ivan Bestvina, for Bioinformatics cour
 
 Command line arguments:
 ```
-<fasta input> <mhap input> <epsilon value> <output directory> <output filename>
+<fasta input> <mhap input> <epsilon value> <max number of iterations> <output directory> <output filename>
 ```

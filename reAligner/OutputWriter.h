@@ -44,8 +44,8 @@ public:
 		return ret;
 	}
 
-	static vector<string> getOutput(Consensus& consensus, int version) {
-		std::list<Metasymbol*> metasymbols = consensus.getMetasymbols();
+	static vector<string> getOutput(Consensus* consensus, int version) {
+		std::list<Metasymbol*> metasymbols = consensus->getMetasymbols();
 		string ret = "";
 		for (std::list<Metasymbol*>::iterator itr = metasymbols.begin(); itr != metasymbols.end(); ++itr) {
 			vector<string> chars = getVector(*itr);
@@ -85,12 +85,12 @@ public:
 	 *    if version == 1 outputs multiple symbols inside of []
 	 *    if version == 2 outputs first one if there are multiple symbols
 	 */
-	static void outputConsensus(std::list<Consensus> consensusList, std::string path, std::string fileName, int version) {
+	static void outputConsensus(std::list<Consensus*> consensusList, std::string path, std::string fileName, int version) {
 		ofstream file;
 		file.open(path + fileName);
-		for (std::list<Consensus>::iterator itr = consensusList.begin(); itr != consensusList.end(); ++itr) {
-			Consensus consensus = *itr;
-			file << ">" << consensus.getId() << endl;
+		for (std::list<Consensus*>::iterator itr = consensusList.begin(); itr != consensusList.end(); ++itr) {
+			Consensus* consensus = *itr;
+			file << ">" << consensus->getId() << endl;
 			vector<string> rows = getOutput(consensus, version);
 			for (int i = 0; i < (int)rows.size(); ++i) {
 				file << rows[i] << endl;
@@ -99,12 +99,25 @@ public:
 		file.close();
 	}
 
-	static void outputConsensusAll(std::list<Consensus> consensusList, std::string path, std::string fileName) {
+	static void outputConsensusAll(std::list<Consensus*> consensusList, std::string path, std::string fileName) {
 		std::string consensusExt = ".fasta";
 		std::string versionNames[3] = { "N", "B", "F" };
 		for (int i = 0; i < 3; ++i) {
 			outputConsensus(consensusList, path, fileName + versionNames[i] + consensusExt, i);
 		}
+	}
+
+	// Output concatenated sequences as one fragment, taking first symbol from metasymbol.
+	static void outputConsensusConcat(std::list<Consensus*> consensusList, std::string path, std::string fileName) {
+		std::string concatSeq = "";
+		for (Consensus* cons : consensusList) {
+			concatSeq = concatSeq + cons->toStringFirst();
+		}
+		concatSeq.erase(std::remove(concatSeq.begin(), concatSeq.end(), '-'), concatSeq.end());
+		ofstream file;
+		file.open(path + fileName + "C.fasta");
+		file << ">s0" << endl;
+		file << concatSeq << endl;
 	}
 
 	static void outputGFA(Alignment& alignment, std::string path, std::string fileName) {

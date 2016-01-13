@@ -18,6 +18,7 @@ int numberOfColumns = 0;
 ColumnCount* dash;
 
 
+
 ReAligner::ReAligner()
 {
 }
@@ -27,21 +28,25 @@ ReAligner::~ReAligner()
 {
 }
 
-
+// defines the weights of scores used
 double ReAligner::getConsensusScoreWeighted(double scoreF1, double scoreF2)
 {
 	return 0.5 * scoreF1 + 0.5 * scoreF2;
 }
 
+// returns a part of consensus with delta dashes added to the front and back to which a fragment is aligned
+// consensus is returned in list<ColumnCount> format, for easier score calculation
 std::vector<ColumnCount> ReAligner::getPartOfConsensus(Alignment* alignment, int start, int end, int dashesFront, int dashesBack)
 {
 	int columnsNum = numberOfColumns;
 	std::vector<ColumnCount> part(end-start + dashesFront + dashesBack);
 	
+	// add dashes front
 	for (int c = 0; c < dashesBack; c++) {
 		part[c] = *dash;
 	}
 
+	// add consensus columnCounts
 	for (int c = 0; c < end - start; ++c) {
 		std::list<char> *column = getColumn(alignment, c+start);
 		ColumnCount columnCount(column);
@@ -50,6 +55,8 @@ std::vector<ColumnCount> ReAligner::getPartOfConsensus(Alignment* alignment, int
 
 		delete column;
 	}
+
+	// add dashes back
 	int partEnd = dashesBack + end - start + dashesFront;
 	for (int c = dashesBack + end - start; c < partEnd; c++) {
 		part[c] = *dash;
@@ -58,6 +65,7 @@ std::vector<ColumnCount> ReAligner::getPartOfConsensus(Alignment* alignment, int
 	return part;
 }
 
+// returns a consensus (list<Metasymbol>) of an alignment and calculates its score
 Consensus *ReAligner::getConsensus(Alignment* alignment)
 {
 	int columnsNum = getNumberOfColumns(alignment);
@@ -85,6 +93,7 @@ Consensus *ReAligner::getConsensus(Alignment* alignment)
 	return consensus;
 }
 
+// returns a column metasymbol
 Metasymbol * ReAligner::getConsensusMetasymbol(std::list<char>* column)
 {
 	Metasymbol* sym = new Metasymbol;
@@ -118,7 +127,7 @@ Metasymbol * ReAligner::getConsensusMetasymbol(std::list<char>* column)
 	return sym;
 }
 
-
+// Needleman–Wunsch algorithm implementation. Takes an alignment, fragment, and delta value. Aligns the fragment to the consensus of alignment, 
 void ReAligner::getAlignment(AlignedFragment & read, Alignment *alignment, int delta)
 {
 	int readLen = read.getLength();
@@ -213,6 +222,8 @@ void ReAligner::getAlignment(AlignedFragment & read, Alignment *alignment, int d
 	return;
 }
 
+// round-robin frame method of the main algorithm
+// iterates through fragments and realignes them
 Consensus *ReAligner::reAlign(Alignment & alignment, double epsilonPrecision, int numOfIterations)
 {
 	numberOfColumns = getNumberOfColumns(&alignment);
@@ -257,8 +268,6 @@ Consensus *ReAligner::reAlign(Alignment & alignment, double epsilonPrecision, in
 
 	while (true) 
 	{
-		std::cout << "Iterating..." << std::endl;
-
 		for (int k = 0; k < numOfReads; k++) 
 		{
 			//std::cout << k << "/" << numOfReads << endl;
@@ -312,6 +321,8 @@ void ReAligner::dashFunction(AlignedFragment & fragment)
 	fragment.removeDashesFrontAndBack();
 }
 
+
+// finds all elements of a specified column in alignment
 std::list<char>* ReAligner::getColumn(Alignment* layoutMap, int index)
 {
 	std::list<char> *column = new std::list<char>;
@@ -354,6 +365,7 @@ double ReAligner::getColumnScore(std::list<char> *column, char sym) {
 	return score;
 }
 
+// returns a number of columns in an alignment
 int ReAligner::getNumberOfColumns(Alignment* layoutMap)
 {
 	int numOfColumns = 0;

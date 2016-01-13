@@ -94,7 +94,7 @@ private:
 	std::map<int, std::map<int, FragmentAlignment*>*> &generateFragmentAlignments()
 	{
 		int debug = Overlaps->size(), debugStep = debug / 100, debugCount = 100;
-		std::cout << "...." << std::endl;
+		//std::cout << "...." << std::endl;
 		//map<alignemnt id, alignedIndexes>
 		int alignmentId = 0;
 		std::map<int, std::list<int>*> AlignedIndexes;
@@ -107,8 +107,7 @@ private:
 		while (!Overlaps->empty())
 		{
 			//debug
-			if (debugStep*debugCount > Overlaps->size())
-				std::cout << debugCount-- << std::endl;
+			//if (debugStep*debugCount > Overlaps->size()) std::cout << debugCount-- << std::endl;
 			//Get any overlap if we have just started
 			Overlap *overlap = NULL;
 			if (AlignedIndexes[alignmentId]->empty())
