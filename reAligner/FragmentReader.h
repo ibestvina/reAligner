@@ -45,23 +45,27 @@ public:
 		std::string currentSequence = "";
 
 		int counter = 1;
-
+		bool reading = false;
 		while (!inStream.eof())
 		{
 			std::string sLine;
 			std::getline(inStream, sLine);
-			if (sLine[0] == '>') {
+			if (sLine[0] == '>' || sLine[0] == '@') {
 				if (currentSequence != "" && fragments->size() > 0) {
 					fragments->back()->setLength(currentSequence.size());
 					fragments->back()->setSequence(toUpperCase(currentSequence));
 					currentSequence = "";
 				}
 				fragments->push_back(new Fragment(counter++,sLine.substr(1)));
-
-
+				reading = true;
+			}
+			else if (sLine[0] == '+') {
+				reading = false;
 			}
 			else {
-				currentSequence += sLine;
+				if (reading == true) {
+					currentSequence += sLine;
+				}
 			}
 		}
 		if (currentSequence != "") {
