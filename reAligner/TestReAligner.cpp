@@ -78,8 +78,8 @@ void TestReAligner::testRealign1()
 
 	//Reader reader = *new Reader(mySamplesPath + "synthetic500/500_2_frags.fasta", mySamplesPath + "synthetic500/500_2_align.mhap");
 	//Reader reader = *new Reader(mySamplesPath + "ecoli/ecoli_frags.fasta", mySamplesPath + "ecoli/ecoli_align.mhap");
-	Reader reader = *new Reader(mySamplesPath + "synthetic5k/5k_frags.fasta", mySamplesPath + "synthetic5k/5k_align.mhap");
-	//Reader reader = *new Reader(mySamplesPath + "test4/readsInput4.fasta", mySamplesPath + "test4/readsInput4.mhap");
+	//Reader reader = *new Reader(mySamplesPath + "synthetic5k/5k_frags.fasta", mySamplesPath + "synthetic5k/5k_align.mhap");
+	Reader reader = *new Reader(mySamplesPath + "test4/readsInput4.fasta", mySamplesPath + "test4/readsInput4.mhap");
 	std::list<Alignment*> alignments = reader.getAlignment();
 	Alignment *alignment = NULL;
 	int maxSize = 0;
