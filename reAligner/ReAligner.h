@@ -15,8 +15,7 @@ public:
 	ReAligner();
 	~ReAligner();
 	static Consensus *getConsensus(Alignment *alignment);
-
-//private:
+	static Consensus *reAlign(Alignment &alignment, double epsilonPrecision, int numOfIterations);
 	static std::vector<ColumnCount> getPartOfConsensus(Alignment* alignment, int start, int end, int dashesFront, int dashesBack);
 	static double getConsensusScoreWeighted(double scoreF1, double scoreF2);
 	static Metasymbol *getConsensusMetasymbol(std::list<char> *column);
@@ -27,6 +26,5 @@ public:
 	static void dashFunction(Consensus *consensus);
 	static void dashFunction(AlignedFragment &fragment);
 	static void getAlignment(AlignedFragment &read, Alignment *alignment, int delta);
-	static Consensus *reAlign(Alignment &alignment, double epsilonPrecision, int numOfIterations);
 };
 

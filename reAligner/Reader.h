@@ -48,7 +48,7 @@ public:
 			std::list<Fragment*>								fragments			= fragmentReader.GetAllFragments();
 			std::map<int,std::map<int, FragmentAlignment*>*>	fragmentAlignments	= layoutReader.GetAllFragmentLayouts();			
 			
-			for (auto A : fragmentAlignments)
+			for (std::pair<int, std::map<int, FragmentAlignment*>*> A : fragmentAlignments)
 			{
 				for (Fragment *F : fragments)
 				{

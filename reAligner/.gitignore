@@ -34,3 +34,6 @@
 # bin files
 Debug/*
 bin/*
+
+# other
+cgmemtime

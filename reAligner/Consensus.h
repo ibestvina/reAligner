@@ -40,6 +40,8 @@ public:
 		return ID;
 	}
 
+	// cuts out a part of consensus and returns it as a list of metasymbols
+	// start parameter is including, end is excluding
 	std::list<Metasymbol*> getPart(int start, int end) {
 		if (start < 0 || end < 0 || start > metasymbols->size() || end > metasymbols->size() || start > end) {
 			std::cout << "Start: " << start << ", end: " << end << ", size: " << metasymbols->size();
@@ -75,6 +77,8 @@ public:
 	void setScore(double score) {
 		consensusScore = score;
 	}
+
+	
 	Metasymbol *getRow(int row)
 	{
 		int r = 0;
@@ -90,6 +94,8 @@ public:
 	void addMetasymbol(Metasymbol *ms) {
 		metasymbols->push_back(ms);
 	}
+
+	// remobes dash-only metasymbols from consensus
 	void removeDashesFrontAndBack()
 	{
 		std::list<Metasymbol*> *newList =new std::list<Metasymbol*>();
@@ -98,9 +104,10 @@ public:
 				newList->push_back(M);
 		
 		metasymbols = newList;
-		
-
 	}
+
+	// consensus to string
+	// metasymbols with more than one char are converted to the first char in metasymbol's char list
 	std::string toStringFirst() {
 		std::string s = "";
 		for (Metasymbol* M : *metasymbols)
