@@ -6,3 +6,12 @@ Command line arguments:
 ```
 <fasta input> <mhap input> <epsilon value> <max number of iterations> <output directory> <output filename>
 ```
+
+
+
+ReAligner uses CPPUnit for testing important methods.
+
+To compile, use:
+```
+c++ *.cpp -std=c++11 -lcppunit -O3 -o realigner
+```
