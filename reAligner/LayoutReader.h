@@ -107,7 +107,7 @@ private:
 		while (!Overlaps->empty())
 		{
 			//debug
-			if (debugStep*debugCount > Overlaps->size()) std::cout << debugCount-- << std::endl;
+			//if (debugStep*debugCount > Overlaps->size()) std::cout << debugCount-- << std::endl;
 			//Get any overlap if we have just started
 			Overlap *overlap = NULL;
 			if (AlignedIndexes[alignmentId]->empty())
