@@ -56,7 +56,13 @@ public:
 					fragments->back()->setSequence(toUpperCase(currentSequence));
 					currentSequence = "";
 				}
-				fragments->push_back(new Fragment(counter++,sLine.substr(1)));
+				//fragments->push_back(new Fragment(counter++,sLine.substr(1)));
+				std::string name = "";
+				char chown='\0';
+				std::istringstream L(sLine);
+				L >> chown; //remove >
+				L >> name; //read till whitespace
+				fragments->push_back(new Fragment(counter++, name));
 				reading = true;
 			}
 			else if (sLine[0] == '+') {

@@ -31,5 +31,6 @@ public:
 	void GetAlignment6();
 	void GetAlignment7();
 	void GetAlignment8();
+
 };
 

@@ -115,11 +115,13 @@ public:
 							F->setSequence(std::string(seq.rbegin() + seq.size() - 1 - FA->getStart(), 
 													   seq.rbegin() + seq.size() - 1 - FA->getEnd()));
 						}
+						F->setLength(FA->getLength());
 						alignedFragments->push_back(new AlignedFragment(*F,*FA));
 					}
 				}
-				alignments.push_back(new Alignment(*alignedFragments));
+				
 			}
+			alignments.push_back(new Alignment(*alignedFragments));
 		}
 		catch (int e)
 		{

@@ -6,6 +6,7 @@
 #include <fstream>
 #include <stdexcept>
 #include "GFAReader.h"
+#include "Reader.h"
 
 #include "TestLayoutReader.h"
 
@@ -135,4 +136,9 @@ void TestLayoutReader::GFATest()
 		"x	utg000001l	22343	5	0	0	channel_257_read_10_twodirections : 22 - 14264 + channel_307_read_3_twodirections : 51 - 14631 - ";
 	GFAReader gfa(input);
 	gfa.GetFragmentAlignments();
+}
+void TestLayoutReader::GFATest2()
+{
+	Reader R("../samples/testGFA/lambda_ont_reads.fasta","../samples/testGFA/lambda_ont_layout.gfa");
+	std::list<Alignment*> L = R.getAlignment();
 }
