@@ -6,6 +6,7 @@ class FragmentAlignment
 {
 private:
 	int id;
+	std::string name;
 	int length;
 	int start;
 	int end;
@@ -20,6 +21,15 @@ public:
 		this->end		= end;
 		this->offset	= offset;
 	}
+	FragmentAlignment(std::string name , int length,
+		int start, int end, int offset)
+	{
+		this->name = name;
+		this->length = length;
+		this->start = start;
+		this->end = end;
+		this->offset = offset;
+	}
 	~FragmentAlignment()
 	{
 
@@ -30,6 +40,10 @@ public:
 	/************************************************************************/
 	int getId(){
 		return id;
+	}
+	std::string getName()
+	{
+		return name;
 	}
 	int getLength(){
 		return length;

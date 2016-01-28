@@ -5,6 +5,7 @@
 #include <map>
 #include <fstream>
 #include <stdexcept>
+#include "GFAReader.h"
 
 #include "TestLayoutReader.h"
 
@@ -121,4 +122,17 @@ void TestLayoutReader::GetAllFragmentLayouts4(){
 	CPPUNIT_ASSERT_EQUAL(alignemnt[4]->getOffset(), 2841);
 	CPPUNIT_ASSERT_EQUAL(alignemnt[1]->getEnd(), 1704);
 
+}
+void TestLayoutReader::GFATest()
+{
+	std::stringstream input;
+	input << "S	utg000001l	GCCTTCAATCGCCAGAATCGCGAATGATGAAGCGGTTAGTATGCAGCCGTCTATTGAGTGGAAGTGAGTATGAGTACC" << std::endl <<
+		"a	utg000001l	0	channel_257_read_10_twodirections:22-14264	+	2458"<<std::endl<<
+		"a	utg000001l	2458	channel_497_read_15_twodirections:21 - 11715 + 1012"<<std::endl<<
+		"a	utg000001l	3470	channel_220_read_11_twodirections : 18 - 17974 + 3994"<<std::endl<<
+		"a	utg000001l	7464	channel_175_read_0_twodirections : 32 - 14935 - 298"<<std::endl<<
+		"a	utg000001l	7762	channel_307_read_3_twodirections : 51 - 14631 + 14581"<<std::endl<<
+		"x	utg000001l	22343	5	0	0	channel_257_read_10_twodirections : 22 - 14264 + channel_307_read_3_twodirections : 51 - 14631 - ";
+	GFAReader gfa(input);
+	gfa.GetFragmentAlignments();
 }

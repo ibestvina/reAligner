@@ -1,4 +1,4 @@
-//#define TESTING
+#define TESTING
 
 #ifdef TESTING
 #include <cppunit/CompilerOutputter.h>
