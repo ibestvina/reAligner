@@ -53,9 +53,9 @@ public:
 				sLine >> length;
 				//TODO indexiranje
 				if (readOri == '+')
-					FA.push_back(new FragmentAlignment(readName, length, start, start+length, utgStart));
+					FA.push_back(new FragmentAlignment(readName, length, start, end, utgStart));
 				else
-					FA.push_back(new FragmentAlignment(readName, length, start+length, start, utgStart));
+					FA.push_back(new FragmentAlignment(readName, length, end, start, utgStart));
 				break;
 			case 'x':
 			case 'X':
