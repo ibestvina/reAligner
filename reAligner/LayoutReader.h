@@ -8,6 +8,7 @@
 #include <sstream>
 #include <algorithm>
 
+
 #include "FileReader.h"
 #include "Overlap.h"
 #include "AlignedFragment.h"
@@ -23,7 +24,7 @@ private:
 public:
 	LayoutReader(std::istream &inputStream) :inputStream(inputStream)
 	{
-		
+		readAllOverlaps();
 	}
 	~LayoutReader()
 	{
@@ -40,7 +41,6 @@ public:
 	//*****************************************************************************************
 	std::map<int, std::map<int, FragmentAlignment*>*> &GetAllFragmentLayouts()
 	{
-		readAllOverlaps();
 		return generateFragmentAlignments();
 	}
 	std::list<Overlap*> *readAllOverlaps()
@@ -75,6 +75,112 @@ public:
 				direction_B, start_B, end_B, length_B));
 		}
 		return Overlaps;
+	}
+	std::list<FragmentAlignment*> getFragmentAlignments(FragmentAlignment *FA)
+	{
+		std::list<FragmentAlignment*> FragmentAlignments;
+		std::map<int,Overlap*> FoundOverlaps;
+		for (Overlap* O : *Overlaps)
+		{
+			if (O->getID_A() == FA->getId())
+			{
+				if (FoundOverlaps.count(O->getID_B()))
+				{
+					if (O->getJaccardScore() > FoundOverlaps[O->getID_B()]->getJaccardScore())
+						FoundOverlaps[O->getID_B()] = O;
+				}
+				else FoundOverlaps[O->getID_B()] = O;
+			}
+			else if (FA->getId() == O->getID_B())
+			{
+				if (FoundOverlaps.count(O->getID_A()))
+				{
+					if (O->getJaccardScore() > FoundOverlaps[O->getID_A()]->getJaccardScore())
+						FoundOverlaps[O->getID_A()] = O;
+
+				}
+				else FoundOverlaps[O->getID_B()] = O;
+			}
+				
+		}
+
+		for (auto FO : FoundOverlaps)
+		{
+			int id		= FO.first;
+			int start=0;
+			int end=0;
+			int offset=0;
+			int length=0;
+
+			if (FA->getId() == FO.second->getID_A())
+			{
+				if (FO.second->getDirection_B() == 0 && FO.second->getDirection_A() == 0)
+				{
+					start	= FO.second->getStart_B();
+					end		= FO.second->getEnd_B();
+					offset = FO.second->getStart_A() - FA->getStart();
+				}
+				else if (FO.second->getDirection_B() == 1 && FO.second->getDirection_A() == 0)
+				{
+					start = FO.second->getLength_B() - FO.second->getStart_B();
+					end = FO.second->getLength_B() - FO.second->getEnd_B();
+					offset = FO.second->getStart_A() - FA->getStart();
+				}
+				else
+					throw std::runtime_error("Not implemented");
+
+			}
+			else if (FA->getId() == FO.second->getID_B())
+			{
+				//orijentacija nije ista
+				if (FA->getStart() < FA->getEnd())
+					continue;
+
+				if (FO.second->getDirection_B() == 0 && FO.second->getDirection_A() == 0)
+				{
+					start = FO.second->getStart_A();
+					end = FO.second->getEnd_A();
+					offset = FA->getStart() - (FO.second->getLength_B() - FO.second->getStart_B());
+				}
+				else if (FO.second->getDirection_B() == 1 && FO.second->getDirection_A() == 0)
+				{
+					end = FO.second->getEnd_A();
+					start = FO.second->getStart_A();
+					offset = FA->getStart() - (FO.second->getLength_B() - FO.second->getStart_B());
+				}
+				else
+					throw std::runtime_error("Not implemented");
+
+				
+			}
+			if (offset < 0)
+			{
+				if (start > end){
+					//povecaj start za velicinu offseta
+					start += offset;
+					offset = 0;
+					if (start < end)
+						continue;
+				}
+				else 
+				{
+					start -= offset;
+					offset = 0;
+					if (start > end)
+						continue;
+				}
+			}
+			offset += FA->getOffset();
+			
+			length = end > start ? end - start : start-end;
+			
+			if (offset + end > FA->getOffset() + FA->getEnd())
+				end = end +((FA->getOffset() + FA->getEnd()) - (offset + end));
+
+			FragmentAlignments.push_back(new FragmentAlignment(id,length,start,end,offset));
+
+		}
+		return FragmentAlignments;
 	}
 	template <typename T>
 	static bool contains(std::list<T> &lst, T var)

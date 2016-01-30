@@ -15,7 +15,7 @@
 
 class Reader
 {
-	std::list<Alignment*>	alignments;
+	std::list<Alignment*>	*alignments;
 
 public:
 
@@ -76,6 +76,7 @@ public:
 	}*/
 	Reader(std::string inputFasta, std::string inputGFA)
 	{
+		alignments = new std::list<Alignment*>();
 		std::ifstream				fragmentFile;
 		std::ifstream				layoutFile;
 		std::list<AlignedFragment*> *alignedFragments = new std::list<AlignedFragment*>();
@@ -121,7 +122,124 @@ public:
 				}
 				
 			}
-			alignments.push_back(new Alignment(*alignedFragments));
+			alignments->push_back(new Alignment(*alignedFragments));
+		}
+		catch (int e)
+		{
+			std::cout << "An exception occurred. Exception #" << e << std::endl;
+		}
+
+		fragmentFile.close();
+		layoutFile.close();
+	}
+	Reader(std::string inputFasta, std::string inputGFA, std::string inputMHAP) :alignments()
+	{
+		alignments = new std::list<Alignment*>();
+		std::ifstream				fragmentFile;
+		std::ifstream				layoutFile;
+		std::ifstream				mhapFile;
+		std::list<AlignedFragment*> *alignedFragments = new std::list<AlignedFragment*>();
+
+		fragmentFile.open(inputFasta);
+		layoutFile.open(inputGFA);
+		mhapFile.open(inputMHAP);
+
+		if (!layoutFile)
+			throw std::runtime_error("Problem loading GFA file!");
+		if (!fragmentFile)
+			throw std::runtime_error("Problem loading FASTA file!");
+		if (!mhapFile)
+			throw std::runtime_error("Problem loading MHAP file!");
+
+		try{
+			GFAReader		layoutReader(layoutFile);
+			FragmentReader	fragmentReader(fragmentFile);
+			LayoutReader	mhapReader(mhapFile);
+
+			std::list<Fragment*>			fragments = fragmentReader.GetAllFragments();
+			std::list<FragmentAlignment*>	fragmentAlignments = layoutReader.GetFragmentAlignments();
+
+			for (FragmentAlignment *FA : fragmentAlignments)
+			{
+				for (Fragment *F : fragments)
+				{
+					if (FA->getName() == F->getInputId())
+					{
+						FA->setId(F->getId());
+					}
+				}
+			}
+			for (FragmentAlignment *FA : fragmentAlignments)
+			{
+				for (Fragment *F : fragments)
+				{
+					if (FA->getName() == F->getInputId())
+					{
+						//FA->setId(F->getId());
+						std::string seq = F->getSequence();
+						if (FA->getStart() < FA->getEnd())
+						{
+							F->setSequence(std::string(seq.begin() + FA->getStart(),
+								seq.begin() + FA->getEnd()));
+						}
+						else
+						{
+							//indexing starts from position 0, on rbegin starts from end
+							//so, we have to add the size of seq - 1
+							F->setSequence(std::string(seq.rbegin() + seq.size() - 1 - FA->getStart(),
+								seq.rbegin() + seq.size() - 1 - FA->getEnd()));
+						}
+						F->setLength(FA->getLength());
+						alignedFragments->push_back(new AlignedFragment(*F, *FA));
+					}
+				}
+				
+				std::list<FragmentAlignment*> overlaping = mhapReader.getFragmentAlignments(FA);
+				
+				for (FragmentAlignment* OFA : overlaping)
+				{
+					//if is in gfa, continue
+					bool inGFA = false;
+					for (auto check : fragmentAlignments)
+						if (OFA->getId() == check->getId())
+							inGFA = true;
+					if (inGFA)
+						continue;
+					//if already added
+					bool added = false;
+					for (auto check : *alignedFragments)
+						if (OFA->getId() == check->getId())
+							added = true;
+					if (added)
+						continue;
+					for (Fragment *F : fragments)
+					{
+						if (OFA->getId() == F->getId())
+						{
+							//OFA->setId(F->getId());
+							std::string seq = F->getSequence();
+							if (OFA->getStart() < OFA->getEnd())
+							{
+								F->setSequence(std::string(seq.begin() + OFA->getStart(),
+									seq.begin() + OFA->getEnd()));
+							}
+							else
+							{
+								//indexing starts from position 0, on rbegin starts from end
+								//so, we have to add the size of seq - 1
+								F->setSequence(std::string(seq.rbegin() + seq.size() - 1 - OFA->getStart(),
+									seq.rbegin() + seq.size() - 1 - OFA->getEnd()));
+							}
+							F->setLength(OFA->getLength());
+							alignedFragments->push_back(new AlignedFragment(*F, *OFA));
+						}
+					}
+				}
+			}
+			
+
+
+			alignments->push_back(new Alignment(*alignedFragments));
 		}
 		catch (int e)
 		{
@@ -138,9 +256,9 @@ public:
 	// Returns:   Alignment *
 	// Qualifier:
 	//************************************
-	std::list<Alignment*> getAlignment()
+	std::list<Alignment*> &getAlignment()
 	{
-		return alignments;
+		return *alignments;
 	}
 	~Reader()
 	{

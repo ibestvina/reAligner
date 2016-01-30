@@ -142,3 +142,8 @@ void TestLayoutReader::GFATest2()
 	Reader R("../samples/testGFA/lambda_ont_reads.fasta","../samples/testGFA/lambda_ont_layout.gfa");
 	std::list<Alignment*> L = R.getAlignment();
 }
+void TestLayoutReader::GFATest3()
+{
+	Reader R("../samples/testGFA/lambda_ont_reads.fasta", "../samples/testGFA/lambda_ont_layout.gfa", "../samples/testGFA/lambda_ont_overlaps.mhap");
+	std::list<Alignment*> L = R.getAlignment();
+}

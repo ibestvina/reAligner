@@ -14,6 +14,7 @@ class TestLayoutReader : public CppUnit::TestFixture
 	CPPUNIT_TEST(GetLayoutFromFile);*/
 	CPPUNIT_TEST(GFATest);
 	CPPUNIT_TEST(GFATest2);
+	CPPUNIT_TEST(GFATest3);
 	CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -29,5 +30,6 @@ public:
 	void GetLayoutFromFile();
 	void GFATest();
 	void GFATest2();
+	void GFATest3();
 };
 
