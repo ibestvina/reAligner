@@ -6,6 +6,7 @@
 #include <list>
 #include <iostream>
 #include <stdexcept>
+#include <map>
 
 
 #include "FragmentReader.h"
@@ -28,25 +29,25 @@ public:
 	// Parameter: std::string inputFasta
 	// Parameter: std::string inputMHAP
 	//************************************
-	/*Reader(std::string inputFasta,std::string inputMHAP)
+	Reader(std::string inputFasta, std::string inputMHAP, bool useMhap)
 	{
 		std::ifstream				fragmentFile;
-		std::ifstream				layoutFile;
+		std::ifstream				mhapFile;
 		std::list<AlignedFragment*> *alignedFragments = new std::list<AlignedFragment*>();
 
 		fragmentFile.open(inputFasta);
-		layoutFile	.open(inputMHAP);
+		mhapFile.open(inputMHAP);
 		
-		if (!layoutFile)
+		if (!mhapFile)
 			throw std::runtime_error("Problem loading MHAP file!");
 		if (!fragmentFile)
 			throw std::runtime_error("Problem loading FASTA file!");
 
 		try{
-			LayoutReader	layoutReader(layoutFile);
+			LayoutReader	mhapReader(mhapFile);
 			FragmentReader	fragmentReader(fragmentFile);
 
-			std::list<Fragment*>								fragments			= fragmentReader.GetAllFragments();
+			fragmentReader.GetAllFragments();
 			std::map<int,std::map<int, FragmentAlignment*>*>	fragmentAlignments	= layoutReader.GetAllFragmentLayouts();			
 			
 			for (std::pair<int, std::map<int, FragmentAlignment*>*> A : fragmentAlignments)
@@ -73,7 +74,9 @@ public:
 
 		fragmentFile.close();
 		layoutFile	.close();
-	}*/
+	}
+
+
 	Reader(std::string inputFasta, std::string inputGFA)
 	{
 		alignments = new std::list<Alignment*>();
@@ -93,33 +96,31 @@ public:
 			GFAReader	layoutReader(layoutFile);
 			FragmentReader	fragmentReader(fragmentFile);
 
-			std::list<Fragment*>			fragments = fragmentReader.GetAllFragments();
+			fragmentReader.GetAllFragments();
 			std::list<FragmentAlignment*>	fragmentAlignments = layoutReader.GetFragmentAlignments();
 
 			for (FragmentAlignment *FA : fragmentAlignments)
 			{
-				for (Fragment *F : fragments)
+
+				Fragment *F = fragmentReader.get(FA->getName());
+				//FA->setId(F->getId());
+				std::string seq = F->getSequence();
+				if (FA->getStart() < FA->getEnd())
 				{
-					if (FA->getName() == F->getInputId())
-					{
-						//FA->setId(F->getId());
-						std::string seq = F->getSequence();
-						if (FA->getStart() < FA->getEnd())
-						{
-							F->setSequence(std::string( seq.begin()+FA->getStart() , 
-														seq.begin()+FA->getEnd()));
-						}
-						else 
-						{
-							//indexing starts from position 0, on rbegin starts from end
-							//so, we have to add the size of seq - 1
-							F->setSequence(std::string(seq.rbegin() + seq.size() - 1 - FA->getStart(), 
-													   seq.rbegin() + seq.size() - 1 - FA->getEnd()));
-						}
-						F->setLength(FA->getLength());
-						alignedFragments->push_back(new AlignedFragment(*F,*FA));
-					}
+					F->setSequence(std::string( seq.begin()+FA->getStart() , 
+												seq.begin()+FA->getEnd()));
 				}
+				else 
+				{
+					//indexing starts from position 0, on rbegin starts from end
+					//so, we have to add the size of seq - 1
+					F->setSequence(std::string(seq.rbegin() + seq.size() - 1 - FA->getStart(), 
+												seq.rbegin() + seq.size() - 1 - FA->getEnd()));
+					F->complementSeq();
+				}
+				F->setLength(FA->getLength());
+				alignedFragments->push_back(new AlignedFragment(*F,*FA));
+
 				
 			}
 			alignments->push_back(new Alignment(*alignedFragments));
@@ -156,43 +157,34 @@ public:
 			FragmentReader	fragmentReader(fragmentFile);
 			LayoutReader	mhapReader(mhapFile);
 
-			std::list<Fragment*>			fragments = fragmentReader.GetAllFragments();
+			fragmentReader.GetAllFragments();
 			std::list<FragmentAlignment*>	fragmentAlignments = layoutReader.GetFragmentAlignments();
 
 			for (FragmentAlignment *FA : fragmentAlignments)
 			{
-				for (Fragment *F : fragments)
-				{
-					if (FA->getName() == F->getInputId())
-					{
-						FA->setId(F->getId());
-					}
-				}
+				Fragment* F = fragmentReader.get(FA->getName());
+				FA->setId(F->getId());
+
 			}
 			for (FragmentAlignment *FA : fragmentAlignments)
 			{
-				for (Fragment *F : fragments)
+				Fragment* F = fragmentReader.get(FA->getName());
+				std::string seq = F->getSequence();
+				if (FA->getStart() < FA->getEnd())
 				{
-					if (FA->getName() == F->getInputId())
-					{
-						//FA->setId(F->getId());
-						std::string seq = F->getSequence();
-						if (FA->getStart() < FA->getEnd())
-						{
-							F->setSequence(std::string(seq.begin() + FA->getStart(),
-								seq.begin() + FA->getEnd()));
-						}
-						else
-						{
-							//indexing starts from position 0, on rbegin starts from end
-							//so, we have to add the size of seq - 1
-							F->setSequence(std::string(seq.rbegin() + seq.size() - 1 - FA->getStart(),
-								seq.rbegin() + seq.size() - 1 - FA->getEnd()));
-						}
-						F->setLength(FA->getLength());
-						alignedFragments->push_back(new AlignedFragment(*F, *FA));
-					}
+					F->setSequence(std::string(seq.begin() + FA->getStart(),
+						seq.begin() + FA->getEnd()));
+					F->complementSeq();
 				}
+				else
+				{
+					//indexing starts from position 0, on rbegin starts from end
+					//so, we have to add the size of seq - 1
+					F->setSequence(std::string(seq.rbegin() + seq.size() - 1 - FA->getStart(),
+						seq.rbegin() + seq.size() - 1 - FA->getEnd()));
+				}
+				F->setLength(FA->getLength());
+				alignedFragments->push_back(new AlignedFragment(*F, *FA));
 				
 				std::list<FragmentAlignment*> overlaping = mhapReader.getFragmentAlignments(FA);
 				
@@ -212,28 +204,24 @@ public:
 							added = true;
 					if (added)
 						continue;
-					for (Fragment *F : fragments)
+
+					Fragment* F = fragmentReader.get(OFA->getId());
+					//OFA->setId(F->getId());
+					std::string seq = F->getSequence();
+					if (OFA->getStart() < OFA->getEnd())
 					{
-						if (OFA->getId() == F->getId())
-						{
-							//OFA->setId(F->getId());
-							std::string seq = F->getSequence();
-							if (OFA->getStart() < OFA->getEnd())
-							{
-								F->setSequence(std::string(seq.begin() + OFA->getStart(),
-									seq.begin() + OFA->getEnd()));
-							}
-							else
-							{
-								//indexing starts from position 0, on rbegin starts from end
-								//so, we have to add the size of seq - 1
-								F->setSequence(std::string(seq.rbegin() + seq.size() - 1 - OFA->getStart(),
-									seq.rbegin() + seq.size() - 1 - OFA->getEnd()));
-							}
-							F->setLength(OFA->getLength());
-							alignedFragments->push_back(new AlignedFragment(*F, *OFA));
-						}
+						F->setSequence(std::string(seq.begin() + OFA->getStart(),
+							seq.begin() + OFA->getEnd()));
 					}
+					else
+					{
+						//indexing starts from position 0, on rbegin starts from end
+						//so, we have to add the size of seq - 1
+						F->setSequence(std::string(seq.rbegin() + seq.size() - 1 - OFA->getStart(),
+							seq.rbegin() + seq.size() - 1 - OFA->getEnd()));
+					}
+					F->setLength(OFA->getLength());
+					alignedFragments->push_back(new AlignedFragment(*F, *OFA));
 				}
 			}
 			

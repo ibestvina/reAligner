@@ -7,6 +7,7 @@ class Fragment
 private:
 	int				id;
 	int				length;
+	bool			isUTG;
 	std::string		inputId;
 	std::string		sequence;
 public:
@@ -34,6 +35,11 @@ public:
 		return length;
 	}
 
+	inline bool getIsUTG()
+	{
+		return isUTG;
+	}
+	
 	inline std::string getInputId() {
 		return inputId;
 	}
@@ -62,5 +68,25 @@ public:
 	void setLength(int l) {
 		length = l;
 	}
+	
+	void setIsUTG(bool utg) {
+		isUTG = utg;
+	}
+
+	void complementSeq() {
+		for (int i = 0; i < sequence.size(); i++) {
+			switch (sequence[i]) {
+			case 'A': sequence[i] = 'T';
+				break;
+			case 'T': sequence[i] = 'A';
+				break;
+			case 'G': sequence[i] = 'C';
+				break;
+			case 'C': sequence[i] = 'G';
+				break;
+			}
+		}
+	}
+
 };
 

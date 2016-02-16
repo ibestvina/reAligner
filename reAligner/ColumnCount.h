@@ -82,4 +82,11 @@ public:
 	double getScore(char x) {
 		return (getScore1(x) + getScore2(x)) / 2;
 	}
+
+	char toChar() {
+		if (a == max) return 'A';
+		if (c == max) return 'C';
+		if (g == max) return 'G';
+		return 'T';
+	}
 };

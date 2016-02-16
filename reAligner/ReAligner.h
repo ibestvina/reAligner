@@ -15,7 +15,10 @@ public:
 	ReAligner();
 	~ReAligner();
 	static Consensus *getConsensus(Alignment *alignment);
-	static Consensus *reAlign(Alignment &alignment, double epsilonPrecision, int numOfIterations);
+	static Consensus *reAlign(Alignment *alignment, double epsilonPrecision, int numOfIterations);
+	static char* consensusToString(Alignment* alignment);
+	static char* consensusToString2(Alignment* alignment);
+	static char getColumnChar(Alignment* layoutMap, int index);
 	static std::vector<ColumnCount> getPartOfConsensus(Alignment* alignment, int start, int end, int dashesFront, int dashesBack);
 	static double getConsensusScoreWeighted(double scoreF1, double scoreF2);
 	static Metasymbol *getConsensusMetasymbol(std::list<char> *column);

@@ -49,13 +49,15 @@ public:
 					sLine >> chow;
 				}
 				sLine >> start >> chow >> end;
+				start--;
+				end--;
 				sLine >> readOri;
 				sLine >> length;
 				//TODO indexiranje
 				if (readOri == '+')
-					FA.push_back(new FragmentAlignment(readName, length, start, end, utgStart));
+					FA.push_back(new FragmentAlignment(readName, end - start, start, end, utgStart, length));
 				else
-					FA.push_back(new FragmentAlignment(readName, length, end, start, utgStart));
+					FA.push_back(new FragmentAlignment(readName, end - start, end, start, utgStart, length));
 				break;
 			case 'x':
 			case 'X':

@@ -39,6 +39,9 @@ public:
 	inline int getOffset(){
 		return fragmentAlignment.getOffset();
 	};
+	inline int getGfaLength() {
+		return fragmentAlignment.getGfaLength();
+	};
 	inline void setOffset(int offset){
 		fragmentAlignment.setOffset(offset);
 	};

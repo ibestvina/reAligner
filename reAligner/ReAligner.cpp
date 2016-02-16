@@ -34,11 +34,47 @@ double ReAligner::getConsensusScoreWeighted(double scoreF1, double scoreF2)
 	return 0.5 * scoreF1 + 0.5 * scoreF2;
 }
 
+
+char* ReAligner::consensusToString(Alignment* alignment) {
+	int columnsNum = getNumberOfColumns(alignment);
+	char *c = new char[columnsNum + 1];
+	c[columnsNum] = '\0';
+
+	// add consensus
+	for (int i = 0; i < columnsNum; ++i) {
+		c[i] = getColumnChar(alignment, i);
+	}
+	return c;
+}
+
+
+char* ReAligner::consensusToString2(Alignment* alignment) {
+	int columnsNum = getNumberOfColumns(alignment);
+	char *c = new char[columnsNum + 1];
+	for (int i = 0; i < columnsNum; i++) {
+		c[i] = '-';
+	}
+	c[columnsNum] = '\0';
+
+	std::list<AlignedFragment*> *fragments = alignment->getAllFragments();
+	for (std::list<AlignedFragment*>::const_iterator iter = fragments->begin(); iter != fragments->end(); ++iter) {
+		int offset = (*iter)->getOffset();
+		int gfalen = (*iter)->getGfaLength();
+		for (int i = 0; i < gfalen; i++) {
+			if (i + offset >= 0 && i + offset < columnsNum) {
+				c[i + offset] = (*iter)->getAt(i);
+			}
+		}
+	}
+	return c;
+}
+
 // returns a part of consensus with delta dashes added to the front and back to which a fragment is aligned
 // consensus is returned in list<ColumnCount> format, for easier score calculation
 std::vector<ColumnCount> ReAligner::getPartOfConsensus(Alignment* alignment, int start, int end, int dashesFront, int dashesBack)
 {
 	int columnsNum = numberOfColumns;
+	if (end == -1) end = numberOfColumns;
 	std::vector<ColumnCount> part(end-start + dashesFront + dashesBack);
 	
 	// add dashes front
@@ -224,13 +260,13 @@ void ReAligner::getAlignment(AlignedFragment & read, Alignment *alignment, int d
 
 // round-robin frame method of the main algorithm
 // iterates through fragments and realignes them
-Consensus *ReAligner::reAlign(Alignment & alignment, double epsilonPrecision, int numOfIterations)
+Consensus *ReAligner::reAlign(Alignment *alignment, double epsilonPrecision, int numOfIterations)
 {
-	numberOfColumns = getNumberOfColumns(&alignment);
-	Consensus *initialConsensus = getConsensus(&alignment);
+	numberOfColumns = getNumberOfColumns(alignment);
+	Consensus *initialConsensus = getConsensus(alignment);
 	double initialScore = initialConsensus->getScore();
 	int iteration = 1;
-	int numOfReads = alignment.getSize();
+	int numOfReads = alignment->getSize();
 
 	std::list<char> *dashList = new std::list<char>();
 	dashList->push_back('-');
@@ -238,7 +274,7 @@ Consensus *ReAligner::reAlign(Alignment & alignment, double epsilonPrecision, in
 
 	// initialize valueTable and isDiagonal
 	int maxReadLen = 0;
-	for (AlignedFragment* AF : *(alignment.getAllFragments()))
+	for (AlignedFragment* AF : *(alignment->getAllFragments()))
 	{
 		int currLen = AF->getLength();
 		if (currLen > maxReadLen) {
@@ -270,25 +306,25 @@ Consensus *ReAligner::reAlign(Alignment & alignment, double epsilonPrecision, in
 	{
 		for (int k = 0; k < numOfReads; k++) 
 		{
-			//std::cout << k << "/" << numOfReads << endl;
+			std::cout << k << "/" << numOfReads << endl;
 
 			// detach first fragment in a list - append it last after iteration
-			AlignedFragment* sequence = alignment.PopFirst();
+			AlignedFragment* sequence = alignment->PopFirst();
 			if (sequence->getLength() + sequence->getOffset() == numberOfColumns) {
 				oldNumberOfColumns = numberOfColumns;
-				numberOfColumns = getNumberOfColumns(&alignment);
+				numberOfColumns = getNumberOfColumns(alignment);
 			}
 			
 			//dashFunction(*sequence);
 
 			int delta = (int)((epsilonPrecision * sequence->getLength()) / 2);
-			getAlignment(*sequence, &alignment, delta);
+			getAlignment(*sequence, alignment, delta);
 
-			alignment.AddFragment(sequence);
+			alignment->AddFragment(sequence);
 			numberOfColumns = oldNumberOfColumns;
 		}
 
-		Consensus *newConsensus = getConsensus(&alignment);
+		Consensus *newConsensus = getConsensus(alignment);
 		double newScore = newConsensus->getScore();
 		if (newScore >= bestScore) 
 		{
@@ -336,6 +372,36 @@ std::list<char>* ReAligner::getColumn(Alignment* layoutMap, int index)
 		}
 	}
 	return column;
+}
+
+
+char ReAligner::getColumnChar(Alignment* layoutMap, int index)
+{
+	std::map<char, int> counts;
+	counts['A'] = 0;
+	counts['C'] = 0;
+	counts['G'] = 0;
+	counts['T'] = 0;
+	std::list<AlignedFragment*> *fragments = layoutMap->getAllFragments();
+	for (std::list<AlignedFragment*>::const_iterator iter = fragments->begin(); iter != fragments->end(); ++iter) {
+		int offset = (*iter)->getOffset();
+		int length = (*iter)->getLength();
+		if (offset <= index && offset + length > index) {
+			char sym = (*iter)->getAt(index - offset);
+			counts[sym]++;
+		}
+	}
+	char c;
+	if (counts['A'] >= counts['C']) {
+		if (counts['G'] >= counts['T']) {
+			return (counts['A'] >= counts['G']) ? 'A' : 'G';
+		}
+		return (counts['A'] >= counts['T']) ? 'A' : 'T';
+	}
+	if (counts['G'] >= counts['T']) {
+		return (counts['C'] >= counts['G']) ? 'C' : 'G';
+	}
+	return (counts['C'] >= counts['T']) ? 'C' : 'T';
 }
 
 /**

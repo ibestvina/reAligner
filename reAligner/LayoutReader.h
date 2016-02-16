@@ -172,10 +172,10 @@ public:
 			}
 			offset += FA->getOffset();
 			
-			length = end > start ? end - start : start-end;
-			
 			if (offset + end > FA->getOffset() + FA->getEnd())
 				end = end +((FA->getOffset() + FA->getEnd()) - (offset + end));
+
+			length = end > start ? end - start : start - end;
 
 			FragmentAlignments.push_back(new FragmentAlignment(id,length,start,end,offset));
 
