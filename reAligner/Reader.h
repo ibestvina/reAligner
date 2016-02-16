@@ -29,25 +29,25 @@ public:
 	// Parameter: std::string inputFasta
 	// Parameter: std::string inputMHAP
 	//************************************
-	Reader(std::string inputFasta, std::string inputMHAP, bool useMhap)
+	/*Reader(std::string inputFasta,std::string inputMHAP)
 	{
 		std::ifstream				fragmentFile;
-		std::ifstream				mhapFile;
+		std::ifstream				layoutFile;
 		std::list<AlignedFragment*> *alignedFragments = new std::list<AlignedFragment*>();
 
 		fragmentFile.open(inputFasta);
-		mhapFile.open(inputMHAP);
+		layoutFile	.open(inputMHAP);
 		
-		if (!mhapFile)
+		if (!layoutFile)
 			throw std::runtime_error("Problem loading MHAP file!");
 		if (!fragmentFile)
 			throw std::runtime_error("Problem loading FASTA file!");
 
 		try{
-			LayoutReader	mhapReader(mhapFile);
+			LayoutReader	layoutReader(layoutFile);
 			FragmentReader	fragmentReader(fragmentFile);
 
-			fragmentReader.GetAllFragments();
+			std::list<Fragment*>								fragments			= fragmentReader.GetAllFragments();
 			std::map<int,std::map<int, FragmentAlignment*>*>	fragmentAlignments	= layoutReader.GetAllFragmentLayouts();			
 			
 			for (std::pair<int, std::map<int, FragmentAlignment*>*> A : fragmentAlignments)
@@ -74,9 +74,7 @@ public:
 
 		fragmentFile.close();
 		layoutFile	.close();
-	}
-
-
+	}*/
 	Reader(std::string inputFasta, std::string inputGFA)
 	{
 		alignments = new std::list<Alignment*>();
