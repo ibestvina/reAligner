@@ -67,37 +67,33 @@ public:
 	{
 		sequence = std::string(sequence.begin() + start,
 					sequence.begin() + end);
+		length = sequence.size();
 	}
 	void RevSeqSplit(int start, int end)
 	{
-		std::string S;
-		std::string complement;
-
-		S = std::string(sequence.rbegin() + sequence.size() - start,
+		sequence = std::string(sequence.rbegin() + sequence.size() - start,
 						sequence.rbegin() + sequence.size() - end);
 		
-		for (auto C : S)
+		length = sequence.size();
+		for (int i = 0; i < length;i++)
 		{
-			char A = 'C';
-			switch (C)
+			switch (sequence[i])
 			{
 				case 'A': 
-					A = 'T';
+					sequence[i] = 'T';
 					break;
 				case 'T':
-					A = 'A';
+					sequence[i] = 'A';
 					break;
 				case 'C':
-					A = 'G';
+					sequence[i] = 'G';
 					break;
 				case 'G':
-					A = 'C';
+					sequence[i] = 'C';
 					break;	
 			}
-			complement.push_back(A);
 		}
 
-		sequence = complement;
 	}
 };
 
