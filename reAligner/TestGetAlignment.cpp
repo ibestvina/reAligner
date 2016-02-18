@@ -47,7 +47,6 @@ void TestGetAlignment::protoTest(std::string readSeq, int readOff, std::string c
 }
 void TestGetAlignment::GetAlignment10(){
 	Reader R("reference","../samples/samples/reads.fq", "../samples/samples/GMoverlaps.mhap", true);
-
 }
 void TestGetAlignment::GetAlignment1()
 {	
