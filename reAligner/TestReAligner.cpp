@@ -3,6 +3,7 @@
 #include <string>
 #include <iostream>
 #include <chrono>
+#include <fstream>
 
 #include "TestReAligner.h"
 #include "ReAligner.h"
@@ -19,8 +20,8 @@ void TestReAligner::setUp(){}
 void TestReAligner::tearDown(){}
 
 
-//std::string mySamplesPath = "../samples/";
-std::string mySamplesPath = "D:/Projects/bioinf/realigner/project/reAligner/samples/";
+std::string mySamplesPath = "../samples/";
+//std::string mySamplesPath = "D:/Projects/bioinf/realigner/project/reAligner/samples/";
 //std::string mySamplesPath = "C:/prog/bioinformatika/reAligner/samples/";
 //std::string mySamplesPath = "../samples/";
 
@@ -41,7 +42,7 @@ bool compareDouble(double a, double b) {
 }
 void TestReAligner::testRealign2()
 {
-	Fragment F1(1,18,std::string("CCTGGTACGTACACTTGT"));
+	/*Fragment F1(1,18,std::string("CCTGGTACGTACACTTGT"));
 	Fragment F2(2,20,"TCACGTATCCCTCTGTTAGA");
 	Fragment F3(3,25,"GTACCCTCTGTTAGAAAGCTCACGT");
 	Fragment F4(4,17,"CTCACTTAGTTCTCTGT");
@@ -69,17 +70,18 @@ void TestReAligner::testRealign2()
 	Alignment& A = *new Alignment(AFL);
 	Consensus* consBegin = ReAligner::getConsensus(&A);
 	Consensus* cons = ReAligner::reAlign(A, 4, 10);
-	std::cout << std::endl << cons->toStringFirst();
+	std::cout << std::endl << cons->toStringFirst();*/
 
 }
 void TestReAligner::testRealign1()
 {
 	std::chrono::high_resolution_clock::time_point t1 = std::chrono::high_resolution_clock::now();
-
 	//Reader reader = *new Reader(mySamplesPath + "synthetic500/500_2_frags.fasta", mySamplesPath + "synthetic500/500_2_align.mhap");
 	//Reader reader = *new Reader(mySamplesPath + "ecoli/ecoli_frags.fasta", mySamplesPath + "ecoli/ecoli_align.mhap");
 	//Reader reader = *new Reader(mySamplesPath + "synthetic5k/5k_frags.fasta", mySamplesPath + "synthetic5k/5k_align.mhap");
-	Reader reader = *new Reader(mySamplesPath + "test4/readsInput4.fasta", mySamplesPath + "test4/readsInput4.mhap");
+	//Reader reader = *new Reader(mySamplesPath + "testGFA/lambda_ont_reads.fasta", mySamplesPath + "testGFA/lambda_ont_layout.gfa");//, mySamplesPath + "testGFA/lambda_ont_overlaps.mhap");
+	Reader reader = *new Reader(mySamplesPath + "ecoli/reads.fq", mySamplesPath + "ecoli/layout.gfa");//, mySamplesPath + "ecoli/overlaps.after_unitigger.mhap");
+
 	std::list<Alignment*> alignments = reader.getAlignment();
 	Alignment *alignment = NULL;
 	int maxSize = 0;
@@ -91,10 +93,23 @@ void TestReAligner::testRealign1()
 		}
 	std::chrono::high_resolution_clock::time_point t2 = std::chrono::high_resolution_clock::now();
 
-	
-	Consensus *consBefore = ReAligner::getConsensus(alignment);
-	std::cout << std::endl << consBefore->toStringFirst() << std::endl;
-	Consensus *consAfter = ReAligner::reAlign(*alignment, 0.05, 10);
+	std::cout << "reading over" << std::endl;
+	char* before2 = ReAligner::consensusToString2(alignment);
+	std::cout << "writing to file" << std::endl;
+	std::ofstream fb2;
+	fb2.open(mySamplesPath + "before_cons_gfa.fasta");
+	fb2 << ">s0" << std::endl << before2 << std::endl;
+	fb2.close();
+	char* before1 = ReAligner::consensusToString(alignment);
+	std::cout << "writing to file2" << std::endl;
+	std::ofstream fb1;
+	fb1.open(mySamplesPath + "before_cons_maj.fasta");
+	fb1 << ">s0" << std::endl << before1 << std::endl;
+	fb1.close();
+
+	std::cout << "write over" << std::endl;
+	//std::cout << std::endl << c << std::endl;
+	Consensus *consAfter = ReAligner::reAlign(alignment, 0.05, 3);
 
 
 	std::chrono::high_resolution_clock::time_point t3 = std::chrono::high_resolution_clock::now();
@@ -112,10 +127,24 @@ void TestReAligner::testRealign1()
 	OutputWriter::outputConsensusAll(cons, outputTestPath, "konsenzusi");
 	OutputWriter::outputGFA(*alignment, outputTestPath, "gfa_output");*/
 	
-	std::cout << endl << consAfter->toStringFirst() << endl;
+	char* after1 = ReAligner::consensusToString(alignment);
+	std::cout << "writing to file2" << std::endl;
+	std::ofstream fa1;
+	fa1.open(mySamplesPath + "after_cons_maj.fasta");
+	fa1 << ">s0" << std::endl << after1 << std::endl;
+	fa1.close();
+	char* after2 = ReAligner::consensusToString2(alignment);
+	std::cout << "writing to file" << std::endl;
+	std::ofstream fa2;
+	fa2.open(mySamplesPath + "after_cons_gfa.fasta");
+	fa2 << ">s0" << std::endl << after2 << std::endl;
+	fa2.close();
+	
+
+	//std::cout << endl << ReAligner::consensusToString(alignment) << endl;
 }
 void TestReAligner::getConsensusTest() {
-	std::list<AlignedFragment*> fragments = std::list<AlignedFragment*>();
+	/*std::list<AlignedFragment*> fragments = std::list<AlignedFragment*>();
 	fragments.push_back(new AlignedFragment(*new Fragment(1, 3, "ACA"), *new FragmentAlignment(1, 3, 0, 0, 0)));
 	fragments.push_back(new AlignedFragment(*new Fragment(1, 3, "TAT"), *new FragmentAlignment(1, 3, 0, 0, 0)));
 	fragments.push_back(new AlignedFragment(*new Fragment(1, 3, "AAT"), *new FragmentAlignment(1, 3, 0, 0, 0)));
@@ -133,7 +162,7 @@ void TestReAligner::getConsensusTest() {
 	CPPUNIT_ASSERT(symbols[2].size() == 1);
 	CPPUNIT_ASSERT(symbols[0][0] == 'A');
 	CPPUNIT_ASSERT(symbols[1][0] == 'A');
-	CPPUNIT_ASSERT(symbols[2][0] == 'T');
+	CPPUNIT_ASSERT(symbols[2][0] == 'T');*/
 }
 
 void TestReAligner::getConsensusMetasymbolTest() {

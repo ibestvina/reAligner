@@ -11,6 +11,7 @@ private:
 	int start;
 	int end;
 	int offset;
+	int gfaLength;
 public:
 	FragmentAlignment(int id, int length,
 		int start, int end, int offset)
@@ -22,13 +23,14 @@ public:
 		this->offset	= offset;
 	}
 	FragmentAlignment(std::string name , int length,
-		int start, int end, int offset)
+		int start, int end, int offset, int gfaLength)
 	{
 		this->name = name;
 		this->length = length;
 		this->start = start;
 		this->end = end;
 		this->offset = offset;
+		this->gfaLength = gfaLength;
 	}
 	~FragmentAlignment()
 	{
@@ -59,6 +61,9 @@ public:
 	}
 	int getOffset(){
 		return offset;
+	}
+	int getGfaLength() {
+		return gfaLength;
 	}
 	FragmentAlignment &setOffset(int offset){
 		this->offset = offset;
