@@ -147,3 +147,12 @@ void TestLayoutReader::GFATest3()
 	Reader R("../samples/testGFA/lambda_ont_reads.fasta", "../samples/testGFA/lambda_ont_layout.gfa", "../samples/testGFA/lambda_ont_overlaps.mhap");
 	std::list<Alignment*> L = R.getAlignment();
 }
+void TestLayoutReader::NewMHAPTest(){
+	std::stringstream input;
+	input << "2 1 0.410281 1287 0 70 17597 18315 1 4224832 4242927 4830022"<<std::endl<<
+		"6 1 0.447153 410 0 304 4817 5046 0 1621705 1626251 4830022" << std::endl <<
+		"9 1 0.203224 537 0 2138 18952 19456 1 252410 271682 4830022";
+	LayoutReader LR(input);
+	std::map<int, FragmentAlignment*> LAY= LR.GetFragmentLayout();
+	LAY.empty();
+}

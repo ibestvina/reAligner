@@ -3,6 +3,7 @@
 #include <iostream>
 
 #include "TestGetAlignment.h"
+#include "Reader.h"
 
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION(TestGetAlignment);
@@ -44,7 +45,10 @@ void TestGetAlignment::protoTest(std::string readSeq, int readOff, std::string c
 	CPPUNIT_ASSERT_EQUAL(expectedOff, read.getOffset());
 	CPPUNIT_ASSERT_EQUAL(expectedRead, read.getSequence());
 }
+void TestGetAlignment::GetAlignment10(){
+	Reader R("reference","../samples/samples/reads.fq", "../samples/samples/GMoverlaps.mhap", true);
 
+}
 void TestGetAlignment::GetAlignment1()
 {	
 	protoTest("AAAAAAAAAA", 0, "AAAAAAAAAA", 4, 0, "AAAAAAAAAA");

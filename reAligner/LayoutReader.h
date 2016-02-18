@@ -43,6 +43,10 @@ public:
 	{
 		return generateFragmentAlignments();
 	}
+	std::map<int, FragmentAlignment*> GetFragmentLayout()
+	{
+		return generateFragmentAlignment();
+	}
 	std::list<Overlap*> *readAllOverlaps()
 	{
 		Overlaps = new std::list<Overlap*>();
@@ -197,6 +201,38 @@ private:
 	// Qualifier:
 	// Description: Reads out overlaps and calculates offsets, start and end indexes
 	//********************************************************************************
+	std::map<int, FragmentAlignment*> generateFragmentAlignment()
+	{
+		std::map<int, FragmentAlignment*> fragmentAlignments;
+		while (!Overlaps->empty())
+		{
+			Overlap *overlap = Overlaps->front();
+			Overlaps->pop_front();
+			int start	= 0, 
+				end		= 0, 
+				offset	= 0, 
+				length	= 0,
+				id		= overlap->getID_A();
+			//zakaj je na B RCpostavljen?
+			if (overlap->getDirection_B() == 0)
+			{
+				offset	= overlap->getStart_B();
+				start	= overlap->getStart_A();
+				end		= overlap->getEnd_A();
+				length	= overlap->getLength_A();
+			}
+			else
+			{
+				offset	= overlap->getLength_B() - overlap->getEnd_B();
+				length	= overlap->getLength_A();
+				start	= length - overlap->getStart_A();
+				end		= length - overlap->getEnd_A();
+			}
+			fragmentAlignments[id] = new FragmentAlignment(id, length, start, end, offset);
+		}
+		return fragmentAlignments;
+	}
+
 	std::map<int, std::map<int, FragmentAlignment*>*> &generateFragmentAlignments()
 	{
 		int debug = Overlaps->size(), debugStep = debug / 100, debugCount = 100;

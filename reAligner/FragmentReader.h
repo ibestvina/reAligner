@@ -80,5 +80,14 @@ public:
 		}
 		return *fragments;
 	}
+	std::map<int, Fragment*> toMap()
+	{
+		std::map<int, Fragment*> retMap;
+		for (Fragment *F : *fragments)
+		{
+			retMap[F->getId()] = F;
+		}
+		return retMap;
+	}
 };
 

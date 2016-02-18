@@ -62,5 +62,42 @@ public:
 	void setLength(int l) {
 		length = l;
 	}
+
+	void FwdSeqSplit(int start, int end)
+	{
+		sequence = std::string(sequence.begin() + start,
+					sequence.begin() + end);
+	}
+	void RevSeqSplit(int start, int end)
+	{
+		std::string S;
+		std::string complement;
+
+		S = std::string(sequence.rbegin() + sequence.size() - start,
+						sequence.rbegin() + sequence.size() - end);
+		
+		for (auto C : S)
+		{
+			char A = 'C';
+			switch (C)
+			{
+				case 'A': 
+					A = 'T';
+					break;
+				case 'T':
+					A = 'A';
+					break;
+				case 'C':
+					A = 'G';
+					break;
+				case 'G':
+					A = 'C';
+					break;	
+			}
+			complement.push_back(A);
+		}
+
+		sequence = complement;
+	}
 };
 

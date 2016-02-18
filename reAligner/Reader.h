@@ -74,6 +74,59 @@ public:
 		fragmentFile.close();
 		layoutFile	.close();
 	}*/
+	Reader(std::string referenceFasta, std::string inputFasta, std::string inputMHAP, bool newVers)
+	{
+		alignments = new std::list<Alignment*>();
+		std::ifstream				fragmentFile;
+		std::ifstream				layoutFile;
+		std::list<AlignedFragment*> *alignedFragments = new std::list<AlignedFragment*>();
+		
+		fragmentFile.open(inputFasta);
+		layoutFile.open(inputMHAP);
+
+		if (!layoutFile)
+			throw std::runtime_error("Problem loading MHAP file!");
+		if (!fragmentFile)
+			throw std::runtime_error("Problem loading FASTA file!");
+
+		try{
+			LayoutReader	layoutReader(layoutFile);
+			FragmentReader	fragmentReader(fragmentFile);
+
+			fragmentReader.GetAllFragments();
+			std::map<int, Fragment*>			fragments			= fragmentReader.toMap();
+			std::map<int,FragmentAlignment*>	fragmentAlignments	= layoutReader.GetFragmentLayout();
+
+			for (auto FA : fragmentAlignments)
+			{
+				int id									= FA.first;
+				FragmentAlignment *fragmentAlignment	= FA.second;
+				Fragment *fragment						= fragments[id];
+				std::string sequence					= fragment->getSequence();
+
+				if (fragmentAlignment->getStart() > fragmentAlignment->getEnd())
+				{
+					//complements also
+					fragment->RevSeqSplit(fragmentAlignment->getStart(), fragmentAlignment->getEnd());
+				}
+				else 
+				{
+					fragment->FwdSeqSplit(fragmentAlignment->getStart(), fragmentAlignment->getEnd());
+				}
+				alignedFragments->push_back(new AlignedFragment(*fragment, *fragmentAlignment));
+			}
+
+		}
+		catch (int e)
+		{
+			std::cout << "An exception occurred. Exception #" << e << std::endl;
+		}
+
+		alignments->push_back(new Alignment(*alignedFragments));
+ 		fragmentFile.close();
+		layoutFile.close();
+
+	}
 	Reader(std::string inputFasta, std::string inputGFA)
 	{
 		alignments = new std::list<Alignment*>();
@@ -113,8 +166,8 @@ public:
 						{
 							//indexing starts from position 0, on rbegin starts from end
 							//so, we have to add the size of seq - 1
-							F->setSequence(std::string(seq.rbegin() + seq.size() - 1 - FA->getStart(), 
-													   seq.rbegin() + seq.size() - 1 - FA->getEnd()));
+							F->setSequence(std::string(seq.rbegin() + seq.size() - FA->getStart(), 
+													   seq.rbegin() + seq.size() - FA->getEnd()));
 						}
 						F->setLength(FA->getLength());
 						alignedFragments->push_back(new AlignedFragment(*F,*FA));
@@ -186,8 +239,8 @@ public:
 						{
 							//indexing starts from position 0, on rbegin starts from end
 							//so, we have to add the size of seq - 1
-							F->setSequence(std::string(seq.rbegin() + seq.size() - 1 - FA->getStart(),
-								seq.rbegin() + seq.size() - 1 - FA->getEnd()));
+							F->setSequence(std::string(seq.rbegin() + seq.size() - FA->getStart(),
+								seq.rbegin() + seq.size() - FA->getEnd()));
 						}
 						F->setLength(FA->getLength());
 						alignedFragments->push_back(new AlignedFragment(*F, *FA));
@@ -226,9 +279,9 @@ public:
 							else
 							{
 								//indexing starts from position 0, on rbegin starts from end
-								//so, we have to add the size of seq - 1
-								F->setSequence(std::string(seq.rbegin() + seq.size() - 1 - OFA->getStart(),
-									seq.rbegin() + seq.size() - 1 - OFA->getEnd()));
+								//so, we have to add the size of seq
+								F->setSequence(std::string(seq.rbegin() + seq.size()  - OFA->getStart(),
+									seq.rbegin() + seq.size()  - OFA->getEnd()));
 							}
 							F->setLength(OFA->getLength());
 							alignedFragments->push_back(new AlignedFragment(*F, *OFA));
